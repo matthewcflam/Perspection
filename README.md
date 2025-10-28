@@ -108,4 +108,6 @@ This creates a clear need for a user-friendly solution that can consolidate and 
 
 *Insufficient permission*  
 - App cannot access required instagram data  
-- Bring the user back to the TOS screen  
+- Bring the user back to the TOS screen
+
+<img width="1050" height="1436" alt="merged_mockup" src="https://github.com/user-attachments/assets/4af0a00f-1b73-4908-b227-91df91b9e246" />
