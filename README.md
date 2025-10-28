@@ -106,7 +106,7 @@ Popup a text stating “wrong password or username” try again.
 503: Service unavailable
 Popup a text stating “Unable to load your data right now. Please check your connection” whenever new data is needed. 
 
-Not enough information: 
+*Not enough information* 
 405: Unprocessable entity
 Replace all text in that subpage with: “not enough activity to create a recap right now, try again at a later date”
 
