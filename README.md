@@ -1,4 +1,4 @@
-***CPEN 221 Project***  
+#CPEN 221 Project
 
 **Roles**  
 Andreas Mendez-Cadrin: Developer  
