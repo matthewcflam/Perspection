@@ -22,8 +22,6 @@ These coordination methods ensure that everyone stays on the same page and is aw
 
 ## **2\. What tools will you use to communicate?**
 
-* **For each, articulate the alternatives and why that is the best choice.**
-
 | Tool | Purpose | Best Choice Because... | Alternative & Rationale for Rejection |
 | :---- | :---- | :---- | :---- |
 | **Discord** | Communicating technical ideas, using multiple server channels for organization, notifying group members, and easily exchanging files / information. | \- Group audio calls make it convenient to coordinate between multiple people while working on a computer remotely. \- Able to send large files to all the members. \-All group members already regularly use this application. \-Available on mobile and desktop devices for easy access. | Discord is a platform that is easy to communicate technical details to each user, and easy to communicate to multiple people within a group setting. This allows for files to be sent between users easily and keeps all members updated. Unlike Slack, which limits message history and file uploads, or Microsoft Teams, which requires more setup and is less flexible for fast collaboration, Discord offers a simple, accessible environment on both desktop and mobile. Since all members already use it regularly, it’s the most efficient and reliable option for coordinating work and keeping everyone updated. |
@@ -33,9 +31,6 @@ These coordination methods ensure that everyone stays on the same page and is aw
 ---
 
 ## **3\. Who will own components in your architecture?**
-
-* *Owning them means being responsible for writing them and making sure they are functional and correct.*  
-* *For each component, list the one person who is in charge of getting it done.*
 
 | Team Member | Architectural Component |
 | :---- | :---- |
