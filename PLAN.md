@@ -42,6 +42,10 @@ These coordination methods ensure that everyone stays on the same page and is aw
 
 **Written Justification:** 
 
+- Responsibilities are allocated depending on each individual's strengths and weaknesses. 
+- Those who were assigned tasks with little to no experience in their respective area were assigned less tasks so sufficient time can be taken to learn the topic.
+- Tasks were distributed with time taken into consideration. Each member should in theory be assigned a similar amount of workload. 
+
 ---
 
 ## 
