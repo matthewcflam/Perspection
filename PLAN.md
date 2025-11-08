@@ -53,7 +53,6 @@ These coordination methods ensure that everyone stays on the same page and is aw
 
 ## **4\. What is your timeline?**
 
-* **Include a list of milestones you'll reach and deadlines for each.**
 
 | Milestone | Deadline | Focus/Deliverables |
 | :---- | :---- | :---- |
@@ -79,7 +78,6 @@ This timeline is structured to ensure a logical progression from foundational se
 
 ## **5\. How will you verify that you've met your requirements?**
 
-* *This section details your **Acceptance Testing Plan**.*
 
 ### **Acceptance Testing Matrix**
 
@@ -110,13 +108,4 @@ This timeline is structured to ensure a logical progression from foundational se
 
 ### 
 
-### **Verification Process Integration**
-
-* **If you propose to write tests, what exact tests will you conduct, and what will count as each test passing?**  
-* **If you propose to conduct reviews or inspections, how will you analyze the code?**   
-* **If you write a proof, what property will you prove?**   
-* **If you conduct a review or inspection, what aspects of the code will you inspect to verify the requirement is met?** (Details provided in the table above.)  
-* **For all of the requirements, how will your verifications be integrated into your process?**  
-  * **Automated Tests:** \[When will they run? e.g., After every build? Before every commit?\]  
-  * **Inspections/Reviews:** \[When will you conduct inspections and who will be involved?\]
 
