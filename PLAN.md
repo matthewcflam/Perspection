@@ -14,7 +14,7 @@
 * **Will you have meetings? How frequently? Who plans their agendas?**  
   * As stated above, Tony will organize two in-person meetings per week at the Hector J. MacLeod Building. Meeting times may change weekly based on availability, but two per week is the minimum requirement. There will also be a short FaceTime meeting on weekends to allow for continued coordination and collaboration outside of class hours. Tony, our PM, will plan the agendas and lead all meetings.
 
-**Justification:**
+**Written Justification:**
 
 These coordination methods ensure that everyone stays on the same page and is aware of their responsibilities throughout the project.  Due to each member usually working independently and then later committing their work, it is crucial that everybody is on the same page. Miscommunication from one individual can lead to catastrophic bugs and wasted time in the future, which is a resource we cannot afford to spend haphazardly. Therefore the size of this project and its myriad of moving parts means that concrete meetings, reminders, and goals set by the Project Manager are very much needed. These organizational and accountability measures help mitigate risk involved with unexpected illnesses, exams and homework,  personal issues that may arise with members, and most importantly proper and error-free workflow. For example, meetings allow for clear checkpoints, allowing Tony to identify issues early and adjust tasks and goals accordingly. Furthermore, by having our PM Tony set the agendas, manage communication tools, and oversee task distribution, everything will be organized. Our team can maintain accountability and adapt to obstacles listed above. This is even more relevant as we must meet the strict and timely deadlines this project offers. 
 
@@ -22,7 +22,7 @@ These coordination methods ensure that everyone stays on the same page and is aw
 
 ## **2\. What tools will you use to communicate?**
 
-| Tool | Purpose | Best Choice Because... | Alternative & Rationale for Rejection |
+| Tool | Purpose | Best Choice Because... | Alternatives & Justification for Rejection |
 | :---- | :---- | :---- | :---- |
 | **Discord** | Communicating technical ideas, using multiple server channels for organization, notifying group members, and easily exchanging files / information. | \- Group audio calls make it convenient to coordinate between multiple people while working on a computer remotely. \- Able to send large files to all the members. \-All group members already regularly use this application. \-Available on mobile and desktop devices for easy access. | Discord is a platform that is easy to communicate technical details to each user, and easy to communicate to multiple people within a group setting. This allows for files to be sent between users easily and keeps all members updated. Unlike Slack, which limits message history and file uploads, or Microsoft Teams, which requires more setup and is less flexible for fast collaboration, Discord offers a simple, accessible environment on both desktop and mobile. Since all members already use it regularly, it’s the most efficient and reliable option for coordinating work and keeping everyone updated. |
 | **iMessage** | Main group chat: sharing reminders/tasks, sharing ideas, delegating tasks, and communicating meetup times. | \- Easy to communicate between members and has a history of fast response times between everyone \-A group chat between all the group members is already created and remains active \-group members are familiar with the capabilities of iMessage | Using iMessage ensures important updates reach everyone instantly through notifications and pings, unlike Instagram or Discord, which members may not have notifications on for. It is a reliable platform for quick and robust communication. There is also a quick ability to share reminders and photos which is useful for the PM. Furthermore, since all group members use it regularly and there is already a group chat made, implementing this into our plan will be seamless. |
@@ -40,7 +40,7 @@ These coordination methods ensure that everyone stays on the same page and is aw
 | Justin | Frontend Viewer (assigning visual components to hit certain endpoints, enforcing valid inputs, making the “screens” / visuals).  |
 | Rui | Backend endpoints (get, put, patch, delete methods) Setting up CORS for frontend permissions Setting up dockerfiles and managing website versions on Google Cloud |
 
-**Written Justification:** \[Explain the rationale behind this ownership structure, focusing on accountability and clear responsibility.\]
+**Written Justification:** 
 
 ---
 
