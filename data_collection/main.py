@@ -40,6 +40,8 @@ def main():
     total_liked_stories = activity.get_total_liked_stories()
     
     total_messages = messages.get_total_msg_sent()
+    top_messaged_users = messages.get_top_5_user_msg()
+    # least_messaged_users = messages.get_bottom_5_users()
     
     print("\n--- Basic stats ---")
     print(f"Name: {personal_name}")
@@ -53,6 +55,8 @@ def main():
     print(f"Top Liked User Posts: {top_liked_users}")
     print(f"Mutuals:   {len(mutuals)}")
     print(f"Total Messages Sent: {total_messages}")
+    print(f"Top Users Messaging You: {top_messaged_users}")
+    # print(f"Bottom Users Messaging You: {least_messaged_users}")
     print(f"Only following (they don't follow you back): {len(only_following)}")
     print(f"Only followers (you don't follow them back):  {len(only_followers)}")
     

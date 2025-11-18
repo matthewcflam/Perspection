@@ -52,6 +52,14 @@ class InstagramParser:
 
         name = name_entry.get("value")
         return name or None
+    
+    def _decode_name(self, s: str | None) -> str | None:
+        if not s:
+            return s
+        try:
+            return s.encode("latin1").decode("utf-8")
+        except UnicodeDecodeError:
+            return s
 
 class InstagramMessagesParser(InstagramParser):
     def __init__(self, export_root: str):
@@ -67,9 +75,13 @@ class InstagramMessagesParser(InstagramParser):
         )
         
         self.messages: list[dict] = []
+        self.total_msg_sent = 0
+        self.top_users = {}
         
     def load_all_messages(self):
         all_messages = []
+        total_sent = 0
+        top_msg_users = {}
 
         if not self.messages_path.exists():
             raise FileNotFoundError(f"File not found: {self.message_path}")
@@ -89,28 +101,40 @@ class InstagramMessagesParser(InstagramParser):
                 title = data.get("title", thread_dir.name)
 
                 for m in data.get("messages", []):
+                    raw_sender = m.get("sender_name")
+                    sender = self._decode_name(raw_sender)
+                    content = m.get("content")
+                    timestamp_ms = m.get("timestamp_ms")
+                    
                     info = {
                         "thread": title,
                         "participants": participants,
-                        "sender": m.get("sender_name"),
-                        "content": m.get("content"),
-                        "timestamp_ms": m.get("timestamp_ms"),
+                        "sender": sender,
+                        "content": content,
+                        "timestamp_ms": timestamp_ms,
                     }
                     all_messages.append(info)
+                    
+                    if sender == self.username and len(participants) == 2:
+                        total_sent+=1
+                        
+                    if sender != self.username and sender and len(participants) == 2:
+                        top_msg_users[sender] = top_msg_users.get(sender, 0) + 1
 
         self.messages = all_messages
+        self.total_msg_sent = total_sent
+        self.top_users = top_msg_users
     
     # Message Statistics
     def get_total_msg_sent(self) -> int:
-        
-        total = 0
-        
-        for msg in self.messages:
-            if msg["sender"] == self.username:
-                total+=1
-        
-        return total
+        return self.total_msg_sent
             
+    def get_top_5_user_msg(self) -> list[tuple[str, int]]:
+        return Counter(self.top_users).most_common(5)
+    
+    # def get_bottom_5_users(self):
+    #     c = Counter(self.top_users)
+    #     return list(reversed(c.most_common()))[:5]
 class InstagramActivityParser(InstagramParser):
     
     def __init__(self, export_root: str):
