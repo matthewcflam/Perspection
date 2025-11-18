@@ -27,9 +27,25 @@ class InstagramConnectionsParser:
             / "close_friends.json"
         )
         
+        self.follow_requests_path = (
+            self.export_root
+            / "connections"
+            / "followers_and_following"
+            / "recent_follow_requests.json"
+        )
+        
+        self.unfollowed_path = (
+            self.export_root
+            / "connections"
+            / "followers_and_following"
+            / "recently_unfollowed_profiles.json"
+        )
+        
         self.followers: set[str] = set()
         self.following: set[str] = set()
         self.close_friends: set[str] = set()
+        self.follow_requests: set[str] = set()
+        self.unfollowed: set[str] = set()
         
     @staticmethod
     def _extract_username_value(item: dict) -> str | None:
@@ -118,6 +134,54 @@ class InstagramConnectionsParser:
                 continue
             
         self.close_friends = close_friends
+        
+    def load_follow_requests(self) -> None:
+        if not self.follow_requests_path.exists():
+            raise ValueError("File not found {self.follow_requests_path}")
+        
+        with self.follow_requests_path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+            
+        follow_requests: set[str] = set()
+        
+        items = data.get("relationships_permanent_follow_requests")
+        
+        if not isinstance(items, list):
+            raise ValueError("Unexpected format in json file")
+        
+        for item in items:
+            username = self._extract_username_value(item)
+            
+            if username:
+                follow_requests.add(username)
+            else:
+                continue
+        
+        self.follow_requests = follow_requests
+        
+    def load_unfollowed(self) -> None:
+        if not self.unfollowed_path.exists():
+            raise ValueError("File not found {self.unfollowed_path}")
+        
+        with self.unfollowed_path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+            
+        unfollowed: set[str] = set()
+        
+        items = data.get("relationships_unfollowed_users")
+        
+        if not isinstance(items, list):
+            raise ValueError("Unexpected format in json file")
+        
+        for item in items:
+            username = self._extract_username_value(item)
+            
+            if username:
+                unfollowed.add(username)
+            else:
+                continue
+            
+        self.unfollowed = unfollowed
             
     def load_followers_and_following(self) -> None:
         self.load_followers()

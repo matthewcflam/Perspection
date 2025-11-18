@@ -9,9 +9,13 @@ def main():
     
     parser.load_followers_and_following()
     parser.load_close_friends()
+    parser.load_follow_requests()
+    parser.load_unfollowed()
     
     followers = parser.followers
     following = parser.following
+    follow_requests = parser.follow_requests
+    unfollowed = parser.unfollowed
     
     close_friends = parser.close_friends
     
@@ -22,12 +26,14 @@ def main():
     print("\n--- Basic stats ---")
     print(f"Followers: {len(followers)}")
     print(f"Following: {len(following)}")
+    print(f"Recent Follow Requests: {len(follow_requests)}")
+    print(f"Recent Unfollowed Accounts: {len(unfollowed)}")
     print(f"Close friends: {len(close_friends)}")
     print(f"Mutuals:   {len(mutuals)}")
     print(f"Only following (they don't follow you back): {len(only_following)}")
     print(f"Only followers (you don't follow them back):  {len(only_followers)}")
     
-    show_n = 253
+    show_n = 10
     
     if only_following:
         print(f"\nFirst {show_n} accounts you follow that don't follow you back:")
