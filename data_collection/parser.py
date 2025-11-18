@@ -1,10 +1,205 @@
 import json
 from pathlib import Path
+from collections import Counter
 
-class InstagramConnectionsParser:
-    
+class InstagramParser:
     def __init__(self, export_root: str):
         self.export_root = Path(export_root)
+        
+    @staticmethod
+    def _extract_username_value(item: dict) -> str | None:
+        sld = item.get("string_list_data")
+        
+        if not sld:
+            return None
+        first = sld[0]
+        
+        return first.get("value")
+    
+    @staticmethod
+    def _extract_username_title(item: dict) -> str | None:
+        sld = item.get("title")
+        
+        if not sld:
+            return None
+        
+        return sld
+    
+    def _extract_personal_name(self) -> str | None:
+        name_path = (
+            self.export_root
+            / "personal_information"
+            / "personal_information"
+            / "personal_information.json"
+        )
+        
+        if not name_path.exists():
+            raise ValueError(f"File not found {name_path}")
+        
+        with name_path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+            
+        profile_user = data.get("profile_user")
+        
+        if not isinstance(profile_user, list) or not profile_user:
+            return None
+            
+        string_map_data = profile_user[0].get("string_map_data")
+
+        name_entry = string_map_data.get("Name")
+        if not name_entry:
+            return None
+
+        name = name_entry.get("value")
+        return name or None
+
+class InstagramMessagesParser(InstagramParser):
+    def __init__(self, export_root: str):
+        super().__init__(export_root)
+        
+        self.username = self._extract_personal_name()
+        
+        self.messages_path = (
+            self.export_root 
+            / "your_instagram_activity"
+            / "messages" 
+            / "inbox"
+        )
+        
+        self.messages: list[dict] = []
+        
+    def load_all_messages(self):
+        all_messages = []
+
+        if not self.messages_path.exists():
+            raise FileNotFoundError(f"File not found: {self.message_path}")
+
+        for thread_dir in self.messages_path.iterdir():
+            if not thread_dir.is_dir():
+                continue
+
+            for msg_file in sorted(thread_dir.glob("message_*.json")):
+                with msg_file.open("r", encoding="utf-8") as f:
+                    data = json.load(f)
+
+                participants = []
+                for p in data.get("participants", []):
+                    participants.append(p.get("name", ""))
+
+                title = data.get("title", thread_dir.name)
+
+                for m in data.get("messages", []):
+                    info = {
+                        "thread": title,
+                        "participants": participants,
+                        "sender": m.get("sender_name"),
+                        "content": m.get("content"),
+                        "timestamp_ms": m.get("timestamp_ms"),
+                    }
+                    all_messages.append(info)
+
+        self.messages = all_messages
+    
+    # Message Statistics
+    def get_total_msg_sent(self) -> int:
+        
+        total = 0
+        
+        for msg in self.messages:
+            if msg["sender"] == self.username:
+                total+=1
+        
+        return total
+            
+class InstagramActivityParser(InstagramParser):
+    
+    def __init__(self, export_root: str):
+        super().__init__(export_root)
+        
+        self.liked_posts_path = (
+            self.export_root
+            / "your_instagram_activity"
+            / "likes"
+            / "liked_posts.json"
+        )
+        
+        self.liked_stories_path = (
+            self.export_root
+            / "your_instagram_activity"
+            / "story_interactions"
+            / "story_likes.json"
+        )
+        
+        self.liked_posts: list[str] = []
+        self.liked_stories: list[str] = []
+        
+    def load_liked_posts(self) -> None:
+        if not self.liked_posts_path.exists():
+            raise FileNotFoundError(f"File not found: {self.liked_posts_path}")
+        
+        with self.liked_posts_path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        liked_posts = []
+
+        items = data.get("likes_media_likes")
+        if not isinstance(items, list):
+            raise ValueError("Unexpected format in json file")
+
+        for item in items:
+            username = self._extract_username_title(item)
+
+            sld = item.get("string_list_data") or []
+            if not sld:
+                continue
+
+            first = sld[0]
+            url = first.get("href")
+            ts = first.get("timestamp")
+
+            liked_posts.append({
+                "username": username,
+                "url": url,
+                "timestamp": ts
+            })
+
+        self.liked_posts = liked_posts
+        
+    def load_liked_stories(self) -> None:
+        if not self.liked_stories_path.exists():
+            raise FileNotFoundError(f"File not found: {self.liked_stories_path}")
+        
+        with self.liked_stories_path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+            
+        items = data.get("story_activities_story_likes")
+        if not isinstance(items, list):
+            raise ValueError("Unexpected format in json file")
+        
+        liked_stories: list[str] = list()
+        
+        for item in items:
+            username = self._extract_username_title
+            
+            if(username):
+                liked_stories.append(username)
+                
+        self.liked_stories = liked_stories
+
+    # Statics Functions
+    def get_total_liked_posts(self) -> int:
+        return len(self.liked_posts)
+    
+    def get_top_5_users(self) -> list[tuple[str, int]]:
+        counter = Counter(post["username"] for post in self.liked_posts)
+        return counter.most_common(5)
+
+    def get_total_liked_stories(self) -> int:
+        return len(self.liked_stories)
+class InstagramConnectionsParser(InstagramParser):
+    
+    def __init__(self, export_root: str):
+        super().__init__(export_root)
         
         self.followers_path = (
             self.export_root
@@ -46,29 +241,10 @@ class InstagramConnectionsParser:
         self.close_friends: set[str] = set()
         self.follow_requests: set[str] = set()
         self.unfollowed: set[str] = set()
-        
-    @staticmethod
-    def _extract_username_value(item: dict) -> str | None:
-        sld = item.get("string_list_data")
-        
-        if not sld:
-            return None
-        first = sld[0]
-        
-        return first.get("value")
-    
-    @staticmethod
-    def _extract_username_title(item: dict) -> str | None:
-        sld = item.get("title")
-        
-        if not sld:
-            return None
-        
-        return sld
     
     def load_followers(self) -> None:
         if not self.followers_path.exists():
-            raise FileNotFoundError("File not found: {self.followers_path}")
+            raise FileNotFoundError(f"File not found: {self.followers_path}")
         
         with self.followers_path.open("r", encoding="utf-8") as f:
             data = json.load(f)
@@ -87,7 +263,7 @@ class InstagramConnectionsParser:
                 
     def load_following(self) -> None:
         if not self.following_path.exists():
-            raise ValueError("File not found {self.following_path}")
+            raise ValueError(f"File not found {self.following_path}")
         
         with self.following_path.open("r", encoding="utf-8") as f:
             data = json.load(f)
@@ -98,8 +274,6 @@ class InstagramConnectionsParser:
         
         if not isinstance(items, list):
             raise ValueError("Unexpected format in json file")
-        
-        print(f"DEBUG following.json: {len(items)} entries")
         
         for item in items:
             username = self._extract_username_title(item)
@@ -113,7 +287,7 @@ class InstagramConnectionsParser:
         
     def load_close_friends(self) -> None:
         if not self.close_friends_path.exists():
-            raise ValueError("File not found {self.close_friends_path}")
+            raise ValueError(f"File not found {self.close_friends_path}")
         
         with self.close_friends_path.open("r", encoding="utf-8") as f:
             data = json.load(f)
@@ -137,7 +311,7 @@ class InstagramConnectionsParser:
         
     def load_follow_requests(self) -> None:
         if not self.follow_requests_path.exists():
-            raise ValueError("File not found {self.follow_requests_path}")
+            raise ValueError(f"File not found {self.follow_requests_path}")
         
         with self.follow_requests_path.open("r", encoding="utf-8") as f:
             data = json.load(f)
@@ -197,4 +371,3 @@ class InstagramConnectionsParser:
     
     def get_followers_only(self) -> set[str]:
         return self.followers - self.following
-        
