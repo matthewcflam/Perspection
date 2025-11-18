@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 from collections import Counter
+from datetime import date, datetime, timedelta
 
 class InstagramParser:
     def __init__(self, export_root: str):
@@ -60,6 +61,9 @@ class InstagramParser:
             return s.encode("latin1").decode("utf-8")
         except UnicodeDecodeError:
             return s
+        
+    def _ts_to_date(self, ts_ms: int) -> date:
+        return datetime.fromtimestamp(ts_ms / 1000).date()
 
 class InstagramMessagesParser(InstagramParser):
     def __init__(self, export_root: str):
@@ -76,12 +80,22 @@ class InstagramMessagesParser(InstagramParser):
         
         self.messages: list[dict] = []
         self.total_msg_sent = 0
+        self.top_recievers = {}
         self.top_users = {}
+        self.dm_dates_by_other = {} 
+        self.after_midnight_times = []
+        self.late_msg_by_user = {}
+        self.total_reels_sent = 0
         
     def load_all_messages(self):
         all_messages = []
         total_sent = 0
+        top_msg_by_user = {}
         top_msg_users = {}
+        dm_dates_by_other = {}
+        after_midnight_times = []
+        late_msg_by_user = {} 
+        total_reels_sent = 0
 
         if not self.messages_path.exists():
             raise FileNotFoundError(f"File not found: {self.message_path}")
@@ -94,9 +108,11 @@ class InstagramMessagesParser(InstagramParser):
                 with msg_file.open("r", encoding="utf-8") as f:
                     data = json.load(f)
 
-                participants = []
+                raw_participants = []
                 for p in data.get("participants", []):
-                    participants.append(p.get("name", ""))
+                    raw_participants.append(p.get("name", ""))
+                    
+                participants = [self._decode_name(name) for name in raw_participants]
 
                 title = data.get("title", thread_dir.name)
 
@@ -105,6 +121,7 @@ class InstagramMessagesParser(InstagramParser):
                     sender = self._decode_name(raw_sender)
                     content = m.get("content")
                     timestamp_ms = m.get("timestamp_ms")
+                    share = m.get("share")
                     
                     info = {
                         "thread": title,
@@ -112,22 +129,63 @@ class InstagramMessagesParser(InstagramParser):
                         "sender": sender,
                         "content": content,
                         "timestamp_ms": timestamp_ms,
+                        "share" : share,
                     }
                     all_messages.append(info)
                     
-                    if sender == self.username and len(participants) == 2:
-                        total_sent+=1
+                    if len(participants) == 2 and self.username in participants:
+                        others = [p for p in participants if p != self.username]
+                        if not others:
+                            continue
+
+                        other = others[0]
+
+                        if sender == self.username:
+                            total_sent += 1
+                            top_msg_by_user[other] = top_msg_by_user.get(other, 0) + 1
+                            
+                            if timestamp_ms:
+                                day = datetime.fromtimestamp(timestamp_ms / 1000).date()
+                                top_dates = dm_dates_by_other.setdefault(other, set())
+                                top_dates.add(day)
+                                
+                                dt = datetime.fromtimestamp(timestamp_ms / 1000)
+                                if 0 <= dt.hour < 5:
+                                    after_midnight_times.append(dt)
+                                    late_msg_by_user.setdefault(other, []).append(dt)
                         
                     if sender != self.username and sender and len(participants) == 2:
                         top_msg_users[sender] = top_msg_users.get(sender, 0) + 1
+                        
+                    is_reel = False
+
+                    if isinstance(share, dict):
+                        link = share.get("link") or ""
+                        if "instagram.com/reel" in link:
+                            is_reel = True
+
+                    if not is_reel and isinstance(content, str):
+                        if "instagram.com/reel" in content:
+                            is_reel = True
+
+                    if sender == self.username and is_reel:
+                        total_reels_sent += 1
 
         self.messages = all_messages
         self.total_msg_sent = total_sent
+        self.top_recievers = top_msg_by_user
         self.top_users = top_msg_users
+        self.dm_dates_by_other = dm_dates_by_other
+        self.after_midnight_times = after_midnight_times
+        self.late_msg_by_user = late_msg_by_user
+        self.total_reels_sent = total_reels_sent
     
     # Message Statistics
     def get_total_msg_sent(self) -> int:
         return self.total_msg_sent
+    
+    def get_top_5_user_recievers(self) -> list[tuple[str, int]]:
+        return Counter(self.top_recievers).most_common(5)
             
     def get_top_5_user_msg(self) -> list[tuple[str, int]]:
         return Counter(self.top_users).most_common(5)
@@ -135,6 +193,87 @@ class InstagramMessagesParser(InstagramParser):
     # def get_bottom_5_users(self):
     #     c = Counter(self.top_users)
     #     return list(reversed(c.most_common()))[:5]
+    
+    def get_dm_streaks(self) -> dict:
+        streaks = {}
+
+        for other, dates in self.dm_dates_by_other.items():
+            if not dates:
+                streaks[other] = 0
+                continue
+
+            days = sorted(dates)
+            current = 1
+            best = 1
+
+            for prev, cur in zip(days, days[1:]):
+                if (cur - prev).days == 1:
+                    current += 1
+                else:
+                    best = max(best, current)
+                    current = 1
+
+            best = max(best, current)
+            streaks[other] = best
+
+        return streaks
+    
+    def get_top_3_dm_streaks(self) -> list[tuple[str, int]]:
+        streaks = self.get_dm_streaks()
+        return Counter(streaks).most_common(3)
+    
+    def get_after_midnight_sent(self) -> str:
+        times = self.after_midnight_times
+        if len(times) < 2:
+            return "00:00:00"
+
+        times = sorted(times)
+
+        total = 0
+        THRESHOLD = 3 * 60
+
+        prev = times[0]
+        for cur in times[1:]:
+            gap = (cur - prev).total_seconds()
+            if 0 < gap <= THRESHOLD:
+                total += gap
+            prev = cur
+
+        td = timedelta(seconds=int(total))
+        return str(td)
+    
+    def _compute_time_from_timestamps(self, timestamps: list) -> int:
+        if len(timestamps) < 2:
+            return 0
+
+        timestamps = sorted(timestamps)
+        total = 0
+        THRESHOLD = 3 * 60
+
+        prev = timestamps[0]
+        for cur in timestamps[1:]:
+            gap = (cur - prev).total_seconds()
+            if 0 < gap <= THRESHOLD:
+                total += gap
+            prev = cur
+
+        return int(total)
+    
+    def get_top_5_user_late_msg(self) -> list[tuple[str, str]]:
+        results = []
+
+        for user, timestamps in self.late_msg_by_user.items():
+            total_seconds = self._compute_time_from_timestamps(timestamps)
+            td = timedelta(seconds=total_seconds)
+            results.append((user, str(td)))
+
+        results.sort(key=lambda x: sum(int(t) * 60**i for i,t in enumerate(reversed(x[1].split(":")))), reverse=True)
+
+        return results[:5]
+    
+    def get_total_reels_sent(self) -> int:
+        return self.total_reels_sent
+    
 class InstagramActivityParser(InstagramParser):
     
     def __init__(self, export_root: str):
@@ -195,7 +334,7 @@ class InstagramActivityParser(InstagramParser):
         
         with self.liked_stories_path.open("r", encoding="utf-8") as f:
             data = json.load(f)
-            
+        
         items = data.get("story_activities_story_likes")
         if not isinstance(items, list):
             raise ValueError("Unexpected format in json file")
@@ -203,11 +342,11 @@ class InstagramActivityParser(InstagramParser):
         liked_stories: list[str] = list()
         
         for item in items:
-            username = self._extract_username_title
+            username = self._extract_username_title(item)
             
             if(username):
                 liked_stories.append(username)
-                
+            
         self.liked_stories = liked_stories
 
     # Statics Functions
