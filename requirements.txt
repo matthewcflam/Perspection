@@ -1,0 +1,9 @@
+# This holds all the pip installs required to run the app
+# To install, run "pip install -r requirements.txt" in the terminal
+# To freeze (fix) the versions, run "pip freeze > requirements.txt"
+# This avoids compatibility issues with updates 
+
+Flask==3.1.2 # Web framework
+SQLAlchemy==2.0.44 # Object-relation-mapping for database
+Flask-SQLAlchemy==3.1.1 # Integrates SQLAlchemy with flask
+python-dotenv==1.2.1 # Loads environment variables
