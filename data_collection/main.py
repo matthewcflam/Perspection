@@ -1,8 +1,9 @@
 # Currently a testing ground for all backend features
-from parser import InstagramConnectionsParser
-from parser import InstagramActivityParser
-from parser import InstagramMessagesParser
-from parser import InstagramParser
+# This will be where all the data will be exported
+from parser_insta import InstagramConnectionsParser
+from parser_insta import InstagramActivityParser
+from parser_insta import InstagramMessagesParser
+from parser_insta import InstagramParser
 
 def main():
     
