@@ -28,7 +28,7 @@ To utilize this parsing, many dependencies must be installed first.
 
 1. Create the Python virtual environment and download the packages from requirements.txt like the SETUP.
 
-2. Once in the virtual environment, run the script, parser_google.py, this is done on MacOS/Linux by using this command in terminal: "./.venv/bin/python3 data_collection/parser_google.py".
+2. Once in the virtual environment, run the script, parser_google.py, this is done on MacOS/Linux by using this command in terminal: "./.venv/bin/python3 data_collection/parser_google.py". The command will be different on Windows.
 
 3. Once the script is running, you will be directed to a new webpage, ensure to allow google to access all your data.
 
