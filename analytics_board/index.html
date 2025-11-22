@@ -1,13 +1,33 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>analytics_board</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
+<!-- 
+Note from Matthew because I'm trying to understand what is happening and I might as well write as I go: 
+
+React makes this a Single Page Application (SPA), which means there is only one page of HTML
+that is being updated with our JSX. This is that one page of HTML. <div id = "root"></div> is where 
+react will plug in our JSX every time we update. 
+ 
+The general flow of the frontend is as follows:
+ 
+ 1. index.html calls main.jsx
+ 2. main.jsx initializes REACT and calls App.jsx
+ 3. App.jsx is the BRAIN and controls all components, state, and routing. It calls components as needed
+      - App.jsx is the most important file  
+
+-->
+
+
+<!doctype html>  <!-- Declares this as an HTML5 document. -->
+
+<html lang="en">  <!-- this doc is english -->
+
+  <head>  <!-- starts the head section, which contains metadata  -->
+    <meta charset="UTF-8" />  <!-- character encoding -->
+    <link rel="icon" type="image/png" href="/favicon.png" />  <!-- Links the favicon. 'type' specifies it's an SVG. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />  <!-- Configures mobile responsiveness. Ensures the page scales to device width without zooming. -->
+    <title>analytics_board</title>  <!-- Sets the page title shown in the browser tab. -->
+  </head> 
+  <body>  <!-- starts the body section, where visible content goes. -->
+    <div id="root"></div>  <!-- React mounts your app here (via main.jsx). -->
+    <script type="module" src="/src/main.jsx"></script>  <!-- Runs main.jsx as a module. This starts your React app. -->
+  </body> 
+
+</html> 
