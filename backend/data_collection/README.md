@@ -23,3 +23,18 @@ To utilize this parsing, many dependencies must be installed first.
 3. Once the script is running, you will be directed to a new webpage, ensure to allow google to access all your data.
 
 4. After this is done, rerun the script using the same command: "./.venv/bin/python3 data_collection/parser_google.py". This will give you the live data for Gmail, Google Drive and YouTube.
+
+Full workflow for gitbash (previous one may be outdated):
+1. Create (or ensure) venv
+python -m venv .venv
+
+2. Activate it
+source .venv/Scripts/activate
+
+3. Install deps
+pip install -r backend/requirements.txt
+
+4. Run script
+python backend/data_collection/parser_google.py
+
+
