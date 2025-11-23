@@ -1,57 +1,81 @@
 import React, { useState } from "react";
+import StatsPopupBoard from "./StatsPopupBoard";
 
 const GoogleSlide = () => {
   const [showDetails, setShowDetails] = useState(false);
 
+  // These are the internal pages of the Google stats pop-up
+  const googlePages = [
+    {
+      id: "drive",
+      content: (
+        <div className="space-y-2 text-sm text-gray-300">
+          <p className="font-semibold text-gray-100">Overview snapshot</p>
+          <ul className="list-disc list-inside">
+            <li>Files written: 1,234</li>
+            <li>Words per file: 400</li>
+            <li>Days used this year: 256</li>
+          </ul>
+        </div>
+      ),
+    },
+    {
+      id: "gmail",
+      content: (
+        <div className="space-y-2 text-sm text-gray-300">
+          <p className="font-semibold text-gray-100">Email analytics</p>
+          <ul className="list-disc list-inside">
+            <li>Emails sent last 30 days: 321</li>
+            <li>Most active day: Tuesday</li>
+            <li>Average emails/day: 10.7</li>
+          </ul>
+        </div>
+      ),
+    },
+    {
+      id: "youtube",
+      content: (
+        <div className="space-y-2 text-sm text-gray-300">
+          <p className="font-semibold text-gray-100">Calendar analytics</p>
+          <ul className="list-disc list-inside">
+            <li>Subscribers: 42</li>
+            <li>Average time spent: 45 min</li>
+            <li>Videos watched: 34</li>
+          </ul>
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-950 px-4">
-      {/* Title + subtitle */}
       <h2 className="text-3xl font-semibold text-white mb-4 text-center">
         Google Data
       </h2>
       <p className="text-gray-400 mb-8 max-w-xl text-center">
-        This page will show insights built from your Google account
-        (emails, calendar, drive, etc). Tap the card below to view more details.
+        This page will show insights built from your Google account. Tap the card
+        below to open a multi-page stats view.
       </p>
 
-      {/* Clickable card that opens the pop-up */}
+      {/* Clickable card that opens the board-like pop-up */}
       <button
         onClick={() => setShowDetails(true)}
         className="w-full max-w-md text-left bg-slate-900/70 border border-slate-700 rounded-2xl p-6 hover:border-sky-500 hover:bg-slate-900 transition-colors"
       >
         <h3 className="text-xl font-semibold text-white mb-2">
-          Google overview
+          Open Google analytics
         </h3>
         <p className="text-sm text-gray-300">
-          Click here to see a pop-up with more detailed Google analytics.
+          Press to open, then use Next / Back to move through different stats pages.
         </p>
       </button>
 
-      {/* Pop-up panel (overlay) */}
       {showDetails && (
-        <div className="fixed inset-0 z-40 bg-black/60 flex items-end sm:items-center justify-center">
-          <div className="w-full max-w-lg bg-slate-900 rounded-t-3xl sm:rounded-3xl p-6 shadow-xl">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-white">
-                Google analytics (preview)
-              </h3>
-              <button
-                onClick={() => setShowDetails(false)}
-                className="text-gray-400 hover:text-gray-200 text-sm"
-              >
-                Close
-              </button>
-            </div>
-
-            {/* Placeholder analytics – replace with real data later */}
-            <ul className="space-y-2 text-sm text-gray-300">
-              <li>• Total emails analyzed: 1,234</li>
-              <li>• Top 3 contacts: Alice, Bob, Charlie</li>
-              <li>• Calendar events this year: 256</li>
-              <li>• Drive files scanned: 789</li>
-            </ul>
-          </div>
-        </div>
+        <StatsPopupBoard
+          title="Google analytics"
+          pages={googlePages}
+          onClose={() => setShowDetails(false)}
+        />
       )}
     </div>
   );
