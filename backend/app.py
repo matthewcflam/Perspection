@@ -4,12 +4,22 @@
 import os
 from datetime import timedelta
 
-from flask import Flask, jsonify
+from flask import Flask
+from DataBase import db
+
 from flask_smorest import Api
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_cors import CORS
 
+# .[file] should match resource names. Will update once endpoints are setup
+from Resources.user import UserBlueprint
+from Resources.meta import MetaBlueprint
+from Resources.google import GoogleBlueprint
+from Resources.metrics import MetricsBlueprint
+from Resources.wrapped import WrappedBlueprint
+
+# Flask app instance
 def create_app():
     app = Flask(__name__)
 
@@ -48,6 +58,8 @@ def create_app():
     Migrate(app, db)
     jwt = JWTManager(app)
 
+    # For each file containing endpoints (resources folder)
+    # Groups api routes
     api.register_blueprint(MetaBlueprint)
     api.register_blueprint(GoogleBlueprint)
 
