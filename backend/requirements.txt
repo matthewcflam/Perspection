@@ -7,6 +7,7 @@ Flask==3.1.2 # Web framework
 SQLAlchemy==2.0.44 # Object-relation-mapping for database
 Flask-SQLAlchemy==3.1.1 # Integrates SQLAlchemy with flask
 python-dotenv==1.2.1 # Loads environment variables
+passlib==1.7.4 # For hashing passwords
 flask-smorest==0.46.2
 flask-jwt-extended==4.7.1
 Flask-Migrate==4.1.0

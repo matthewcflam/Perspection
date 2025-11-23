@@ -17,5 +17,8 @@ class MetaLikersModel(db.Model):
     )
 
     # Who liked
-    liker_id = db.Column(db.Integer, nullable = False)
+    liker_id = db.Column(db.String(255), nullable = False)
     liker_name = db.Column(db.String(30), nullable = True)
+
+    # Number of posts they liked
+    number_likes = db.Column(db.Integer, nullable = False, default = 0)

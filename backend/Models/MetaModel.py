@@ -9,7 +9,8 @@ class MetaModel(db.Model):
     linked_socials_id = db.Column(
         db.Integer,
         db.ForeignKey("linked_socials.id", ondelete = "CASCADE"), # Delete this if user deleted
-        nullable = True # Linked socials is optional
+        nullable = True, # Linked socials is optional
+        unique = True
     )
 
     linked_socials = db.relationship(
@@ -24,10 +25,10 @@ class MetaModel(db.Model):
     followers = db.relationship(
         "MetaFollowersModel",
         back_populates = "meta",
-        casecase = "all, delete-orphan"
+        cascade = "all, delete-orphan"
     )
 
-    following = db.relationships(
+    following = db.relationship(
         "MetaFollowersModel",
         back_populates = "meta",
         cascade = "all, delete-orphan"
@@ -36,11 +37,11 @@ class MetaModel(db.Model):
     likers = db.relationship(
         "MetaLikersModel",
         back_populates = "meta",
-        cascade = "all delete-orphan"
+        cascade = "all, delete-orphan"
     )
 
     liked = db.relationship(
         "MetaLikedModel",
         back_populates = "meta",
-        cascade = "all delete-orphan"
+        cascade = "all, delete-orphan"
     )

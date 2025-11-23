@@ -13,11 +13,10 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 
 # .[file] should match resource names. Will update once endpoints are setup
-from Resources.user import UserBlueprint
-from Resources.meta import MetaBlueprint
-from Resources.google import GoogleBlueprint
-from Resources.metrics import MetricsBlueprint
-from Resources.wrapped import WrappedBlueprint
+from Resources.user import blp as UserBlueprint
+from Resources.meta import blp as MetaBlueprint
+from Resources.google import blp as GoogleBlueprint
+from Resources.wrapped import blp as WrappedBlueprint
 
 # Flask app instance
 def create_app():
