@@ -1,23 +1,77 @@
+// import { useState } from "react";
+// import Board from "./components/Board";
+// import WelcomePage from "./components/WelcomePage";
+// import InstagramUpload from "./components/InstagramUpload";
+
+// const App = () => {
+//   const [instaData, setInstaData] = useState(null);
+
+//   const handleUploadComplete = (data) => {
+//     setInstaData(data);
+//     console.log("Uploaded folder data:", data);
+//     // later you can show a 3rd page with charts, etc.
+//   };
+
+//   return (
+//     <Board>
+//       {/* PAGE 1: Welcome */}
+//       <WelcomePage />
+
+//       {/* PAGE 2: Upload */}
+//       <InstagramUpload onUploadComplete={handleUploadComplete} />
+
+//       {/* PAGE 3: Placeholder for analytics / “Upload complete” */}
+//       <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
+//         {instaData ? (
+//           <h1 className="text-3xl">Upload complete ✓ (analytics coming here)</h1>
+//         ) : (
+//           <p className="text-gray-500">
+//             Upload data first (swipe back ← to the upload page)
+//           </p>
+//         )}
+//       </div>
+//     </Board>
+//   );
+// };
+
+// export default App;
+
 import { useState } from "react";
+import Board from "./components/Board";
+import WelcomePage from "./components/WelcomePage";
+import GoogleSlide from "./components/GoogleSlide";
 import InstagramUpload from "./components/InstagramUpload";
 
 const App = () => {
-  const [instaData, setInstaData] = useState(null);
+  const [instaAnalytics, setInstaAnalytics] = useState(null);
 
-  const handleUploadComplete = (data) => {
-    setInstaData(data);
-    console.log("Uploaded folder data:", data);
+  const handleInstaUploadComplete = (files) => {
+    // TODO: replace with real parsing of Instagram export
+    console.log("Instagram files:", files);
+
+    const fakeStats = {
+      totalMessages: 9876,
+      uniqueChats: 42,
+    };
+
+    setInstaAnalytics(fakeStats);
   };
 
   return (
-    <div className="min-h-screen w-screen overflow-hidden bg-slate-950">
-      {!instaData ? (
-        <InstagramUpload onUploadComplete={handleUploadComplete} />
-      ) : (
-        <div className="h-screen flex items-center justify-center text-white">
-          <h1 className="text-3xl">Upload complete ✓</h1>
-        </div>
-      )}
+    <div className="min-h-screen w-screen bg-slate-950 text-white">
+      <Board>
+        {/* SLIDE 1 – Welcome */}
+        <WelcomePage />
+
+        {/* SLIDE 2 – Google (click to open pop-up) */}
+        <GoogleSlide />
+
+        {/* SLIDE 3 – Instagram (upload + analytics) */}
+        <InstagramUpload
+          onUploadComplete={handleInstaUploadComplete}
+          analytics={instaAnalytics}
+        />
+      </Board>
     </div>
   );
 };
