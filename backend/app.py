@@ -2,13 +2,53 @@
 # such as the database, frontend url, backend url and other configs
 
 import os
-from flask import Flask
+from datetime import timedelta
+
+from flask import Flask, jsonify
+from flask_smorest import Api
+from flask_jwt_extended import JWTManager
+from flask_migrate import Migrate
+from flask_cors import CORS
 
 def create_app():
     app = Flask(__name__)
 
-    # Taken from env variables in .flaskenv
-    app.config["DATABASE_URL"] = os.getenv("DATABASE_URL")
-    app.config["FRONTEND_URL"] = os.getenv("FRONTEND_URL")
-    app.config["BACKEND_URL"] = os.getenv("BACKEND_URL")
+    FRONTEND_URL = os.getenv("FRONTEND_URL")
+    
+    # Access for front-end to host on separate server
+    CORS(
+        app,
+        resources={r"/*": {
+            "origins": [FRONTEND_URL] if FRONTEND_URL else ["*"],
+            "supports_credentials": True,
+            "methods": ["GET", "POST", "DELETE", "PATCH", "OPTIONS", "PUT"],
+            "allow_headers": ["Content-Type", "Authorization", "Accept"],
+            "expose_headers": ["Content-Type", "Authorization"],
+            "max_age": 86400,
+        }},
+    )
 
+    # Database setup
+    database_url = os.getenv("DATABASE_URL")
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+    # Validates JSON payloads (enforce this)
+    jwt_secret = os.getenv("JWT_SECRET_KEY")
+    if not jwt_secret:
+        raise RuntimeError("JWT_SECRET_KEY is not set")
+    app.config["JWT_SECRET_KEY"] = jwt_secret
+    # Access tokens expire after 3 hours
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours = 3)
+
+    # Initializations
+    db.init_app(app)
+    api = Api(app)
+    # Allow migrations from local to GCP when we deploy
+    Migrate(app, db)
+    jwt = JWTManager(app)
+
+    api.register_blueprint(MetaBlueprint)
+    api.register_blueprint(GoogleBlueprint)
+
+    return app

@@ -7,6 +7,10 @@ Flask==3.1.2 # Web framework
 SQLAlchemy==2.0.44 # Object-relation-mapping for database
 Flask-SQLAlchemy==3.1.1 # Integrates SQLAlchemy with flask
 python-dotenv==1.2.1 # Loads environment variables
+flask-smorest==0.46.2
+flask-jwt-extended==4.7.1
+Flask-Migrate==4.1.0
+flask-cors==6.0.1
 google-api-python-client==2.187.0
 google-auth==2.41.1
 google-auth-oauthlib==1.2.3
