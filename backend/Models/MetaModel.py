@@ -38,3 +38,9 @@ class MetaModel(db.Model):
         back_populates = "meta",
         cascade = "all delete-orphan"
     )
+
+    liked = db.relationship(
+        "MetaLikedModel",
+        back_populates = "meta",
+        cascade = "all delete-orphan"
+    )

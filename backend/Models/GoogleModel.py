@@ -32,3 +32,9 @@ class GoogleModel(db.Model):
         back_populates = "google",
         cascade = "all, delete-orphan"
     )
+
+    youtube_liked = db.relationship(
+        "YoutubeLikedModel",
+        back_populates = "google",
+        cascade = "all, delete-orphan"
+    )
