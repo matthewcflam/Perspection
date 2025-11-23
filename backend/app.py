@@ -1,5 +1,5 @@
 # app.py instantiates the app, and connects to all necessary tools
-# such as the database, frontend url, and other configs
+# such as the database, frontend url, backend url and other configs
 
 import os
 from flask import Flask
