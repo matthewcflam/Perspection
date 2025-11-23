@@ -69,7 +69,8 @@ class InstagramMessagesParser(InstagramParser):
     def __init__(self, export_root: str):
         super().__init__(export_root)
         
-        self.username = self._extract_personal_name()
+        raw_username = self._extract_personal_name()
+        self.username = self._decode_name(raw_username)
         
         self.messages_path = (
             self.export_root 
