@@ -59,7 +59,9 @@ def create_app():
 
     # For each file containing endpoints (resources folder)
     # Groups api routes
+    api.register_blueprint(UserBlueprint)
     api.register_blueprint(MetaBlueprint)
     api.register_blueprint(GoogleBlueprint)
+    api.register_blueprint(WrappedBlueprint)
 
     return app
