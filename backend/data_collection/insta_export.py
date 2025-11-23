@@ -1,7 +1,7 @@
-from parser_insta import InstagramConnectionsParser
-from parser_insta import InstagramActivityParser
-from parser_insta import InstagramMessagesParser
-from parser_insta import InstagramParser
+from insta_parser import InstagramConnectionsParser
+from insta_parser import InstagramActivityParser
+from insta_parser import InstagramMessagesParser
+from insta_parser import InstagramParser
 
 def parse_instagram_export(export_root: str) -> dict:
 
