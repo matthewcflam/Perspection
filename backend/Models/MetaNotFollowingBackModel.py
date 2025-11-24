@@ -1,7 +1,7 @@
 from DataBase import db
 
-class MetaLikedModel(db.Model):
-    __tablename__ = "meta_liked"
+class MetaNotFollowingBackModel(db.Model):
+    __tablename__ = "meta_not_following_back"
 
     id = db.Column(db.Integer, primary_key = True)
 
@@ -13,10 +13,7 @@ class MetaLikedModel(db.Model):
 
     meta = db.relationship(
         "MetaModel",
-        back_populates = "liked"
+        back_populates = "not_following_back"
     )
 
-    # Posts you liked
-    liked_id = db.Column(db.Integer, nullable = False)
-    # Post identifier
-    liked_identifier = db.Column(db.String(30), nullable = True)
+    username = db.Column(db.String(30), nullable = False)

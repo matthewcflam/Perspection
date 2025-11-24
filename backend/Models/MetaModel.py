@@ -21,15 +21,13 @@ class MetaModel(db.Model):
     # Meta username
     name = db.Column(db.String(100), nullable = False)
 
-    # Children
-    followers = db.relationship(
-        "MetaFollowersModel",
-        back_populates = "meta",
-        cascade = "all, delete-orphan"
-    )
+    # Follower and following count
+    followers_count = db.Coolumn(db.Integer, nullable = False, default = 0)
+    following_count = db.Column(db.Integer, nullable = False, default = 0)
 
-    following = db.relationship(
-        "MetaFollowersModel",
+    # Children
+    not_following_back = db.relationship(
+        "MetaNotFollowingBackModel",
         back_populates = "meta",
         cascade = "all, delete-orphan"
     )
@@ -40,8 +38,8 @@ class MetaModel(db.Model):
         cascade = "all, delete-orphan"
     )
 
-    liked = db.relationship(
-        "MetaLikedModel",
+    messages = db.relationship(
+        "MetaMessagesModel",
         back_populates = "meta",
         cascade = "all, delete-orphan"
     )

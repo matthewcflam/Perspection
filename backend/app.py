@@ -14,6 +14,7 @@ from flask_cors import CORS
 
 # .[file] should match resource names. Will update once endpoints are setup
 from Resources.user import blp as UserBlueprint
+from Resources.linked_socials import blp as LinkedSocialsBlueprint
 from Resources.meta import blp as MetaBlueprint
 from Resources.google import blp as GoogleBlueprint
 from Resources.wrapped import blp as WrappedBlueprint
@@ -63,5 +64,6 @@ def create_app():
     api.register_blueprint(MetaBlueprint)
     api.register_blueprint(GoogleBlueprint)
     api.register_blueprint(WrappedBlueprint)
+    api.register_blueprint(LinkedSocialsBlueprint)
 
     return app

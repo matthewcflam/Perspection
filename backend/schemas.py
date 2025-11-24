@@ -25,9 +25,10 @@ class UserGetSchema(PlainUserSchema):
 class PlainLinkedSocialSchema(Schema):
     # One linked account (safe fields only)
     id = fields.Int(dump_only=True)
+    account_name = fields.Str(required = True)
     platform = fields.Str(
-        required=True,
-        validate = validate.OneOf(["meta", "google", "youtube"])
+        required = True,
+        validate = validate.OneOf(["meta", "google"])
     )
     # Input JSON data
     data = fields.Raw(requried = True)
