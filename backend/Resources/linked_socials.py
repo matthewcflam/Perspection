@@ -7,8 +7,8 @@ from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 from DataBase import db
 from schemas import PlainLinkedSocialSchema, LinkedSocialViewSchema
-from Models import UserModel, LinkedSocialsModel, MetaModel, MetaMessagesModel, MetaNotFollowingBackModel, MetaLikersModel
-from Models import GoogleModel, YoutubeLikedModel, YoutubeSubscribedModel, YoutubeWatchedModel
+from Models import UserModel, LinkedSocialsModel, MetaModel, MetaMessagesModel, MetaNotFollowingBackModel, MetaLikedModel
+from Models import GoogleModel, YoutubeLikedModel, YoutubeSubscribedModel, YoutubeWatchedModel, MetaTopFiveReceiverModel, MetaTopFiveSenderModel
 import data_collection.insta_parser as p
 
 blp = Blueprint("linked_socials", __name__, description = "Operations on linked social media accounts")
@@ -55,11 +55,13 @@ class LinkSocials(MethodView):
                     abort(409, message = "Meta account already linked")
 
                 processed_data = p.InstagramParser(data_root)
-                followers = processed_data.get_followers() # Integer
-                following = processed_data.get_following() # Integer
-                likers_map = processed_data.get_likers()       # Hashmap of liker : like count
-                messages_map = processed_data.get_messages()   # Hashmap of user : List(String)
-                not_following_back = processed_data.get_not_following_back() # List(String)
+                followers = processed_data.followers() # Integer
+                following = processed_data.following() # Integer
+                liked_map = processed_data.get_top_5_users() # Hashmap of most liked : like count
+                messages_map = processed_data.get_top_5_user_msg()   # Hashmap of user : List(String)
+                not_following_back = processed_data.get_following_only() # List(String)
+                top_5_receivers = processed_data.get_top_5_user_recievers() # List(String)
+                top_5_senders = processed_data.get_top_5_user_msg() # List(String)
 
                 # Meta name, linked socials, follower count, following count
                 meta = MetaModel(
@@ -92,12 +94,30 @@ class LinkSocials(MethodView):
                     db.session.add(msg_row)
 
                 # 3. Likers (who and how many posts they liked)
-                for username, like_count in likers_map.items():
+                for username, like_count in liked_map.items():
                     db.session.add(
-                        MetaLikersModel(
+                        MetaLikedModel(
                             meta         = meta,
-                            liker_name   = username,
+                            liked_name   = username,
                             number_likes = like_count
+                        )
+                    )
+
+                # 4. Top 5 receivers
+                for user in top_5_receivers:
+                    db.session.add(
+                        MetaTopFiveReceiverModel(
+                            meta = meta,
+                            username = user
+                        )
+                    )
+
+                # 5. Top 5 sender
+                for user in top_5_senders:
+                    db.session.add(
+                        MetaTopFiveSenderModel(
+                            meta = meta,
+                            username = user
                         )
                     )
                 

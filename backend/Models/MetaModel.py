@@ -32,13 +32,25 @@ class MetaModel(db.Model):
         cascade = "all, delete-orphan"
     )
 
-    likers = db.relationship(
-        "MetaLikersModel",
+    liked = db.relationship(
+        "MetaLikedModel",
         back_populates = "meta",
         cascade = "all, delete-orphan"
     )
 
     messages = db.relationship(
+        "MetaMessagesModel",
+        back_populates = "meta",
+        cascade = "all, delete-orphan"
+    )
+
+    top_five_receiver = db.relationship(
+        "MetaMessagesModel",
+        back_populates = "meta",
+        cascade = "all, delete-orphan"
+    )
+
+    top_five_sender = db.relationship(
         "MetaMessagesModel",
         back_populates = "meta",
         cascade = "all, delete-orphan"
