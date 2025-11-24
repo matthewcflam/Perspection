@@ -20,7 +20,7 @@ const InstagramUpload = ({ onUploadComplete, analytics }) => {
           <ul className="list-disc list-inside">
             <li>Total messages: {analytics?.totalMessages ?? "—"}</li>
             <li>Unique chats: {analytics?.uniqueChats ?? "—"}</li>
-          </ul>
+          </ul> 
         </div>
       ),
     },
