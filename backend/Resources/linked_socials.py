@@ -57,8 +57,8 @@ class LinkSocials(MethodView):
                 processed_data = p.InstagramParser(data_root)
                 followers = processed_data.followers() # Integer
                 following = processed_data.following() # Integer
-                liked_map = processed_data.get_top_5_users() # Hashmap of most liked : like count
-                messages_map = processed_data.get_top_5_user_msg()   # Hashmap of user : List(String)
+                liked_tup = processed_data.get_top_5_users() # Hashmap of most liked : like count
+                messages_map = processed_data.get_recent_messages() # Hashmap of user : List(String)
                 not_following_back = processed_data.get_following_only() # List(String)
                 top_5_receivers = processed_data.get_top_5_user_recievers() # List(String)
                 top_5_senders = processed_data.get_top_5_user_msg() # List(String)
@@ -94,7 +94,7 @@ class LinkSocials(MethodView):
                     db.session.add(msg_row)
 
                 # 3. Likers (who and how many posts they liked)
-                for username, like_count in liked_map.items():
+                for username, like_count in liked_tup:
                     db.session.add(
                         MetaLikedModel(
                             meta         = meta,
@@ -142,4 +142,6 @@ class LinkSocials(MethodView):
         except Exception as e:
             db.session.rollback()
             abort(500, message = f"Unexpected error occurred: {e}")
+
+
 
