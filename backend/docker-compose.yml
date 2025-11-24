@@ -4,7 +4,9 @@ services:
     ports:
       - "5001:5000"
     env_file:
-      - .flaskenv  # Pull from environment file
+      - .flaskenv
+    volumes:
+      - .:/app        # <-- Mount your backend source code into the container
     depends_on:
       - db
 
