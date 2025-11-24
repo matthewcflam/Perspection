@@ -20,15 +20,16 @@ def main():
 
     personal_name = ig._extract_personal_name()  # same as before
 
-    followers = ig.followers
-    following = ig.following
-    follow_requests = ig.follow_requests
-    unfollowed = ig.unfollowed
-    close_friends = ig.close_friends
+    follow_requests = ig.get_follow_req()
+    unfollowed = ig.get_unfollowed()
+    close_friends = ig.get_close_friends()
 
+    followers = ig.get_follower_count()
+    following = ig.get_following_count()
     mutuals = ig.get_mutuals()
     only_followers = ig.get_followers_only()
     only_following = ig.get_following_only()
+    list_not_following_back = ig.get_only_following()
 
     total_liked_posts = ig.get_total_liked_posts()
     top_liked_users = ig.get_top_5_users()
@@ -44,15 +45,15 @@ def main():
 
     print("\n--- Basic stats ---")
     print(f"Name: {personal_name}")
-    print(f"Followers: {len(followers)}")
-    print(f"Following: {len(following)}")
-    print(f"Recent Follow Requests: {len(follow_requests)}")
-    print(f"Recent Unfollowed Accounts: {len(unfollowed)}")
-    print(f"Close friends: {len(close_friends)}")
+    print(f"Followers: {followers}")
+    print(f"Following: {following}")
+    print(f"Recent Follow Requests: {follow_requests}")
+    print(f"Recent Unfollowed Accounts: {unfollowed}")
+    print(f"Close friends: {close_friends}")
     print(f"Liked Posts: {total_liked_posts}")
     print(f"Liked Stories: {total_liked_stories}")
     print(f"Top Liked User Posts: {top_liked_users}")
-    print(f"Mutuals:   {len(mutuals)}")
+    print(f"Mutuals:   {mutuals}")
     print(f"Total Messages Sent: {total_messages}")
     print(f"Top Users You are Messaging: {top_messaged_recievers}")
     print(f"Top Users Messaging You: {top_messaged_users}")
@@ -60,15 +61,9 @@ def main():
     print(f"Time Spent After Midnight: {minutes_after_midnight}")
     print(f"Top Users Texting After Midnight: {top_late_messegers}")
     print(f"Total Reels Sent: {total_reels_sent}")
-    print(f"Only following (they don't follow you back): {len(only_following)}")
-    print(f"Only followers (you don't follow them back):  {len(only_followers)}")
-
-    show_n = 10
-
-    if only_following:
-        print(f"\nFirst {show_n} accounts you follow that don't follow you back:")
-        for username in list(sorted(only_following))[:show_n]:
-            print("  -", username)
+    print(f"Only following (they don't follow you back): {only_following}")
+    print(f"Only followers (you don't follow them back):  {only_followers}")
+    print(f"People that don't follow you back:  {list_not_following_back}")
 
 
 if __name__ == "__main__":

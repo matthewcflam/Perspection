@@ -509,13 +509,37 @@ class InstagramParser:
         self.load_followers()
         self.load_following()
 
-    # Comparison methods (same names)
+    # Comparison methods
+    def get_follower_count(self) -> int:
+        return len(self.followers)
+    
+    def get_following_count(self) -> int:
+        return len(self.following)
 
-    def get_mutuals(self) -> set[str]:
-        return self.followers & self.following
+    def get_mutuals(self) -> int:
+        return len(self.followers & self.following)
 
-    def get_following_only(self) -> set[str]:
-        return self.following - self.followers
+    def get_following_only(self) -> int:
+        return len(self.following - self.followers)
 
-    def get_followers_only(self) -> set[str]:
-        return self.followers - self.following
+    def get_followers_only(self) -> int:
+        return len(self.followers - self.following)
+    
+    def get_follow_req(self) -> int:
+        return len(self.follow_requests)
+    
+    def get_unfollowed(self) -> int:
+        return len(self.unfollowed)
+    
+    def get_close_friends(self) -> int:
+        return len(self.close_friends)
+    
+    def get_only_following(self) -> set[str]:
+
+        SHOW_N = 5
+
+        if not self.following - self.followers:
+            return set()
+
+        return set(list(sorted(self.following - self.followers))[:SHOW_N])
+
