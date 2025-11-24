@@ -16,7 +16,7 @@ class MetaMessagesModel(db.Model):
         back_populates = "messages"
     )
 
-    other_username = db.Column(db.String(30), nullable = False)
+    username = db.Column(db.String(30), nullable = False)
 
     # Store messages as list
     messages = db.Column(db.JSON, default = list)

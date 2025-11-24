@@ -22,7 +22,7 @@ class MetaModel(db.Model):
     name = db.Column(db.String(100), nullable = False)
 
     # Follower and following count
-    followers_count = db.Coolumn(db.Integer, nullable = False, default = 0)
+    followers_count = db.Column(db.Integer, nullable = False, default = 0)
     following_count = db.Column(db.Integer, nullable = False, default = 0)
 
     # Children

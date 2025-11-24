@@ -1,14 +1,18 @@
+'''
+This is in charge of linking / unlinking accounts to this user
+'''
+
 from flask.views import MethodView
 # Blueprint divides APIs into segments
 from flask_smorest import Blueprint, abort
 # Access tokens for user authentication
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, get_jwt
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 from DataBase import db
 from schemas import PlainLinkedSocialSchema, LinkedSocialViewSchema
 from Models import UserModel, LinkedSocialsModel, MetaModel, MetaMessagesModel, MetaNotFollowingBackModel, MetaLikedModel
-from Models import GoogleModel, YoutubeLikedModel, YoutubeSubscribedModel, YoutubeWatchedModel, MetaTopFiveReceiverModel, MetaTopFiveSenderModel
+from Models import GoogleModel, MetaTopFiveReceiverModel, MetaTopFiveSenderModel
 import data_collection.insta_parser as p
 
 blp = Blueprint("linked_socials", __name__, description = "Operations on linked social media accounts")
@@ -125,7 +129,7 @@ class LinkSocials(MethodView):
 
             # Google
             else:
-                # If not meta account linked
+                # If Google account linked, reject
                 if linked_socials.google:
                     abort(409, message = "Google account already linked")
             
@@ -138,10 +142,53 @@ class LinkSocials(MethodView):
         except SQLAlchemyError:
             db.session.rollback()
             abort(400, message = "Database error while saving account data")
-        # Otherwise print generic error message with the root
-        except Exception as e:
-            db.session.rollback()
-            abort(500, message = f"Unexpected error occurred: {e}")
 
+# Unlink Meta account
+@blp.route("/unlink/meta")
+class UnlinkSocials(MethodView):
 
+    @jwt_required()
+    @blp.response(204)
+    def delete(self):
+        current_user_id = get_jwt_identity()
+        
+        # Delete the only Meta instance belonging to this user
+        meta = (
+            MetaModel.query
+            .join(MetaModel.linked_socials)
+            .filter(LinkedSocialsModel.user_id == current_user_id)
+            .first()
+        )
 
+        if meta is None:
+            abort(404, message = "No linked Meta account found")
+
+        db.session.delete(meta)
+        db.session.commit()
+
+        return "Meta account successfully unlinked"
+    
+# Unlink Google account
+@blp.route("/unlink/google")
+class UnlinkSocials(MethodView):
+
+    @jwt_required()
+    @blp.response(204)
+    def delete(self):
+        current_user_id = get_jwt_identity()
+        
+        # Delete the only Google instance belonging to this user
+        google = (
+            GoogleModel.query
+            .join(GoogleModel.linked_socials)
+            .filter(LinkedSocialsModel.user_id == current_user_id)
+            .first()
+        )
+
+        if google is None:
+            abort(404, message = "No linked Google account found")
+
+        db.session.delete(google)
+        db.session.commit()
+
+        return "Google account successfully unlinked"
