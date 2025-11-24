@@ -1,6 +1,6 @@
 from DataBase import db
 
-class MetaTopFiveReceiverModel(db.Model):
+class MetaTopFiveSenderModel(db.Model):
     __tablename__ = "meta_top_five_sender"
 
     id = db.Column(db.Integer, primary_key = True)

@@ -8,8 +8,8 @@ from Models.GoogleModel import GoogleModel
 from Models.MetaNotFollowingBackModel import MetaNotFollowingBackModel
 from Models.MetaLikedModel import MetaLikedModel
 from Models.MetaMessagesModel import MetaMessagesModel
-from Models.MetaTopFiveReceivedModel import MetaTopFiveReceiverModel
-from Models.MetaTopFiveSenderModel import MetaTopFiveReceiverModel
+from Models.MetaTopFiveSenderModel import MetaTopFiveSenderModel
+from Models.MetaTopFiveReceivedModel import MetaTopFiveReceivedModel
 from Models.YoutubeSubscribedModel import YoutubeSubscribedModel
 from Models.YoutubeWatchedModel import YoutubeWatchedModel
 from Models.YoutubeLikedModel import YoutubeLikedModel

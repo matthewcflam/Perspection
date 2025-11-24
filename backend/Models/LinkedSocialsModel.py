@@ -32,5 +32,5 @@ class LinkedSocialsModel(db.Model):
         "GoogleModel",
         back_populates = "linked_socials",
         uselist = False,
-        cascade = "all delete-orphan"
+        cascade = "all, delete-orphan"
     )

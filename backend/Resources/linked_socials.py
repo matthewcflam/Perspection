@@ -12,7 +12,7 @@ from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from DataBase import db
 from schemas import PlainLinkedSocialSchema, LinkedSocialViewSchema
 from Models import UserModel, LinkedSocialsModel, MetaModel, MetaMessagesModel, MetaNotFollowingBackModel, MetaLikedModel
-from Models import GoogleModel, MetaTopFiveReceiverModel, MetaTopFiveSenderModel
+from Models import GoogleModel, MetaTopFiveSenderModel
 import data_collection.insta_parser as p
 
 blp = Blueprint("linked_socials", __name__, description = "Operations on linked social media accounts")
@@ -61,10 +61,10 @@ class LinkSocials(MethodView):
                 processed_data = p.InstagramParser(data_root)
                 followers = processed_data.followers() # Integer
                 following = processed_data.following() # Integer
-                liked_tup = processed_data.get_top_5_users() # Hashmap of most liked : like count
+                liked_tup = processed_data.get_top_5_users() # Tuple of (most liked, like count)
                 messages_map = processed_data.get_recent_messages() # Hashmap of user : List(String)
-                not_following_back = processed_data.get_following_only() # List(String)
-                top_5_receivers = processed_data.get_top_5_user_recievers() # List(String)
+                not_following_back = processed_data.get_following_only() # List((String, int))
+                top_5_receivers = processed_data.get_top_5_user_recievers() # List((String, int))
                 top_5_senders = processed_data.get_top_5_user_msg() # List(String)
 
                 # Meta name, linked socials, follower count, following count
@@ -108,7 +108,7 @@ class LinkSocials(MethodView):
                     )
 
                 # 4. Top 5 receivers
-                for user in top_5_receivers:
+                for user, _ in top_5_receivers:
                     db.session.add(
                         MetaTopFiveReceiverModel(
                             meta = meta,
@@ -117,7 +117,7 @@ class LinkSocials(MethodView):
                     )
 
                 # 5. Top 5 sender
-                for user in top_5_senders:
+                for user, _ in top_5_senders:
                     db.session.add(
                         MetaTopFiveSenderModel(
                             meta = meta,

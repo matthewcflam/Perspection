@@ -45,13 +45,13 @@ class MetaModel(db.Model):
     )
 
     top_five_receiver = db.relationship(
-        "MetaMessagesModel",
+        "MetaTopFiveReceivedModel",
         back_populates = "meta",
         cascade = "all, delete-orphan"
     )
 
     top_five_sender = db.relationship(
-        "MetaMessagesModel",
+        "MetaTopFiveSenderModel",
         back_populates = "meta",
         cascade = "all, delete-orphan"
     )

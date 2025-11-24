@@ -45,6 +45,16 @@ class PlainMetaSchema(Schema):
     following_count = fields.Int(dump_only = True)
 
 # --- Specific Meta metrics ---
+class MetaTopFiveReceivedSchema(Schema):
+    id = fields.Int(dump_only = True)
+
+    username = fields.Str(dump_only = True)
+
+class MetaTopFiveSenderSchema(Schema):
+    id = fields.Int(dump_only = True)
+
+    username = fields.Str(dump_only = True)
+
 class MetaNotFollowingBackSchema(Schema):
     id = fields.Int(dump_only = True)
 
@@ -76,7 +86,7 @@ class MetaViewSchema(PlainMetaSchema):
     )
 
     top_five_receiver = fields.List(
-        fields.Nested("MetaTopFiveReceiverSchema"),
+        fields.Nested("MetaTopFiveReceivedSchema"),
         dump_only=True
     )
 
@@ -84,3 +94,10 @@ class MetaViewSchema(PlainMetaSchema):
         fields.Nested("MetaTopFiveSenderSchema"),
         dump_only=True
     )
+
+
+# Google specific
+class GoogleViewSchema(Schema):
+    id = fields.Integer(dump_only=True)
+
+    name = fields.String()
