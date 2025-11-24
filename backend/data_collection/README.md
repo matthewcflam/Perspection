@@ -105,7 +105,7 @@ get_top_5_user_late_msg() -> list[tuple[str, str]]  # (username, "HH:MM:SS")
 # Reels
 get_total_reels_sent() -> int
 
-## 6. Internal Helper Methods (optional)
+## 6. Internal Helper Methods
 _extract_personal_name() -> str | None
 _decode_name(s: str | None) -> str | None
 _ts_to_date(ts_ms: int) -> date
