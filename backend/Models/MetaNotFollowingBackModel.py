@@ -1,7 +1,7 @@
 from DataBase import db
 
-class MetaFollowingModel:
-    __tablename__ = "meta_following"
+class MetaNotFollowingBackModel(db.Model):
+    __tablename__ = "meta_not_following_back"
 
     id = db.Column(db.Integer, primary_key = True)
 
@@ -13,9 +13,7 @@ class MetaFollowingModel:
 
     meta = db.relationship(
         "MetaModel",
-        back_populates = "following"
+        back_populates = "not_following_back"
     )
 
-    # Account this Meta user is following
-    following_id = db.Column(db.Integer, nullable = False)
-    following_name = db.Column(db.String(30), nullable = True)
+    username = db.Column(db.String(30), nullable = False)

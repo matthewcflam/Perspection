@@ -1,89 +1,71 @@
-from insta_parser import InstagramConnectionsParser
-from insta_parser import InstagramActivityParser
-from insta_parser import InstagramMessagesParser
-from insta_parser import InstagramParser
+from insta_parser import InstagramParser  # adjust import to your filename
 
-def parse_instagram_export(export_root: str) -> dict:
+def main():
+    export_root = input("Enter path to data folder: ").strip()
 
-    connections = InstagramConnectionsParser(export_root)
-    activity = InstagramActivityParser(export_root)
-    messages = InstagramMessagesParser(export_root)
-    name = InstagramParser(export_root)
+    ig = InstagramParser(export_root)
 
-    # Load all datasets
-    connections.load_followers_and_following()
-    connections.load_close_friends()
-    connections.load_follow_requests()
-    connections.load_unfollowed()
+    # Connections
+    ig.load_followers_and_following()
+    ig.load_close_friends()
+    ig.load_follow_requests()
+    ig.load_unfollowed()
 
-    activity.load_liked_posts()
-    activity.load_liked_stories()
+    # Activity
+    ig.load_liked_posts()
+    ig.load_liked_stories()
 
-    messages.load_all_messages()
+    # Messages
+    ig.load_all_messages()
 
-    # Extract data
-    personal_name = name._extract_personal_name()
-    followers = connections.followers
-    following = connections.following
-    follow_requests = connections.follow_requests
-    unfollowed = connections.unfollowed
-    close_friends = connections.close_friends
+    personal_name = ig._extract_personal_name()  # same as before
 
-    mutuals = connections.get_mutuals()
-    only_followers = connections.get_followers_only()
-    only_following = connections.get_following_only()
+    follow_requests = ig.get_follow_req()
+    unfollowed = ig.get_unfollowed()
+    close_friends = ig.get_close_friends()
 
-    total_liked_posts = activity.get_total_liked_posts()
-    top_liked_users = activity.get_top_5_users()
-    total_liked_stories = activity.get_total_liked_stories()
+    followers = ig.get_follower_count()
+    following = ig.get_following_count()
+    mutuals = ig.get_mutuals()
+    only_followers = ig.get_followers_only()
+    only_following = ig.get_following_only()
+    list_not_following_back = ig.get_only_following()
 
-    total_messages = messages.get_total_msg_sent()
-    top_messaged_recievers = messages.get_top_5_user_recievers()
-    top_messaged_users = messages.get_top_5_user_msg()
-    top_streaks = messages.get_top_3_dm_streaks()
-    minutes_after_midnight = messages.get_after_midnight_sent()
-    top_late_messegers = messages.get_top_5_user_late_msg()
-    total_reels_sent = messages.get_total_reels_sent()
+    total_liked_posts = ig.get_total_liked_posts()
+    top_liked_users = ig.get_top_5_users()
+    total_liked_stories = ig.get_total_liked_stories()
 
-    # Return as a structured dict for JSON
-    return {
-        "basic": {
-            "name": personal_name,
-            "followers": len(followers),
-            "following": len(following),
-            "followRequests": len(follow_requests),
-            "unfollowed": len(unfollowed),
-            "closeFriends": len(close_friends),
-        },
-        "activity": {
-            "likedPosts": total_liked_posts,
-            "likedStories": total_liked_stories,
-            "topLikedUsers": top_liked_users,
-        },
-        "messages": {
-            "totalMessages": total_messages,
-            "topMessagedReceivers": top_messaged_recievers,
-            "topMessagedUsers": top_messaged_users,
-            "topStreaks": top_streaks,
-            "afterMidnightMinutes": minutes_after_midnight,
-            "topLateMessagers": top_late_messegers,
-            "totalReelsSent": total_reels_sent,
-        },
-        "relations": {
-            "mutuals": len(mutuals),
-            "onlyFollowers": len(only_followers),
-            "onlyFollowing": len(only_following),
-        }
-    }
+    total_messages = ig.get_total_msg_sent()
+    top_messaged_recievers = ig.get_top_5_user_recievers()
+    top_messaged_users = ig.get_top_5_user_msg()
+    top_streaks = ig.get_top_3_dm_streaks()
+    minutes_after_midnight = ig.get_after_midnight_sent()
+    top_late_messegers = ig.get_top_5_user_late_msg()
+    recent_messages = ig.get_recent_messages()
+    total_reels_sent = ig.get_total_reels_sent()
 
-# Keeps CLI behavior for testing
+    print("\n--- Basic stats ---")
+    print(f"Name: {personal_name}")
+    print(f"Followers: {followers}")
+    print(f"Following: {following}")
+    print(f"Recent Follow Requests: {follow_requests}")
+    print(f"Recent Unfollowed Accounts: {unfollowed}")
+    print(f"Close friends: {close_friends}")
+    print(f"Liked Posts: {total_liked_posts}")
+    print(f"Liked Stories: {total_liked_stories}")
+    print(f"Top Liked User Posts: {top_liked_users}")
+    print(f"Mutuals:   {mutuals}")
+    print(f"Total Messages Sent: {total_messages}")
+    print(f"Top Users You are Messaging: {top_messaged_recievers}")
+    print(f"Top Users Messaging You: {top_messaged_users}")
+    print(f"Top Streaks with Users: {top_streaks}")
+    print(f"Time Spent After Midnight: {minutes_after_midnight}")
+    print(f"Top Users Texting After Midnight: {top_late_messegers}")
+    print(f"Total Reels Sent: {total_reels_sent}")
+    print(f"Only following (they don't follow you back): {only_following}")
+    print(f"Only followers (you don't follow them back):  {only_followers}")
+    print(f"People that don't follow you back:  {list_not_following_back}")
+    print(f"Your recent direct messages: {recent_messages}")
+
 if __name__ == "__main__":
-    import sys
-    if len(sys.argv) < 2:
-        export_root = input("Enter path to data folder: ").strip()
-    else:
-        export_root = sys.argv[1]
-
-    stats = parse_instagram_export(export_root)
-    import json
-    print(json.dumps(stats, indent=2))
+    main()

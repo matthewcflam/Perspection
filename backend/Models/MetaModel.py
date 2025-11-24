@@ -21,27 +21,37 @@ class MetaModel(db.Model):
     # Meta username
     name = db.Column(db.String(100), nullable = False)
 
+    # Follower and following count
+    followers_count = db.Column(db.Integer, nullable = False, default = 0)
+    following_count = db.Column(db.Integer, nullable = False, default = 0)
+
     # Children
-    followers = db.relationship(
-        "MetaFollowersModel",
-        back_populates = "meta",
-        cascade = "all, delete-orphan"
-    )
-
-    following = db.relationship(
-        "MetaFollowersModel",
-        back_populates = "meta",
-        cascade = "all, delete-orphan"
-    )
-
-    likers = db.relationship(
-        "MetaLikersModel",
+    not_following_back = db.relationship(
+        "MetaNotFollowingBackModel",
         back_populates = "meta",
         cascade = "all, delete-orphan"
     )
 
     liked = db.relationship(
         "MetaLikedModel",
+        back_populates = "meta",
+        cascade = "all, delete-orphan"
+    )
+
+    messages = db.relationship(
+        "MetaMessagesModel",
+        back_populates = "meta",
+        cascade = "all, delete-orphan"
+    )
+
+    top_five_receiver = db.relationship(
+        "MetaTopFiveReceivedModel",
+        back_populates = "meta",
+        cascade = "all, delete-orphan"
+    )
+
+    top_five_sender = db.relationship(
+        "MetaTopFiveSenderModel",
         back_populates = "meta",
         cascade = "all, delete-orphan"
     )

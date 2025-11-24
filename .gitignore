@@ -28,3 +28,8 @@ dist-ssr
 
 # Google Token 
 token.json
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3

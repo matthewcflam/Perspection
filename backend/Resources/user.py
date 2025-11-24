@@ -1,3 +1,7 @@
+'''
+Creating users, logging in, logging out, and deleting users
+'''
+
 from flask.views import MethodView
 # Blueprint divides APIs into segments
 from flask_smorest import Blueprint, abort

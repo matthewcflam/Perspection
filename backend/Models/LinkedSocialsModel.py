@@ -32,13 +32,5 @@ class LinkedSocialsModel(db.Model):
         "GoogleModel",
         back_populates = "linked_socials",
         uselist = False,
-        cascade = "all delete-orphan"
-    )
-
-    # Spotify account
-    spotify = db.relationship(
-        "SpotifyModel",
-        back_populates = "linked_socials",
-        uselist = False,
-        cascade = "all delete-orphan"
+        cascade = "all, delete-orphan"
     )

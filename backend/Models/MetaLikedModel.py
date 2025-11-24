@@ -16,7 +16,8 @@ class MetaLikedModel(db.Model):
         back_populates = "liked"
     )
 
-    # Posts you liked
-    liked_id = db.Column(db.Integer, nullable = False)
-    # Post identifier
-    liked_identifier = db.Column(db.String(30), nullable = True)
+    # Who you liked
+    liked_name = db.Column(db.String(30), nullable = False)
+
+    # Number of posts you liked
+    number_likes = db.Column(db.Integer, nullable = False, default = 0)
