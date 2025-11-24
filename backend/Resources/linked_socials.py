@@ -12,7 +12,7 @@ from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from DataBase import db
 from schemas import PlainLinkedSocialSchema, LinkedSocialViewSchema
 from Models import UserModel, LinkedSocialsModel, MetaModel, MetaMessagesModel, MetaNotFollowingBackModel, MetaLikedModel
-from Models import GoogleModel, MetaTopFiveSenderModel
+from Models import GoogleModel, MetaTopFiveSenderModel, MetaTopFiveReceivedModel
 import data_collection.insta_parser as p
 
 blp = Blueprint("linked_socials", __name__, description = "Operations on linked social media accounts")
@@ -110,7 +110,7 @@ class LinkSocials(MethodView):
                 # 4. Top 5 receivers
                 for user, _ in top_5_receivers:
                     db.session.add(
-                        MetaTopFiveReceiverModel(
+                        MetaTopFiveReceivedModel(
                             meta = meta,
                             username = user
                         )

@@ -12,7 +12,7 @@ from flask_smorest import Api
 
 from DataBase import db
 
-# .[file] should match resource names. Will update once endpoints are setup
+# .[file] should match resource names. Will finalize once endpoints are setup
 from Resources.user import blp as UserBlueprint
 from Resources.linked_socials import blp as LinkedSocialsBlueprint
 from Resources.meta import blp as MetaBlueprint

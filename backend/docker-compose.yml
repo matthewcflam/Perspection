@@ -1,0 +1,23 @@
+services:
+  backend:
+    build: .
+    ports:
+      - "5001:5000"
+    env_file:
+      - .flaskenv  # Pull from environment file
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: alderuser
+      POSTGRES_PASSWORD: alderpass
+      POSTGRES_DB: alderdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
