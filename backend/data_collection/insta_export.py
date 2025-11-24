@@ -41,6 +41,7 @@ def main():
     top_streaks = ig.get_top_3_dm_streaks()
     minutes_after_midnight = ig.get_after_midnight_sent()
     top_late_messegers = ig.get_top_5_user_late_msg()
+    recent_messages = ig.get_recent_messages()
     total_reels_sent = ig.get_total_reels_sent()
 
     print("\n--- Basic stats ---")
@@ -64,7 +65,7 @@ def main():
     print(f"Only following (they don't follow you back): {only_following}")
     print(f"Only followers (you don't follow them back):  {only_followers}")
     print(f"People that don't follow you back:  {list_not_following_back}")
-
+    print(f"Your recent direct messages: {recent_messages}")
 
 if __name__ == "__main__":
     main()

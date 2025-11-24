@@ -27,6 +27,7 @@ class InstagramParser:
         self.after_midnight_times = []
         self.late_msg_by_user = {}
         self.total_reels_sent = 0
+        self.recent_messages: dict[str, list[str]] = {}
 
         # === Activity-related ===
         self.liked_posts_path = (
@@ -158,6 +159,7 @@ class InstagramParser:
         after_midnight_times = []
         late_msg_by_user = {}
         total_reels_sent = 0
+        messages_by_other: dict[str, list[tuple[int, str]]] = {}
 
         if not self.messages_path.exists():
             raise FileNotFoundError(f"File not found: {self.messages_path}")
@@ -214,6 +216,10 @@ class InstagramParser:
                                 if 0 <= dt.hour < 5:
                                     after_midnight_times.append(dt)
                                     late_msg_by_user.setdefault(other, []).append(dt)
+                                    
+                    if isinstance(content, str) and isinstance(timestamp_ms, int) and len(participants) == 2:
+                            bucket = messages_by_other.setdefault(other, [])
+                            bucket.append((timestamp_ms, content))
 
                     if sender != self.username and sender and len(participants) == 2:
                         top_msg_users[sender] = top_msg_users.get(sender, 0) + 1
@@ -231,6 +237,29 @@ class InstagramParser:
 
                     if sender == self.username and is_reel:
                         total_reels_sent += 1
+                        
+        recent_messages: dict[str, list[str]] = {}
+
+        NUM_USERS = 10
+        NUM_MSGS_PER_USER = 5
+
+        last_ts_by_other: dict[str, int] = {}
+        for other, items in messages_by_other.items():
+            last_ts_by_other[other] = max(ts for ts, _ in items)
+
+        # Sort users by recency of that last message (newest first)
+        sorted_others = sorted(
+            last_ts_by_other.items(),
+            key=lambda kv: kv[1],
+            reverse=True,
+        )[:NUM_USERS]
+        
+        for other, _ in sorted_others:
+            items = messages_by_other[other]
+            # sort that conversation newest -> oldest
+            items.sort(key=lambda x: x[0], reverse=True)
+            # keep the top 5 contents
+            recent_messages[other] = [content for _, content in items[:NUM_MSGS_PER_USER]]
 
         self.messages = all_messages
         self.total_msg_sent = total_sent
@@ -240,6 +269,7 @@ class InstagramParser:
         self.after_midnight_times = after_midnight_times
         self.late_msg_by_user = late_msg_by_user
         self.total_reels_sent = total_reels_sent
+        self.recent_messages = recent_messages
 
     # Message Statistics (same names)
 
@@ -543,3 +573,5 @@ class InstagramParser:
 
         return set(list(sorted(self.following - self.followers))[:SHOW_N])
 
+    def get_recent_messages(self) -> dict[str, list[str]]:
+        return self.recent_messages
