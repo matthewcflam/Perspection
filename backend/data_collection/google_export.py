@@ -51,9 +51,11 @@ def main():
 
 
     print("\nGmail:")
+    print("\n5 most recent messages:")
     for m in client.gmail.list_inbox():
         print(m)
         
+    print("\nMost recieved emails by sender:")
     for sender, count in client.gmail.top_senders(messages_limit=1000, top_n=5):
         print(sender, count)
 
