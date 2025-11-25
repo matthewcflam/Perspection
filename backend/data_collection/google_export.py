@@ -2,7 +2,7 @@ from google_client import GoogleClient
 
 def main():
     client = GoogleClient(
-        creds_path="data_collection/credentials.json",
+        creds_path="credentials.json",
         token_path="token.json"
     )
 
@@ -37,8 +37,6 @@ def main():
     else:
         print("No liked videos found in that time period.")
 
-   
-   
     top_creators = client.youtube.get_most_liked_creators(
     start_date="2023-03-15T00:00:00Z",
     end_date="2025-11-15T23:59:59Z"
@@ -52,12 +50,13 @@ def main():
         print("Could not find any liked videos to analyze in that period")
 
 
-
     print("\nGmail:")
     for m in client.gmail.list_inbox():
         print(m)
+        
+    for sender, count in client.gmail.top_senders(messages_limit=1000, top_n=5):
+        print(sender, count)
 
-    
 
 if __name__ == "__main__":
     main()

@@ -1,7 +1,10 @@
 # data_collection/google_client.py
 from __future__ import annotations
 
+from collections import Counter
+from email.utils import parseaddr
 from pathlib import Path
+
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
@@ -303,3 +306,52 @@ class GmailClient:
             )
 
         return out
+
+    def top_senders(self, messages_limit: int = 500, top_n: int = 5):
+
+        service = self.service
+        senders = Counter()
+        remaining = messages_limit
+        page_token = None
+
+        while remaining > 0:
+            batch_size = min(remaining, 100)
+            resp = service.users().messages().list(
+                userId="me",
+                labelIds=["INBOX"],
+                maxResults=batch_size,
+                pageToken=page_token,
+            ).execute()
+
+            msgs = resp.get("messages", [])
+            if not msgs:
+                break
+
+            for msg in msgs:
+                detail = service.users().messages().get(
+                    userId="me",
+                    id=msg["id"],
+                    format="metadata",
+                    metadataHeaders=["From"],
+                ).execute()
+
+                headers = {
+                    h["name"]: h["value"]
+                    for h in detail["payload"]["headers"]
+                }
+                raw_from = headers.get("From", "")
+                # "Name <email@domain>" -> ("Name", "email@domain")
+                _name, email_addr = parseaddr(raw_from)
+
+                if email_addr:
+                    senders[email_addr] += 1
+                else:
+                    if raw_from:
+                        senders[raw_from] += 1
+
+            remaining -= len(msgs)
+            page_token = resp.get("nextPageToken")
+            if not page_token:
+                break
+
+        return senders.most_common(top_n)
