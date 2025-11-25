@@ -95,6 +95,73 @@ class MetaViewSchema(PlainMetaSchema):
         dump_only=True
     )
 
+#Youtube specificfrom marshmallow import Schema, fields, validate
+
+class PlainSubscribedYoutubeChannel(Schema):
+    id = fields.Int(dump_only=True)
+    channel_id = fields.Str(required=True)
+    title = fields.Str(required=True, validate=validate.Length(max=200))
+    subscriber_count = fields.Str(dump_only=True)  # Keep this one
+
+class PlainLikedVideoSchema(Schema):
+    id = fields.Int(dump_only=True)               # optional DB id
+    video_id = fields.Str(required=True)
+    title = fields.Str(required=True)
+    liked_at = fields.DateTime(required=True)     # stores timestamp like "2024-06-19T06:50:18Z"
+
+class PlainLikedPerChannel(Schema):
+    id = fields.Int(dump_only=True)                
+    channel_name = fields.Str(required=True)         
+    liked_videos_count = fields.Int(required=True)   
+# ─── SPECIFIC METRICS (like MetaTopFiveXxx) ──────────────────────────
+
+class MostSubscribedChannelSchema(PlainSubscribedYoutubeChannel):
+    pass  
+
+
+class MostNicheChannelSchema(PlainSubscribedYoutubeChannel):
+    
+    pass
+
+
+class TopLikedCreatorSchema(PlainLikedPerChannel):
+    pass
+    # Could extend with: avg_likes_per_video, first_liked_date, etc.
+
+
+class LikedVideoViewSchema(PlainLikedVideoSchema):
+    pass
+
+# ─── MASTER YOUTUBE VIEW SCHEMA (your /youtube/metrics endpoint) ─────
+
+class YouTubeViewSchema(Schema):
+    # Core user-level metrics
+    total_subscriptions = fields.Int(dump_only=True)
+    total_liked_videos = fields.Int(dump_only=True)
+
+    # Top channels (single objects)
+    most_subscribed_channel = fields.Nested(
+        MostSubscribedChannelSchema,
+        dump_only=True,
+        allow_none=True
+    )
+    most_niche_channel = fields.Nested(
+        MostNicheChannelSchema,
+        dump_only=True,
+        allow_none=True
+    )
+
+    top_liked_creators = fields.List(
+        fields.Nested(TopLikedCreatorSchema),
+        dump_only=True
+    )
+
+    liked_videos = fields.List(
+        fields.Nested(LikedVideoViewSchema),
+        dump_only=True
+    )
+
+
 
 # Google specific
 class GoogleViewSchema(Schema):
