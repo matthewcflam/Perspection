@@ -84,13 +84,16 @@
 
   //   setInstaAnalytics(data.stats);
   // };
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 
 //YOU ONLY NEED TO IMPORT THE PAGES
 import LandingPage from './pages/LandingPage';
 import MainPage from './pages/MainPage';
+import whitefullscreenIcon from './assets/finalwhiteFS.png';
+
 
 const App = () => {
+  const appRef = useRef(null);
   const [stage, setStage] = useState("landing"); 
   // 'landing' | 'loading-expand' | 'main'
 
@@ -104,10 +107,47 @@ const App = () => {
   };
   
 
+//   return (
+//     <>
+//       <div className='w-full h-screen relative flex justify-center items-center bg-black'>
+//         {stage === "landing" && ( 
+//           // INITIAL STAGE = LANDING 
+//           <LandingPage onDone={handleFinishedProcessing} />
+//         )}
+
+//         {stage === "loading-expand" && (
+//           <div className="fixed inset-0 flex items-center justify-center bg-black z-[9999]">
+//             {/* Fullscreen expand animation component */}
+//           </div>
+//         )}
+
+//         {stage === "main" && <MainPage />}
+//       </div>
+//     </>
+//   );
+// };
+
   return (
-    <>
-      <div className='w-full h-screen relative flex justify-center items-center bg-black'>
-        {stage === "landing" && ( 
+    <div ref={appRef} className="w-full h-screen bg-black flex items-center justify-center relative">
+      <button
+        onClick={() => {
+          if (appRef.current) {
+            if (document.fullscreenElement) {
+              document.exitFullscreen();
+            } else {
+              appRef.current.requestFullscreen();
+            }
+          }
+        }}
+        className="absolute top-4 right-4 z-50 px-3 py-2 text-white rounded-lg hover:bg-black/40 transition"
+      >
+        <img
+          src ={whitefullscreenIcon}
+          className="h-7 w-7 object-contain"
+  />
+      </button>
+
+      {stage === "landing" && ( 
           // INITIAL STAGE = LANDING 
           <LandingPage onDone={handleFinishedProcessing} />
         )}
@@ -119,8 +159,7 @@ const App = () => {
         )}
 
         {stage === "main" && <MainPage />}
-      </div>
-    </>
+    </div>
   );
 };
 
