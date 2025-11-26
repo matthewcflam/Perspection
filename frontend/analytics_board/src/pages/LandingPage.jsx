@@ -6,28 +6,38 @@ import UploadButton from "../components/UploadButton";
 import myVideo from "../assets/finalPerspective.webm"
 
 const LandingPage = ({ onDone }) => {
-  const [file1Loaded, setFile1Loaded] = useState(false);
-  const [file2Loaded, setFile2Loaded] = useState(false);
+    const [file1Loaded, setFile1Loaded] = useState(false);
+    const [file2Loaded, setFile2Loaded] = useState(false);
 
-  const checkAllDone = () => {
-    if (file1Loaded && file2Loaded) {
-      onDone();
-    }
-  };
+    const checkAllDone = () => {
+        if (file1Loaded && file2Loaded) {
+            onDone();
+        }
+    };
 
     return (
         <div className="w-full">
+            
+            {/* <div className="w-full h-screen flex items-center justify-center bg-slate-900" > 
+                <h1 className="text-6xl font-bold text-white drop-shadow-lg" style={{ fontFamily: 'Aileron' }}>
+                        Perspective
+                    </h1>
+            </div> */}
+
             {/* HERO SECTION - Full viewport */}
             <div className="relative w-full h-screen overflow-hidden">
                 <BackgroundAnimation />
 
+                {/* Container for Headline and Upload Buttons */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center space-y-8">
-                    
+
                     <h1 className="text-6xl font-bold text-white drop-shadow-lg" style={{ fontFamily: 'Aileron' }}>
                         Put a spotlight on your data.
                     </h1>
 
+                    {/* Container to put buttons side-by-side */}
                     <div className="flex flex-row gap-8">
+                        {/* Instagram Upload Button */}
                         <UploadButton
                             label="Instagram Data"
                             onFinish={() => {
@@ -35,7 +45,7 @@ const LandingPage = ({ onDone }) => {
                                 checkAllDone();
                             }}
                         />
-
+                        {/* Google Upload Button */}
                         <UploadButton
                             label="Google Data"
                             onFinish={() => {

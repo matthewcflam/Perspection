@@ -37,7 +37,10 @@ const UploadButton = ({ label, onFinish }) => {
 
             {
             loading ? (<div className="animate-spin h-6 w-6 border-4 border-white border-t-transparent rounded-full" />) : 
-                (<SpotlightCard className="h-50 w-60 text-2xl text-white drop-shadow-lg flex items-center justify-center bg-white/5" style={{ fontFamily: 'Aileron' }}spotlightColor="rgba(128, 0, 128, 1)">
+                (<SpotlightCard 
+                    className="h-50 w-60 text-2xl text-white flex items-center justify-center bg-white/5" 
+                    style={{ fontFamily: 'Aileron' }}
+                    spotlightColor="rgba(250, 240, 197, 1)">
                     {label}
                 </SpotlightCard>)
             }
