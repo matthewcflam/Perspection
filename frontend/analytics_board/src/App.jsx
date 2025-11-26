@@ -58,33 +58,33 @@
 //     setInstaAnalytics(fakeStats);
 //   };
 
-  // const handleInstaUploadComplete = async (files) => {
-  //   console.log("Uploading", files.length, "files to backend…");
+// const handleInstaUploadComplete = async (files) => {
+//   console.log("Uploading", files.length, "files to backend…");
 
-  //   const formData = new FormData();
+//   const formData = new FormData();
 
-  //   for (const file of files) {
-  //     // Preserve folder structure
-  //     const relPath = file.webkitRelativePath || file.name;
-  //     formData.append("files", file, relPath);
-  //   }
+//   for (const file of files) {
+//     // Preserve folder structure
+//     const relPath = file.webkitRelativePath || file.name;
+//     formData.append("files", file, relPath);
+//   }
 
-  //   const res = await fetch("/api/upload/instagram", { // TODO: This is the backend path, replace with current implementation
-  //     method: "POST",
-  //     body: formData,
-  //   });
+//   const res = await fetch("/api/upload/instagram", { // TODO: This is the backend path, replace with current implementation
+//     method: "POST",
+//     body: formData,
+//   });
 
-  //   if (!res.ok) {
-  //     console.error("Upload failed!");
-  //     return;
-  //   }
+//   if (!res.ok) {
+//     console.error("Upload failed!");
+//     return;
+//   }
 
-  //   const data = await res.json();   // expects { stats: {...} }
-  //   console.log("Received stats from backend:", data.stats);
+//   const data = await res.json();   // expects { stats: {...} }
+//   console.log("Received stats from backend:", data.stats);
 
-  //   setInstaAnalytics(data.stats);
-  // };
-import React, { useState, useEffect, useRef} from 'react';
+//   setInstaAnalytics(data.stats);
+// };
+import React, { useState, useEffect, useRef } from 'react';
 
 //YOU ONLY NEED TO IMPORT THE PAGES
 import LandingPage from './pages/LandingPage';
@@ -94,7 +94,7 @@ import whitefullscreenIcon from './assets/finalwhiteFS.png';
 
 const App = () => {
   const appRef = useRef(null);
-  const [stage, setStage] = useState("landing"); 
+  const [stage, setStage] = useState("landing");
   // 'landing' | 'loading-expand' | 'main'
 
   const handleFinishedProcessing = () => {
@@ -105,30 +105,32 @@ const App = () => {
       setStage("main");
     }, 1200); // match your framer-motion animation duration
   };
-  
 
-//   return (
-//     <>
-//       <div className='w-full h-screen relative flex justify-center items-center bg-black'>
-//         {stage === "landing" && ( 
-//           // INITIAL STAGE = LANDING 
-//           <LandingPage onDone={handleFinishedProcessing} />
-//         )}
 
-//         {stage === "loading-expand" && (
-//           <div className="fixed inset-0 flex items-center justify-center bg-black z-[9999]">
-//             {/* Fullscreen expand animation component */}
-//           </div>
-//         )}
+  //   return (
+  //     <>
+  //       <div className='w-full h-screen relative flex justify-center items-center bg-black'>
+  //         {stage === "landing" && ( 
+  //           // INITIAL STAGE = LANDING 
+  //           <LandingPage onDone={handleFinishedProcessing} />
+  //         )}
 
-//         {stage === "main" && <MainPage />}
-//       </div>
-//     </>
-//   );
-// };
+  //         {stage === "loading-expand" && (
+  //           <div className="fixed inset-0 flex items-center justify-center bg-black z-[9999]">
+  //             {/* Fullscreen expand animation component */}
+  //           </div>
+  //         )}
+
+  //         {stage === "main" && <MainPage />}
+  //       </div>
+  //     </>
+  //   );
+  // };
 
   return (
     <div ref={appRef} className="w-full h-screen bg-black flex items-center justify-center relative">
+      
+      {/* fullscreen button */}
       <button
         onClick={() => {
           if (appRef.current) {
@@ -142,23 +144,23 @@ const App = () => {
         className="absolute top-4 right-4 z-50 px-3 py-2 text-white rounded-lg hover:bg-black/40 transition"
       >
         <img
-          src ={whitefullscreenIcon}
+          src={whitefullscreenIcon}
           className="h-7 w-7 object-contain"
-  />
+        />
       </button>
 
-      {stage === "landing" && ( 
-          // INITIAL STAGE = LANDING 
-          <LandingPage onDone={handleFinishedProcessing} />
-        )}
+      {stage === "landing" && (
+        // INITIAL STAGE = LANDING 
+        <LandingPage onDone={handleFinishedProcessing} />
+      )}
 
-        {stage === "loading-expand" && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black z-[9999]">
-            {/* Fullscreen expand animation component */}
-          </div>
-        )}
+      {stage === "loading-expand" && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black z-[9999]">
+          {/* Fullscreen expand animation component */}
+        </div>
+      )}
 
-        {stage === "main" && <MainPage />}
+      {stage === "main" && <MainPage />}
     </div>
   );
 };
