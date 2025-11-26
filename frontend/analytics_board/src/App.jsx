@@ -128,10 +128,12 @@ const App = () => {
   // };
 
   return (
-    <div ref={appRef} className="w-full h-screen bg-black flex items-center justify-center relative">
+    //<div ref={appRef} className="w-full h-screen bg-black flex items-center justify-center relative">
       
-      {/* fullscreen button */}
-      <button
+    <div ref={appRef} className="w-full min-h-screen relative">
+      
+      {/* fullscreen button that doesn't completely work */}
+      {/* <button
         onClick={() => {
           if (appRef.current) {
             if (document.fullscreenElement) {
@@ -141,13 +143,13 @@ const App = () => {
             }
           }
         }}
-        className="absolute top-4 right-4 z-50 px-3 py-2 text-white rounded-lg hover:bg-black/40 transition"
+        className="fixed top-4 right-4 z-50 px-3 py-2 text-white rounded-lg hover:bg-black/40 transition"
       >
         <img
           src={whitefullscreenIcon}
           className="h-7 w-7 object-contain"
         />
-      </button>
+      </button> */}
 
       {stage === "landing" && (
         // INITIAL STAGE = LANDING 

@@ -17,43 +17,39 @@ const LandingPage = ({ onDone }) => {
 
     return (
         <div className="w-full">
-            
-            {/* <div className="w-full h-screen flex items-center justify-center bg-slate-900" > 
-                <h1 className="text-6xl font-bold text-white drop-shadow-lg" style={{ fontFamily: 'Aileron' }}>
-                        Perspective
-                    </h1>
-            </div> */}
-
-            {/* HERO SECTION - Full viewport */}
-            <div className="relative w-full h-screen overflow-hidden">
+            {/* SECTION 1: Headline and animation */}
+            <div className="relative w-full h-screen flex items-center justify-center bg-slate-900 overflow-hidden">
                 <BackgroundAnimation />
-
-                {/* Container for Headline and Upload Buttons */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center space-y-8">
-
-                    <h1 className="text-6xl font-bold text-white drop-shadow-lg" style={{ fontFamily: 'Aileron' }}>
+                <div className="absolute inset-0 flex top-1/4 justify-center">
+                    <h1 className="text-6xl font-bold text-white drop-shadow-lg text-center" style={{ fontFamily: 'Aileron' }}>
                         Put a spotlight on your data.
                     </h1>
+                </div>
 
-                    {/* Container to put buttons side-by-side */}
-                    <div className="flex flex-row gap-8">
-                        {/* Instagram Upload Button */}
-                        <UploadButton
-                            label="Instagram Data"
-                            onFinish={() => {
-                                setFile1Loaded(true);
-                                checkAllDone();
-                            }}
-                        />
-                        {/* Google Upload Button */}
-                        <UploadButton
-                            label="Google Data"
-                            onFinish={() => {
-                                setFile2Loaded(true);
-                                checkAllDone();
-                            }}
-                        />
-                    </div>
+                <div className="absolute inset-0 flex top-1/2 justify-center">
+                    <h1 className="italic text-5xl font-bold text-white drop-shadow-lg text-center" style={{ fontFamily: 'aileron' }}>
+                        Introducing
+                    </h1>
+                </div>
+            </div>
+
+            {/* SECTION 2: Upload buttons */}
+            <div className="w-full h-screen flex flex-col items-center justify-center bg-black">
+                <div className="flex flex-row gap-8">
+                    <UploadButton
+                        label="Instagram Data"
+                        onFinish={() => {
+                            setFile1Loaded(true);
+                            checkAllDone();
+                        }}
+                    />
+                    <UploadButton
+                        label="Google Data"
+                        onFinish={() => {
+                            setFile2Loaded(true);
+                            checkAllDone();
+                        }}
+                    />
                 </div>
             </div>
         </div>
