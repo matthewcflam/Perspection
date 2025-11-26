@@ -36,27 +36,27 @@
 
 // export default App;
 
-import { useState } from "react";
-import Board from "./components/Board";
-import WelcomePage from "./components/WelcomePage";
-import GoogleSlide from "./components/GoogleSlide";
-import InstagramUpload from "./components/InstagramUpload";
-import AnimatedWelcome from "./components/AnimatedWelcome";
+// import { useState } from "react";
+// import Board from "./components/Board";
+// import WelcomePage from "./src/pages/WelcomePage";
+// import GoogleSlide from "./src/pages/GoogleSlide";
+// import InstagramUpload from "./pages/InstagramUpload";
+// import AnimatedWelcome from "./components/AnimatedWelcome";
 
-const App = () => {
-  const [instaAnalytics, setInstaAnalytics] = useState(null);
+// const App = () => {
+//   const [instaAnalytics, setInstaAnalytics] = useState(null);
 
-  const handleInstaUploadComplete = (files) => {
-    // TODO: replace with real parsing of Instagram export
-    console.log("Instagram files:", files);
+//   const handleInstaUploadComplete = (files) => {
+//     // TODO: replace with real parsing of Instagram export
+//     console.log("Instagram files:", files);
 
-    const fakeStats = {
-      totalMessages: 9876,
-      uniqueChats: 42,
-    };
+//     const fakeStats = {
+//       totalMessages: 9876,
+//       uniqueChats: 42,
+//     };
 
-    setInstaAnalytics(fakeStats);
-  };
+//     setInstaAnalytics(fakeStats);
+//   };
 
   // const handleInstaUploadComplete = async (files) => {
   //   console.log("Uploading", files.length, "files to backend…");
@@ -84,23 +84,43 @@ const App = () => {
 
   //   setInstaAnalytics(data.stats);
   // };
+import React, { useState, useEffect } from 'react';
+
+//YOU ONLY NEED TO IMPORT THE PAGES
+import LandingPage from './pages/LandingPage';
+import MainPage from './pages/MainPage';
+
+const App = () => {
+  const [stage, setStage] = useState("landing"); 
+  // 'landing' | 'loading-expand' | 'main'
+
+  const handleFinishedProcessing = () => {
+    // Trigger fullscreen expand → then load main page
+    setStage("loading-expand");
+
+    setTimeout(() => {
+      setStage("main");
+    }, 1200); // match your framer-motion animation duration
+  };
+  
 
   return (
-    <div className="min-h-screen w-screen bg-slate-950 text-white">
-      <Board>
-        {/* SLIDE 1 – Welcome */}
-        <AnimatedWelcome /> 
+    <>
+      <div className='w-full h-screen relative flex justify-center items-center bg-black'>
+        {stage === "landing" && ( 
+          // INITIAL STAGE = LANDING 
+          <LandingPage onDone={handleFinishedProcessing} />
+        )}
 
-        {/* SLIDE 2 – Google (click to open pop-up) */}
-        <GoogleSlide />
+        {stage === "loading-expand" && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black z-[9999]">
+            {/* Fullscreen expand animation component */}
+          </div>
+        )}
 
-        {/* SLIDE 3 – Instagram (upload + analytics) */}
-        <InstagramUpload
-          onUploadComplete={handleInstaUploadComplete}
-          analytics={instaAnalytics}
-        />
-      </Board>
-    </div>
+        {stage === "main" && <MainPage />}
+      </div>
+    </>
   );
 };
 

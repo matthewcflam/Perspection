@@ -1,0 +1,1 @@
+This folder will house all the actual pages of the site, which we will build out of components. This way, our App.jsx won't be so crowded. 
