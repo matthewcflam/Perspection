@@ -29,16 +29,17 @@ const UploadButton = ({ label, onFinish }) => {
         className="hidden"
         onChange={handleFileChange}
       />
-        <div>
+        <div className="w-1/2">
         <button
             onClick={handleClick}
             disabled={loading}
+            className="w-full h-full"
         >
 
             {
             loading ? 
                 (<SpotlightCard 
-                    className="h-screen w-1/2 text-2xl text-white flex items-center justify-center" 
+                    className="h-screen w-full text-2xl text-white flex items-center justify-center" 
                     style={{ fontFamily: 'Aileron' }}
                     spotlightColor="rgba(250, 240, 197, 1)">
                     <div className="text-xl flex flex-col items-center justify-center w-full h-full" style={{ fontFamily: 'Aileron' }}>
@@ -48,7 +49,7 @@ const UploadButton = ({ label, onFinish }) => {
                 </SpotlightCard>)
                 : 
                 (<SpotlightCard 
-                    className="h-screen w-1/2 text-2xl text-white flex items-center justify-center bg-white/5" 
+                    className="h-50 w-full text-2xl text-white flex items-center justify-center bg-white/5" 
                     style={{ fontFamily: 'Aileron' }}
                     spotlightColor="rgba(250, 240, 197, 1)">
                     {label}
