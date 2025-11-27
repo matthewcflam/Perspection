@@ -54,10 +54,6 @@ class UserRegister(MethodView):
         except SQLAlchemyError:
             db.session.rollback()
             abort(400, message = "Database error while saving account")
-        # Otherwise print generic error message with the root
-        except Exception as e:
-            db.session.rollback()
-            abort(500, message = f"Unexpected error occurred: {e}")
 
 
 # Sign-in public endpoint

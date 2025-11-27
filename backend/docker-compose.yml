@@ -1,25 +1,25 @@
 services:
+  cloudsql-proxy:
+    # UPDATED: Using the modern V2 proxy image
+    image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.14.1
+    # V2 Command Syntax:
+    # run <INSTANCE_CONNECTION_NAME> --address 0.0.0.0 --port 5432 --credentials-file <PATH>
+    command:
+      - "--address"
+      - "0.0.0.0"
+      - "--port"
+      - "5432"
+      - "--credentials-file"
+      - "/secrets/service_account.json"
+      - "cpen211-478908:us-central1:free-trial-first-project"
+    volumes:
+      - ./secrets:/secrets:ro
+
   backend:
     build: .
-    ports:
-      - "5001:5000"
     env_file:
       - .flaskenv
-    volumes:
-      - .:/app        # <-- Mount your backend source code into the container
     depends_on:
-      - db
-
-  db:
-    image: postgres:15
-    environment:
-      POSTGRES_USER: alderuser
-      POSTGRES_PASSWORD: alderpass
-      POSTGRES_DB: alderdb
+      - cloudsql-proxy
     ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
-volumes:
-  pgdata:
+      - "5001:5000"
