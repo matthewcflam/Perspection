@@ -52,7 +52,7 @@ def main():
 
     print("\nGmail:")
     print("\n5 most recent messages:")
-    for m in client.gmail.list_inbox():
+    for m in client.gmail.inbox_list():
         print(m)
         
     print("\nMost recieved emails by sender:")
