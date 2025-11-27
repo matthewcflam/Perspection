@@ -1,183 +1,330 @@
-// import { useState } from "react";
-// import Board from "./components/Board";
-// import WelcomePage from "./components/WelcomePage";
-// import InstagramUpload from "./components/InstagramUpload";
+import { useState, useEffect, useRef } from "react";
 
-// const App = () => {
-//   const [instaData, setInstaData] = useState(null);
+// Components
+import RotatingText from "./components/RotatingText";
+import GlobalBackground from "./components/GlobalBackground";
 
-//   const handleUploadComplete = (data) => {
-//     setInstaData(data);
-//     console.log("Uploaded folder data:", data);
-//     // later you can show a 3rd page with charts, etc.
-//   };
+import OpenDashboardButton from "./components/OpenDashboardButton";
+import GoogleButton from "./components/GoogleButton";
+import InstagramButton from "./components/InstagramButton";
 
-//   return (
-//     <Board>
-//       {/* PAGE 1: Welcome */}
-//       <WelcomePage />
+import StatCard from "./components/StatCard";
+import ActivityCard from "./components/ActivityCard";
+import EngagementCard from "./components/EngagementCard";
 
-//       {/* PAGE 2: Upload */}
-//       <InstagramUpload onUploadComplete={handleUploadComplete} />
-
-//       {/* PAGE 3: Placeholder for analytics / “Upload complete” */}
-//       <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
-//         {instaData ? (
-//           <h1 className="text-3xl">Upload complete ✓ (analytics coming here)</h1>
-//         ) : (
-//           <p className="text-gray-500">
-//             Upload data first (swipe back ← to the upload page)
-//           </p>
-//         )}
-//       </div>
-//     </Board>
-//   );
-// };
-
-// export default App;
-
-// import { useState } from "react";
-// import Board from "./components/Board";
-// import WelcomePage from "./src/pages/WelcomePage";
-// import GoogleSlide from "./src/pages/GoogleSlide";
-// import InstagramUpload from "./pages/InstagramUpload";
-// import AnimatedWelcome from "./components/AnimatedWelcome";
-
-// const App = () => {
-//   const [instaAnalytics, setInstaAnalytics] = useState(null);
-
-//   const handleInstaUploadComplete = (files) => {
-//     // TODO: replace with real parsing of Instagram export
-//     console.log("Instagram files:", files);
-
-//     const fakeStats = {
-//       totalMessages: 9876,
-//       uniqueChats: 42,
-//     };
-
-//     setInstaAnalytics(fakeStats);
-//   };
-
-// const handleInstaUploadComplete = async (files) => {
-//   console.log("Uploading", files.length, "files to backend…");
-
-//   const formData = new FormData();
-
-//   for (const file of files) {
-//     // Preserve folder structure
-//     const relPath = file.webkitRelativePath || file.name;
-//     formData.append("files", file, relPath);
-//   }
-
-//   const res = await fetch("/api/upload/instagram", { // TODO: This is the backend path, replace with current implementation
-//     method: "POST",
-//     body: formData,
-//   });
-
-//   if (!res.ok) {
-//     console.error("Upload failed!");
-//     return;
-//   }
-
-//   const data = await res.json();   // expects { stats: {...} }
-//   console.log("Received stats from backend:", data.stats);
-
-//   setInstaAnalytics(data.stats);
-// };
+import CloseDashboardButton from "./components/CloseDashboardButton";
+import Stepper, { Step } from "./components/Stepper";
 
 
-import React, { useState, useEffect, useRef } from 'react';
-
-//YOU ONLY NEED TO IMPORT THE PAGES
-import LandingPage from './pages/LandingPage';
-import MainPage from './pages/MainPage';
-import whitefullscreenIcon from './assets/finalwhiteFS.png';
 
 
-const App = () => {
-  const appRef = useRef(null);
-  const [stage, setStage] = useState("landing"); //in this line of code, stage is the current value, setStage wil update it
-  // 'landing' | 'loading-expand' | 'main'
-  const [loadedFileType, setLoadedFileType] = useState(null);
+export default function App() {
+  // Mode: "main" (landing + login) OR "dashboard"
+  const [mode, setMode] = useState("main");
 
-  const handleFinishedProcessing = (fileType) => {
-    // Trigger fullscreen expand → then load main page
-    setLoadedFileType(fileType);
-    setStage("loading-expand");
+  // Scroll container for landing + login
+  const scrollContainerRef = useRef(null);
+  const prevModeRef = useRef(mode);
 
-    //if IG is loaded, load mainIG page
-    //if Google is loaded, load mainGoogle page
-    setTimeout(() => {
-      if(fileType === "instagram"){
-        setStage("mainIG");
-      } else if(fileType === "google"){
-        setStage("mainGoogle");
-      }
-    }, 1200);
+  // Dashboard page index: 0 = Stat, 1 = Activity, 2 = Engagement
+  const [dashPage, setDashPage] = useState(0);
+  const dashScrollRef = useRef(null);
+  // For Stepper → fade out → buttons fade in
+const [showButtonsAfterStepper, setShowButtonsAfterStepper] = useState(false);
+const [showButtons, setShowButtons] = useState(false);
+
+
+  // Smooth scroll between landing (index 0) and login (index 1)
+  const scrollToSection = (index) => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    const height = el.clientHeight;
+    el.scrollTo({ top: index * height, behavior: "smooth" });
   };
-  
 
-  return (   
-    <div ref={appRef} className="w-full min-h-screen relative">
-      
-      {/* fullscreen button that doesn't completely work */}
-      {/* <button
-        onClick={() => {
-          if (appRef.current) {
-            if (document.fullscreenElement) {
-              document.exitFullscreen();
-            } else {
-              appRef.current.requestFullscreen();
-            }
-          }
-        }}
-        className="fixed top-4 right-4 z-50 px-3 py-2 text-white rounded-lg hover:bg-black/40 transition"
-      >
-        <img
-          src={whitefullscreenIcon}
-          className="h-7 w-7 object-contain"
-        />
-      </button> */}
+  // When leaving dashboard → return to login page instantly
+  useEffect(() => {
+    if (mode === "main" && prevModeRef.current === "dashboard") {
+      requestAnimationFrame(() => {
+        const el = scrollContainerRef.current;
+        if (!el) return;
+        const height = el.clientHeight;
+        el.scrollTo({ top: height, behavior: "auto" });
+      });
+    }
+    prevModeRef.current = mode;
+  }, [mode]);
 
-      {/* we control flow of the website based on state */}
-      {stage === "landing" && (
-        // INITIAL STAGE = LANDING 
-        <LandingPage onDone={handleFinishedProcessing} />
-      )}
+  // Dashboard reacts to page index changes
+  useEffect(() => {
+    if (mode !== "dashboard") return;
 
-      {stage === "loading-expand" && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black z-[9999]">
-          {/* Fullscreen expand animation component */}
+    const el = dashScrollRef.current;
+    if (!el) return;
+
+    const width = el.clientWidth;
+    el.scrollTo({ left: dashPage * width, behavior: "smooth" });
+  }, [dashPage, mode]);
+
+  // Dashboard keyboard controls
+  useEffect(() => {
+    if (mode !== "dashboard") return;
+
+    const handleKey = (e) => {
+      if (e.key === "Escape") {
+        setMode("main");
+      } else if (e.key === "ArrowLeft") {
+        setDashPage((p) => Math.max(p - 1, 0));
+      } else if (e.key === "ArrowRight") {
+        setDashPage((p) => Math.min(p + 1, 2));
+      }
+    };
+
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [mode]);
+
+  return (
+    <div className="relative w-full h-screen overflow-hidden">
+
+      {/* GLOBAL BACKGROUND */}
+      <div className="absolute inset-0 -z-10">
+        <GlobalBackground />
+      </div>
+
+      {/* =====================================================
+          MODE: MAIN (LANDING + SIGN-IN)
+      ====================================================== */}
+      {mode === "main" && (
+        <div
+          ref={scrollContainerRef}
+          className="relative w-full h-full overflow-y-scroll snap-y snap-mandatory no-scrollbar"
+        >
+          {/* ---------- LANDING PAGE ---------- */}
+          <section className="relative w-full h-screen snap-start flex flex-col items-center justify-center text-white gap-10">
+
+            {/* Landing Text with Glass/Shimmer */}
+            <div className="flex flex-row items-center justify-center gap-3 text-5xl sm:text-6xl font-bold">
+              <span>Learn about your</span>
+
+              <div className="
+                relative inline-flex justify-center items-center
+                min-w-[300px] px-4 py-1 rounded-xl
+                bg-white/10 backdrop-blur-md border border-white/20
+                overflow-hidden
+              ">
+                <div className="absolute inset-0 shimmer-pointer-events-none"></div>
+
+                <RotatingText
+                  texts={["Stats", "Followers", "Growth", "Texts", "Reach", "SELF"]}
+                  mainClassName="text-5xl sm:text-6xl font-bold text-white"
+                  staggerDuration={0.08}
+                  rotationInterval={3000}
+                  initial={{ y: "100%" }}
+                  animate={{ y: 0 }}
+                  exit={{ y: "-120%" }}
+                  splitLevelClassName="overflow-hidden"
+                />
+              </div>
+            </div>
+
+            {/* Down Arrow */}
+            <button
+              onClick={() => scrollToSection(1)}
+              className="text-6xl animate-bounce hover:scale-125 transition"
+            >
+              ↓
+            </button>
+          </section>
+
+
+
+
+          
+                {/* ---------- SIGN-IN PAGE ---------- */}
+                <section className="
+                  relative w-full h-screen snap-start 
+                  flex flex-col items-center justify-center 
+                  text-white
+                ">
+
+                  <div className="flex flex-col items-center justify-center">
+
+                    {/* STEPPER */}
+                    <div
+                      className={`
+                        w-[350px] sm:w-[600px]
+                        transition-opacity duration-600
+                        flex justify-center
+                        ${showButtonsAfterStepper ? "opacity-0 pointer-events-none" : "opacity-100"}
+                      `}
+                    >
+                      <div className="
+                        w-full rounded-4xl p-6
+                        bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl
+                      ">
+                        <Stepper
+                          initialStep={1}
+                          onFinalStepCompleted={() => {
+                            setShowButtonsAfterStepper(true);
+                            setTimeout(() => setShowButtons(true), 700);
+                          }}
+                        >
+                          <Step>
+                            <h2 className="text-xl font-bold mb-2">Welcome!</h2>
+                            <p>This short guide explains what our analytics app does.</p>
+                          </Step>
+
+                          <Step>
+                            <h2 className="text-xl font-bold mb-2">Track Stats</h2>
+                            <p>We analyze your followers, activity, and engagement.</p>
+                          </Step>
+
+                          <Step>
+                            <h2 className="text-xl font-bold mb-2">See Trends</h2>
+                            <p>Just upload your data!</p>
+                          </Step>
+
+                          <Step>
+                            <h2 className="text-xl font-bold mb-2">Get Started</h2>
+                            <p>Now you're ready to explore your dashboard!</p>
+                          </Step>
+                        </Stepper>
+                      </div>
+                    </div>
+
+                    {/* BUTTONS */}
+                    <div
+                      className={`
+                        -mt-28 flex flex-col gap-6 w-[300px]
+                        transition-opacity duration-700
+                        ${showButtons ? "opacity-100" : "opacity-0 pointer-events-none"}
+                      `}
+                    >
+                      <OpenDashboardButton
+                        onOpen={() => {
+                          setDashPage(0);
+                          setMode("dashboard");
+                        }}
+                      />
+                      <GoogleButton onPress={() => console.log("Google login")} />
+                      <InstagramButton onPress={() => console.log("Instagram login")} />
+                    </div>
+
+                  </div>
+                </section>
         </div>
       )}
 
-      {stage === "mainIG" && <MainPage type="instagram" />}
-      {stage === "mainGoogle" && <MainPage type="google" />}
+      {/* =====================================================
+          MODE: DASHBOARD
+      ====================================================== */}
+      {mode === "dashboard" && (
+        <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-4">
+
+          {/* Dashboard Title */}
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-wide mb-6 drop-shadow-lg">
+            Your Statistics!
+          </h1>
+
+          {/* =====================================================
+              DASHBOARD GLASS CONTAINER
+          ====================================================== */}
+          <div
+            ref={dashScrollRef}
+            className="
+              relative w-full max-w-5xl h-[75vh]
+              flex overflow-x-auto overflow-y-hidden
+              snap-x snap-mandatory
+              rounded-3xl bg-white/10 backdrop-blur-xl
+              border border-white/20 shadow-2xl
+              no-scrollbar
+            "
+          >
+
+            {/* Page 0 */}
+            <div className="w-full h-full flex-shrink-0 snap-start p-6">
+              <div className="w-full h-full rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 overflow-y-auto relative">
+
+                {/* INNER CLOSE BUTTON */}
+                <div className="absolute top-4 right-4 z-40">
+                  <CloseDashboardButton onClose={() => setMode("main")} />
+                </div>
+
+                <StatCard />
+              </div>
+            </div>
+
+            {/* Page 1 */}
+            <div className="w-full h-full flex-shrink-0 snap-start p-6">
+              <div className="w-full h-full rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 overflow-y-auto relative">
+
+                <div className="absolute top-4 right-4 z-40">
+                  <CloseDashboardButton onClose={() => setMode("main")} />
+                </div>
+
+                <ActivityCard />
+              </div>
+            </div>
+
+            {/* Page 2 */}
+            <div className="w-full h-full flex-shrink-0 snap-start p-6">
+              <div className="w-full h-full rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 overflow-y-auto relative">
+
+                <div className="absolute top-4 right-4 z-40">
+                  <CloseDashboardButton onClose={() => setMode("main")} />
+                </div>
+
+                <EngagementCard />
+              </div>
+            </div>
+          </div>
+
+          {/* =====================================================
+              ARROWS — BIGGER OUTSIDE CONTAINER
+          ====================================================== */}
+
+          {dashPage > 0 && (
+            <button
+              onClick={() => setDashPage((p) => Math.max(p - 1, 0))}
+              className="
+                absolute top-1/2 -translate-y-1/2 left-[calc(50%-600px)]
+                text-white text-9xl font-light hover:scale-110 transition z-50
+              "
+            >
+              ‹
+            </button>
+          )}
+
+          {dashPage < 2 && (
+            <button
+              onClick={() => setDashPage((p) => Math.min(p + 1, 2))}
+              className="
+                absolute top-1/2 -translate-y-1/2 right-[calc(50%-600px)]
+                text-white text-9xl font-light hover:scale-110 transition z-50
+              "
+            >
+              ›
+            </button>
+          )}
+
+          {/* DOTS */}
+          <div className="flex gap-3 mt-4">
+            {[0, 1, 2].map((i) => (
+              <button
+                key={i}
+                onClick={() => setDashPage(i)}
+                className={`rounded-full transition transform ${
+                  dashPage === i
+                    ? "w-3 h-3 bg-white scale-125"
+                    : "w-2 h-2 bg-white/40"
+                }`}
+              />
+            ))}
+          </div>
+
+        </div>
+      )}
     </div>
   );
-};
-
-export default App;
-
-// State flow for the app:
-// User clicks button
-//   ↓
-// UploadButton: handleClick() → file input opens
-//   ↓
-// User selects file → handleFileChange()
-//   ↓
-// UploadButton: setLoading(true) → shows spinner
-//   ↓
-// UploadButton: setTimeout(1000ms) → onFinish() called
-//   ↓
-// LandingPage: setFile1Loaded(true) or setFile2Loaded(true)
-//   ↓
-// LandingPage: checkIGDone() or checkGoogleDone()
-//   ↓
-// LandingPage: onDone() → calls App.handleFinishedProcessing()
-//   ↓
-// App: setStage("loading-expand") → shows loading screen
-//   ↓
-// App: setTimeout(1200ms) → setStage("mainIG") or setStage("mainGoogle")
-//   ↓
-// MainPage: Renders!
+}
