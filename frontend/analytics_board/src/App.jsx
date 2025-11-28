@@ -30,8 +30,8 @@ export default function App() {
   const [dashPage, setDashPage] = useState(0);
   const dashScrollRef = useRef(null);
   // For Stepper → fade out → buttons fade in
-const [showButtonsAfterStepper, setShowButtonsAfterStepper] = useState(false);
-const [showButtons, setShowButtons] = useState(false);
+  const [showButtonsAfterStepper, setShowButtonsAfterStepper] = useState(false);
+  const [showButtons, setShowButtons] = useState(false);
 
 
   // Smooth scroll between landing (index 0) and login (index 1)
@@ -136,8 +136,6 @@ const [showButtons, setShowButtons] = useState(false);
               ↓
             </button>
           </section>
-
-
 
 
           
