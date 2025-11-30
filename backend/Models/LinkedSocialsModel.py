@@ -34,3 +34,4 @@ class LinkedSocialsModel(db.Model):
         uselist = False,
         cascade = "all, delete-orphan"
     )
+    

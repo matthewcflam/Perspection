@@ -1,21 +1,16 @@
+# in Models/YoutubeLikedModel.py
 from DataBase import db
 
 class YoutubeLikedModel(db.Model):
-    __tablename__ = "youtube_liked"
-
+    __tablename__ = "youtube_liked_videos"
+    
     id = db.Column(db.Integer, primary_key=True)
-
-    google_id = db.Column(
-        db.Integer,
-        db.ForeignKey("google.id", ondelete = "CASCADE"),
-        nullable = False
-    )
-
-    google = db.relationship(
-        "GoogleModel",
-        back_populates = "youtube_liked"
-    )
-
-    # Liked video
-    video_id = db.Column(db.Integer, nullable = False)
-    video_identifier = db.Column(db.String(30), nullable = False)
+    youtube_id = db.Column(db.Integer, db.ForeignKey("youtube_metrics.id"), nullable=False)
+    video_id = db.Column(db.String(255), nullable=False)
+    video_title = db.Column(db.String(255), nullable=False)
+    channel_id = db.Column(db.String(255))
+    channel_title = db.Column(db.String(255))
+    liked_at = db.Column(db.DateTime, nullable=False)
+    
+    # Relationships
+    youtube = db.relationship("YoutubeModel", back_populates="liked_videos")
