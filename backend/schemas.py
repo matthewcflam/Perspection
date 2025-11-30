@@ -34,7 +34,7 @@ class PlainLinkedSocialSchema(Schema):
         validate = validate.OneOf(["meta", "google"])
     )
     # Input JSON data (never output)
-    data = fields.Raw(required = True, load_only = True)
+    data = fields.List(fields.Raw(), required = True, load_only = True)
 
 # --- Generally relevant Meta metrics ---
 class PlainMetaSchema(Schema):

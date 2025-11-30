@@ -33,3 +33,7 @@ token.json
 *.db
 *.sqlite
 *.sqlite3
+app.db
+__pycache__
+*.pycache
+service_account.json

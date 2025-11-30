@@ -275,8 +275,8 @@ class GmailClient:
         if not self._service:
             self._service = build("gmail", "v1", credentials=self.parent.creds)
         return self._service
-
-    def list_inbox(self, limit=5):
+    
+    def inbox_list(self, limit=5):
         msgs = self.service.users().messages().list(
             userId="me",
             labelIds=["INBOX"],
@@ -290,25 +290,139 @@ class GmailClient:
                 userId="me",
                 id=msg["id"],
                 format="metadata",
-                metadataHeaders=["Subject", "From"],
+                metadataHeaders=[
+                    "Subject",
+                    "From",
+                    "To",
+                    "Reply-To",
+                    "List-Unsubscribe",
+                    "List-Id",
+                    "Precedence",
+                ],
             ).execute()
 
-            headers = {
-                h["name"]: h["value"]
-                for h in detail["payload"]["headers"]
-            }
+            headers = {h["name"]: h["value"] for h in detail["payload"]["headers"]}
+
+            subject = headers.get("Subject", "(no subject)")
+            from_raw = headers.get("From", "(no sender)")
+            from_name, from_email = parseaddr(from_raw)
+
+            category = self._categorize_email(subject, from_email, headers)
+            is_subscription = self._detect_subscription(subject, from_email, headers)
+
             out.append(
                 {
                     "id": msg["id"],
-                    "subject": headers.get("Subject", "(no subject)"),
-                    "from": headers.get("From", "(no sender)"),
+                    "subject": subject,
+                    "from": from_raw,
+                    "from_name": from_name,
+                    "from_email": from_email,
+                    "category": category,
+                    "is_subscription": is_subscription,
                 }
             )
 
         return out
+    
+    def _categorize_email(self, subject: str, from_email: str, headers: dict) -> str:
+        subject_l = subject.lower()
+        from_email_l = from_email.lower()
+        
+        domain = from_email_l.split("@")[-1] if "@" in from_email_l else ""
+        
+        domain_map = {
+            "bmo.com" : "finance",
+            "cibc.com" : "finance",
+            "td.com" : "finance",
+            "amazon.com" : "shopping",
+            "ubc.ca" : "education",
+            "canvas.com" : "education",
+            "piazza.com" : "education",
+            "linkedin..com" : "social",
+            "instagram.com" : "social",
+        }
+        
+        if domain in domain_map:
+            return domain_map[domain]
+    
+        scores = {
+            "finance": 0,
+            "shopping": 0,
+            "education": 0,
+            "social": 0,
+            "system": 0,
+            "personal": 0,
+        }
+        
+        finance_kw = ["invoice", "receipt", "payment", "transaction",
+                      "statement", "order total", "charged", "billing"]
+        if any(k in subject_l for k in finance_kw):
+            scores["finance"] += 2
+
+        shopping_kw = ["order shipped", "your order", "delivery",
+                       "track your package", "tracking number", "shipped"]
+        if any(k in subject_l for k in shopping_kw):
+            scores["shopping"] += 2
+
+        edu_kw = ["assignment", "midterm", "exam", "course", "canvas", "grades"]
+        if any(k in subject_l for k in edu_kw):
+            scores["education"] += 2
+
+        social_kw = ["new follower", "friend request", "connection request",
+                     "liked your post", "mentioned you"]
+        if any(k in subject_l for k in social_kw):
+            scores["social"] += 2
+
+        system_kw = ["password reset", "security alert", "new login",
+                     "verify your email", "two-factor", "2-step verification"]
+        if any(k in subject_l for k in system_kw):
+            scores["system"] += 2
+            
+        best_category = max(scores, key=scores.get)
+        
+        if scores[best_category] == 0:
+            return "uncategorized"
+        
+        return best_category
+    
+    def _detect_subscription(self, subject: str, from_email: str, headers: dict) -> bool:
+        subject_l = subject.lower()
+        from_email_l = from_email.lower()
+        local_part = from_email_l.split("@")[0] if "@" in from_email_l else ""
+
+        score = 0
+
+        # list-related headers
+        if "List-Unsubscribe" in headers:
+            score += 3
+        if "List-Id" in headers:
+            score += 2
+        if headers.get("Precedence", "").lower() in {"bulk", "list"}:
+            score += 2
+
+        # from-address patterns
+        no_reply_like = {
+            "no-reply",
+            "noreply",
+            "newsletter",
+            "updates",
+            "notifications",
+            "info",
+        }
+        if local_part in no_reply_like:
+            score += 1
+
+        # subject clues
+        if "unsubscribe" in subject_l:
+            score += 2
+        newsletter_kw = ["newsletter", "daily digest", "weekly digest", "digest",
+                         "course digest", "class digest", "this week in", "roundup"]
+        if any(k in subject_l for k in newsletter_kw):
+            score += 1
+
+        return score >= 2
 
     def top_senders(self, messages_limit: int = 500, top_n: int = 5):
-
         service = self.service
         senders = Counter()
         remaining = messages_limit
@@ -321,33 +435,52 @@ class GmailClient:
                 labelIds=["INBOX"],
                 maxResults=batch_size,
                 pageToken=page_token,
+                # only fetch what we need from list
+                fields="messages(id),nextPageToken",
             ).execute()
 
             msgs = resp.get("messages", [])
             if not msgs:
                 break
 
-            for msg in msgs:
-                detail = service.users().messages().get(
-                    userId="me",
-                    id=msg["id"],
-                    format="metadata",
-                    metadataHeaders=["From"],
-                ).execute()
+            # --- build one batch request for this page ---
+            batch = service.new_batch_http_request()
 
-                headers = {
-                    h["name"]: h["value"]
-                    for h in detail["payload"]["headers"]
-                }
-                raw_from = headers.get("From", "")
-                # "Name <email@domain>" -> ("Name", "email@domain")
-                _name, email_addr = parseaddr(raw_from)
+            def make_callback():
+                # closure over 'senders'
+                def _cb(request_id, detail, exception):
+                    if exception is not None:
+                        return
+                    headers = {
+                        h["name"]: h["value"]
+                        for h in detail["payload"]["headers"]
+                    }
+                    raw_from = headers.get("From", "")
+                    _name, email_addr = parseaddr(raw_from)
 
-                if email_addr:
-                    senders[email_addr] += 1
-                else:
-                    if raw_from:
+                    if email_addr:
+                        senders[email_addr] += 1
+                    elif raw_from:
                         senders[raw_from] += 1
+
+                return _cb
+
+            callback = make_callback()
+
+            for msg in msgs:
+                batch.add(
+                    service.users().messages().get(
+                        userId="me",
+                        id=msg["id"],
+                        format="metadata",
+                        metadataHeaders=["From"],
+                        fields="payload/headers",  # trim payload
+                    ),
+                    callback=callback,
+                )
+
+            # one HTTP round-trip for all the get()s
+            batch.execute()
 
             remaining -= len(msgs)
             page_token = resp.get("nextPageToken")
