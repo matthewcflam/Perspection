@@ -101,16 +101,20 @@ export default function App() {
       {mode === "main" && (
         <div
           ref={scrollContainerRef}
-          className="relative w-full h-full overflow-y-scroll snap-y snap-mandatory no-scrollbar"
+          className="relative w-full h-full overflow-y-scroll snap-proximity no-scrollbar"
+          style={{
+            scrollBehavior: 'smooth',
+            scrollSnapStop: 'normal'
+          }}
         >
           {/* ---------- LANDING PAGE ---------- */}
           <section className="relative w-full h-screen snap-start flex flex-col items-center justify-center text-white gap-10">
 
             {/* Landing Text with Glass/Shimmer */}
             <div className="flex flex-row items-center justify-center gap-3 text-5xl sm:text-6xl font-bold">
-              <span>Learn about your&nbsp;</span>
+              <span>Perspective.</span>
 
-              <div className="
+              {/* <div className="
                 relative inline-flex justify-center items-center
                 min-w-[300px] px-4 py-1 rounded-xl
                 bg-white/10 backdrop-blur-md border border-white/20
@@ -128,7 +132,7 @@ export default function App() {
                   exit={{ y: "-100%" }}
                   splitLevelClassName="overflow-hidden"
                 />
-              </div>
+              </div>*/}
             </div>
 
             {/* Down Arrow */}
@@ -215,7 +219,7 @@ export default function App() {
                     setMode("dashboard");
                   }}
                 />
-                
+
                 <GoogleButton onPress={() => console.log("Google login")} />
                 <InstagramButton onPress={() => console.log("Instagram login")} />
               </div>
@@ -268,6 +272,30 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* =====================================================
+          MODE: INSTAGRAM STATS
+      ====================================================== */}
+
+      {mode === "InstagramStats" && (
+        <div className="relative w-full h-full bg-gray-900">
+          {/* Dashboard Background - separate from main */}
+          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-gray-900 via-gray-800 to-black"></div>
+          
+          {/* Close button */}
+          <button 
+            className="absolute top-4 right-4 z-50 text-white/80 hover:text-white transition"
+            onClick={() => setMode("main")}
+          >
+            ✕ Close
+          </button>
+          
+          <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-4">
+            <DashboardPages dashPage={dashPage} setDashPage={setDashPage} />
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
