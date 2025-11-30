@@ -16,6 +16,7 @@ from DataBase import db
 from Resources.user import blp as UserBlueprint
 from Resources.linked_socials import blp as LinkedSocialsBlueprint
 from Resources.meta import blp as MetaBlueprint
+from Resources.youtube_insights import blp as YoutubeBlueprint
 
 
 def create_app():
@@ -27,11 +28,15 @@ def create_app():
     app.config["OPENAPI_VERSION"] = "3.0.3"
 
     # ==== CORS config ====
-    FRONTEND_URL = os.getenv("FRONTEND_URL")
+    FRONTEND_URL = os.getenv("FRONTEND_URL", "*")
+
+    # Splits by comma to support multiple origins
+    origins = [url.strip() for url in FRONTEND_URL.split(",")] if FRONTEND_URL != "*" else ["*"]
+
     CORS(
         app,
         resources={r"/*": {
-            "origins": [FRONTEND_URL] if FRONTEND_URL else ["*"],
+            "origins": origins,
             "supports_credentials": True,
             "methods": ["GET", "POST", "DELETE", "PATCH", "OPTIONS", "PUT"],
             "allow_headers": ["Content-Type", "Authorization", "Accept"],
@@ -64,6 +69,7 @@ def create_app():
     api.register_blueprint(UserBlueprint)
     api.register_blueprint(MetaBlueprint)
     api.register_blueprint(LinkedSocialsBlueprint)
+    api.register_blueprint(YoutubeBlueprint)
 
     return app
 
