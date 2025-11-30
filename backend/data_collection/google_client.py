@@ -261,10 +261,6 @@ class YouTubeClient:
         )
         return sorted_creators
 
-
-
-        
-
 class GmailClient:
     def __init__(self, parent: GoogleClient):
         self.parent = parent

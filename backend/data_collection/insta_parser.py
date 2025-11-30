@@ -89,10 +89,7 @@ class InstagramParser:
         self.follow_requests: set[str] = set()
         self.unfollowed: set[str] = set()
 
-    # ==========================================================
     # Shared helper methods (from original InstagramParser base)
-    # ==========================================================
-
     @staticmethod
     def _extract_username_value(item: dict) -> str | None:
         sld = item.get("string_list_data")
@@ -146,10 +143,7 @@ class InstagramParser:
     def _ts_to_date(self, ts_ms: int) -> date:
         return datetime.fromtimestamp(ts_ms / 1000).date()
 
-    # ==========================================================
     # Messages-related methods (from InstagramMessagesParser)
-    # ==========================================================
-
     def load_all_messages(self):
         all_messages = []
         total_sent = 0
