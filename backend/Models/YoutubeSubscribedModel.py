@@ -1,21 +1,12 @@
+# in Models/YoutubeSubscribedModel.py
 from DataBase import db
 
 class YoutubeSubscribedModel(db.Model):
-    __tablename__ = "youtube_subscribed"
-
+    __tablename__ = "youtube_subscriptions"
+    
     id = db.Column(db.Integer, primary_key=True)
-
-    google_id = db.Column(
-        db.Integer,
-        db.ForeignKey("google.id", ondelete = "CASCADE"),
-        nullable = False
-    )
-
-    google = db.relationship(
-        "GoogleModel",
-        back_populates = "youtube_subscribed"
-    )
-
-    # Subscribed channel
-    channel_id = db.Column(db.Integer, nullable = False)
-    channel_name = db.Column(db.String(30), nullable = False)
+    youtube_id = db.Column(db.Integer, db.ForeignKey("youtube_metrics.id"), nullable=False)
+    channel_id = db.Column(db.String(255), nullable=False)
+    
+    # Relationships
+    youtube = db.relationship("YoutubeModel", back_populates="subscriptions")

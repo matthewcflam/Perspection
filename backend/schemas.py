@@ -95,76 +95,55 @@ class MetaViewSchema(PlainMetaSchema):
         dump_only=True
     )
 
-#Youtube specificfrom marshmallow import Schema, fields, validate
+#Youtube
 
-class PlainSubscribedYoutubeChannel(Schema):
+class YouTubeTopLikedCreatorSchema(Schema):
     id = fields.Int(dump_only=True)
-    channel_id = fields.Str(required=True)
-    title = fields.Str(required=True, validate=validate.Length(max=200))
-    subscriber_count = fields.Str(dump_only=True)  # Keep this one
-
-class PlainLikedVideoSchema(Schema):
-    id = fields.Int(dump_only=True)               # optional DB id
-    video_id = fields.Str(required=True)
-    title = fields.Str(required=True)
-    liked_at = fields.DateTime(required=True)     # stores timestamp like "2024-06-19T06:50:18Z"
-
-class PlainLikedPerChannel(Schema):
-    id = fields.Int(dump_only=True)                
-    channel_name = fields.Str(required=True)         
-    liked_videos_count = fields.Int(required=True)   
-# ─── SPECIFIC METRICS (like MetaTopFiveXxx) ──────────────────────────
-
-class MostSubscribedChannelSchema(PlainSubscribedYoutubeChannel):
-    pass  
+    channel_name = fields.Str(dump_only=True)
+    liked_videos_count = fields.Int(dump_only=True)
 
 
-class MostNicheChannelSchema(PlainSubscribedYoutubeChannel):
-    
-    pass
+# 2. Schema for a liked video (matches JSON structure in YouTubeModel.liked_videos)
+class YouTubeLikedVideoSchema(Schema):
+    video_id = fields.Str(dump_only=True)
+    video_title = fields.Str(dump_only=True)
+    channel_name = fields.Str(dump_only=True)
+    liked_at = fields.DateTime(dump_only=True)
 
 
-class TopLikedCreatorSchema(PlainLikedPerChannel):
-    pass
-    # Could extend with: avg_likes_per_video, first_liked_date, etc.
+# schemas/youtube_schemas.py
 
 
-class LikedVideoViewSchema(PlainLikedVideoSchema):
-    pass
+class YoutubeSubscribedSchema(Schema):
+    id = fields.Integer(dump_only=True)
+    channel_id = fields.String(required=True)
 
-# ─── MASTER YOUTUBE VIEW SCHEMA (your /youtube/metrics endpoint) ─────
+class YoutubeLikedSchema(Schema):
+    id = fields.Integer(dump_only=True)
+    video_id = fields.String(required=True)
+    video_title = fields.String(required=True)
+    channel_id = fields.String(allow_none=True)
+    channel_title = fields.String(allow_none=True)
+    liked_at = fields.DateTime(required=True)
 
-class YouTubeViewSchema(Schema):
-    # Core user-level metrics
-    total_subscriptions = fields.Int(dump_only=True)
-    total_liked_videos = fields.Int(dump_only=True)
+class TopLikedCreatorSchema(Schema):
+    id = fields.Integer(dump_only=True)
+    channel_name = fields.String(required=True)
+    liked_videos_count = fields.Integer(required=True)
 
-    # Top channels (single objects)
-    most_subscribed_channel = fields.Nested(
-        MostSubscribedChannelSchema,
-        dump_only=True,
-        allow_none=True
-    )
-    most_niche_channel = fields.Nested(
-        MostNicheChannelSchema,
-        dump_only=True,
-        allow_none=True
-    )
+class YoutubeSchema(Schema):
+    id = fields.Integer(dump_only=True)
+    total_subscriptions = fields.Integer()
+    total_liked_videos = fields.Integer()
+    created_at = fields.DateTime(dump_only=True)
+    liked_videos = fields.List(fields.Nested(YoutubeLikedSchema), dump_only=True)
+    subscriptions = fields.List(fields.Nested(YoutubeSubscribedSchema), dump_only=True)
+    top_liked_creators = fields.List(fields.Nested(TopLikedCreatorSchema), dump_only=True)    
 
-    top_liked_creators = fields.List(
-        fields.Nested(TopLikedCreatorSchema),
-        dump_only=True
-    )
-
-    liked_videos = fields.List(
-        fields.Nested(LikedVideoViewSchema),
-        dump_only=True
-    )
-
-
-
-# Google specific
 class GoogleViewSchema(Schema):
     id = fields.Integer(dump_only=True)
 
     name = fields.String()
+
+
+

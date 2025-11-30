@@ -13,8 +13,10 @@ from DataBase import db
 from schemas import PlainLinkedSocialSchema, LinkedSocialViewSchema
 from Models import UserModel, LinkedSocialsModel, MetaModel, MetaMessagesModel, MetaNotFollowingBackModel, MetaLikedModel
 from Models import GoogleModel, MetaTopFiveSenderModel, MetaTopFiveReceivedModel
+from Models import YoutubeLikedModel, YoutubeModel, YoutubeSubscribedModel, TopLikedCreatorModel
 import data_collection.insta_parser as p
-
+import datetime  # Add this at the top for timestamps
+from data_collection.google_client import GoogleClient
 blp = Blueprint("linked_socials", __name__, description = "Operations on linked social media accounts")
 
 # For linking socials
@@ -126,12 +128,96 @@ class LinkSocials(MethodView):
                     )
                 
                 db.session.commit()
-
+                
             # Google
             else:
                 # If Google account linked, reject
                 if linked_socials.google:
                     abort(409, message = "Google account already linked")
+                try:
+                    client = GoogleClient(creds_path=data_root, token_path="token.json")
+                    
+                    start_date = "1970-01-01T00:00:00Z"
+                    end_date = datetime.datetime.utcnow().isoformat().replace("+00:00", "Z")  # Ensure ISO 8601 with Z
+
+                    liked_data = client.youtube.get_user_liked_videos_in_range(
+                        start_date=start_date,
+                        end_date=end_date,
+                        limit=500
+                    )
+                    liked_videos = liked_data["videos"]
+                    total_liked_videos = liked_data["count"]
+
+                    top_liked_creators = client.youtube.get_most_liked_creators(
+                        start_date=start_date,
+                        end_date=end_date
+                    )
+
+                    subscriptions_data = client.youtube.list_subscriptions_in_range(
+                        start_date=start_date,
+                        end_date=end_date,
+                        limit=500
+                    )
+                    total_subscriptions = len(subscriptions_data)
+
+                    google = GoogleModel(
+                        name=account_name,
+                        linked_socials_id=linked_socials.id  # safer than object assign if not flushed
+                    )
+                    db.session.add(google)
+                    db.session.flush()  # ✅ Critical: assigns google.id
+
+                    youtube = YoutubeModel(
+                        google_id=google.id, 
+                        total_subscriptions=total_subscriptions,
+                        total_liked_videos=total_liked_videos
+                    )
+                    db.session.add(youtube)
+                    db.session.flush()  # ✅ assigns youtube.id
+
+                    # --- 4. Save liked videos ---
+                    for video in liked_videos:
+                        liked_at_str = video.get("liked_at", "").replace("Z", "+00:00")
+                        liked_at = datetime.datetime.fromisoformat(liked_at_str) if liked_at_str else datetime.datetime.utcnow()
+                        
+                        liked_video = YoutubeLikedModel(
+                            youtube_id=youtube.id,
+                            video_id=video.get("video_id") or "unknown",
+                            video_title=video.get("title") or "Unknown Video",
+                            channel_id=video.get("channel_id") or "unknown",
+                            channel_title=video.get("channel_title") or "Unknown Channel",
+                            liked_at=liked_at
+                        )
+                        db.session.add(liked_video)
+
+                    # --- 5. Save subscriptions ---
+                    for title in subscriptions_data:
+                        # Truncate to 255 chars and ensure non-empty
+                        cid = (title[:255] or "unknown_channel").strip()
+                        if not cid:
+                            cid = "unknown_channel"
+                        subscription = YoutubeSubscribedModel(
+                            youtube_id=youtube.id,
+                            channel_id=cid  # ✅ Required & non-null — using title as stand-in
+                        )
+                        db.session.add(subscription)
+
+                    # --- 6. Save top liked creators ---
+                    for creator in top_liked_creators[:5]:  # Top 5
+                        creator_entry = TopLikedCreatorModel(
+                            youtube_metrics_id=youtube.id,  # ✅ Correct FK (to youtube_metrics.id)
+                            channel_name=(creator.get("name") or "Unknown")[:100],
+                            liked_videos_count=creator.get("liked_count", 0)
+                        )
+                        db.session.add(creator_entry)
+
+                    db.session.commit()
+                    return linked_socials
+
+
+                except Exception as e:
+                    db.session.rollback()
+                    abort(500, message=f"Failed to process YouTube data: {str(e)}")    
             
             return linked_socials
         
