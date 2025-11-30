@@ -22,7 +22,7 @@ export default function StatCard() {
     >
       <CardHeader className="p-0 flex-col">
         <CardTitle className="text-4xl md:text-5xl font-extrabold tracking-wide">
-         Clash Royale Stats...
+         Followers
         </CardTitle>
       </CardHeader>
 

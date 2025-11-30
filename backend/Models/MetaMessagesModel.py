@@ -20,3 +20,4 @@ class MetaMessagesModel(db.Model):
 
     # Store messages as list
     messages = db.Column(db.JSON, default = list)
+    

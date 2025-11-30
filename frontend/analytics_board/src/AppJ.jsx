@@ -16,7 +16,6 @@ import CloseDashboardButton from "./components/CloseDashboardButton";
 import Stepper, { Step } from "./components/Stepper";
 
 import LightRays from './components/LightRays';
-import DashboardPages from "./components/DashboardPages";
 
 
 export default function App() {
@@ -88,12 +87,25 @@ export default function App() {
   return (
     <div className="relative w-full h-screen overflow-hidden">
 
-      {/* GLOBAL BACKGROUND - Only show in main mode */}
-      {mode === "main" && (
-        <div className="absolute inset-0 -z-10 bg-black">
+      {/* GLOBAL BACKGROUND */}
+      <div className="absolute inset-0 -z-10 bg-black">
+
+        {/* <div style={{width: '100%', position: 'relative' }}>
+          <LightRays
+            raysOrigin="top-center"
+            raysColor="#d9d4a5"
+            raysSpeed={1.5}
+            lightSpread={2}
+            rayLength={2}
+            followMouse={true}
+            mouseInfluence={0.1}
+            noiseAmount={0.1}
+            distortion={0.05}
+            className="custom-rays"
+          />
+        </div> */}
           <GlobalBackground />
-        </div>
-      )}
+      </div>
 
       {/* =====================================================
           MODE: MAIN (LANDING + SIGN-IN)
@@ -208,14 +220,6 @@ export default function App() {
                     setMode("dashboard");
                   }}
                 />
-
-                <OpenDashboardButton
-                  onOpen={() => {
-                    setDashPage(0);
-                    setMode("dashboard");
-                  }}
-                />
-                
                 <GoogleButton onPress={() => console.log("Google login")} />
                 <InstagramButton onPress={() => console.log("Instagram login")} />
               </div>
@@ -226,46 +230,111 @@ export default function App() {
       )}
 
       {/* =====================================================
-          MODE: DEMO DASHBOARD
+          MODE: DASHBOARD
       ====================================================== */}
       {mode === "dashboard" && (
-        <div className="relative w-full h-full bg-gray-900">
-          {/* Dashboard Background - separate from main */}
-          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-gray-900 via-gray-800 to-black"></div>
-          
-          {/* Close button */}
-          <button 
-            className="absolute top-4 right-4 z-50 text-white/80 hover:text-white transition"
-            onClick={() => setMode("main")}
+        <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-4">
+
+          {/* Dashboard Title */}
+          {/* <h1 className="mt-7 text-4xl md:text-5xl font-extrabold text-white tracking-wide mb-6 drop-shadow-lg" style={{ fontFamily: "Aileron, sans-serif" }}>
+            Demo Statistics
+          </h1> */}
+
+          {/* =====================================================
+              DASHBOARD GLASS CONTAINER
+          ====================================================== */}
+          <div
+            ref={dashScrollRef}
+            className="
+              relative w-full max-w-5xl h-[75vh]
+              flex overflow-x-auto overflow-y-hidden
+              snap-x snap-mandatory
+              rounded-3xl bg-white/10 backdrop-blur-xl
+              border border-white/20 shadow-2xl
+              no-scrollbar
+            "
           >
-            ✕ Close
-          </button>
-          
-          <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-4">
-            <DashboardPages dashPage={dashPage} setDashPage={setDashPage} />
+
+            {/* Page 0 */}
+            <div className="w-full h-full flex-shrink-0 snap-start p-6">
+              <div className="w-full h-full rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 overflow-y-auto relative">
+
+                {/* INNER CLOSE BUTTON */}
+                <div className="absolute top-4 right-4 z-40">
+                  <CloseDashboardButton onClose={() => setMode("main")} />
+                </div>
+
+                <StatCard />
+              </div>
+            </div>
+
+            {/* Page 1 */}
+            <div className="w-full h-full flex-shrink-0 snap-start p-6">
+              <div className="w-full h-full rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 overflow-y-auto relative">
+
+                <div className="absolute top-4 right-4 z-40">
+                  <CloseDashboardButton onClose={() => setMode("main")} />
+                </div>
+
+                <ActivityCard />
+              </div>
+            </div>
+
+            {/* Page 2 */}
+            <div className="w-full h-full flex-shrink-0 snap-start p-6">
+              <div className="w-full h-full rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 overflow-y-auto relative">
+
+                <div className="absolute top-4 right-4 z-40">
+                  <CloseDashboardButton onClose={() => setMode("main")} />
+                </div>
+
+                <EngagementCard />
+              </div>
+            </div>
           </div>
-        </div>
-      )}
-      
-      {/* =====================================================
-          MODE: INSTAGRAM DASHBOARD
-      ====================================================== */}
-      {mode === "Instagram" && (
-        <div className="relative w-full h-full bg-gray-900">
-          {/* Dashboard Background - separate from main */}
-          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-gray-900 via-gray-800 to-black"></div>
-          
-          {/* Close button */}
-          <button 
-            className="absolute top-4 right-4 z-50 text-white/80 hover:text-white transition"
-            onClick={() => setMode("main")}
-          >
-            ✕ Close
-          </button>
-          
-          <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-4">
-            <DashboardPages dashPage={dashPage} setDashPage={setDashPage} />
+
+          {/* =====================================================
+              ARROWS — BIGGER OUTSIDE CONTAINER
+          ====================================================== */}
+
+          {dashPage > 0 && (
+            <button
+              onClick={() => setDashPage((p) => Math.max(p - 1, 0))}
+              className="
+                absolute top-1/2 -translate-y-1/2 left-[calc(50%-600px)]
+                text-white text-9xl font-light hover:scale-110 transition z-50
+              "
+            >
+              ‹
+            </button>
+          )}
+
+          {dashPage < 2 && (
+            <button
+              onClick={() => setDashPage((p) => Math.min(p + 1, 2))}
+              className="
+                absolute top-1/2 -translate-y-1/2 right-[calc(50%-600px)]
+                text-white text-9xl font-light hover:scale-110 transition z-50
+              "
+            >
+              ›
+            </button>
+          )}
+
+          {/* DOTS */}
+          <div className="flex gap-3 mt-4">
+            {[0, 1, 2].map((i) => (
+              <button
+                key={i}
+                onClick={() => setDashPage(i)}
+                className={`rounded-full transition transform ${dashPage === i
+                    ? "w-3 h-3 bg-white scale-125"
+                    : "w-2 h-2 bg-white/40"
+                  }`}
+              />
+            ))}
           </div>
+
         </div>
       )}
     </div>
