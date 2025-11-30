@@ -16,7 +16,6 @@ import CloseDashboardButton from "./components/CloseDashboardButton";
 import Stepper, { Step } from "./components/Stepper";
 
 import LightRays from './components/LightRays';
-import DashboardPages from "./components/DashboardPages";
 
 
 export default function App() {
@@ -244,10 +243,54 @@ export default function App() {
           {/* =====================================================
               DASHBOARD GLASS CONTAINER
           ====================================================== */}
-          <div className = "h-screen bg-black">
+          <div
+            ref={dashScrollRef}
+            className="
+              relative w-full max-w-5xl h-[75vh]
+              flex overflow-x-auto overflow-y-hidden
+              snap-x snap-mandatory
+              rounded-3xl bg-white/10 backdrop-blur-xl
+              border border-white/20 shadow-2xl
+              no-scrollbar
+            "
+          >
 
-          <DashboardPages/>
+            {/* Page 0 */}
+            <div className="w-full h-full flex-shrink-0 snap-start p-6">
+              <div className="w-full h-full rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 overflow-y-auto relative">
 
+                {/* INNER CLOSE BUTTON */}
+                <div className="absolute top-4 right-4 z-40">
+                  <CloseDashboardButton onClose={() => setMode("main")} />
+                </div>
+
+                <StatCard />
+              </div>
+            </div>
+
+            {/* Page 1 */}
+            <div className="w-full h-full flex-shrink-0 snap-start p-6">
+              <div className="w-full h-full rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 overflow-y-auto relative">
+
+                <div className="absolute top-4 right-4 z-40">
+                  <CloseDashboardButton onClose={() => setMode("main")} />
+                </div>
+
+                <ActivityCard />
+              </div>
+            </div>
+
+            {/* Page 2 */}
+            <div className="w-full h-full flex-shrink-0 snap-start p-6">
+              <div className="w-full h-full rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 overflow-y-auto relative">
+
+                <div className="absolute top-4 right-4 z-40">
+                  <CloseDashboardButton onClose={() => setMode("main")} />
+                </div>
+
+                <EngagementCard />
+              </div>
+            </div>
           </div>
 
           {/* =====================================================
@@ -277,6 +320,20 @@ export default function App() {
               ›
             </button>
           )}
+
+          {/* DOTS */}
+          <div className="flex gap-3 mt-4">
+            {[0, 1, 2].map((i) => (
+              <button
+                key={i}
+                onClick={() => setDashPage(i)}
+                className={`rounded-full transition transform ${dashPage === i
+                    ? "w-3 h-3 bg-white scale-125"
+                    : "w-2 h-2 bg-white/40"
+                  }`}
+              />
+            ))}
+          </div>
 
         </div>
       )}
