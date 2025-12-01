@@ -69,8 +69,8 @@ export default function UploadBox({
           return;
         }
 
-        // Parse all JSON files into a map
-        const entries = await Promise.all(
+        // Parse all JSON files into a list
+        const dataList = await Promise.all(
           jsonFiles.map(async (file) => {
             let relPath = file.webkitRelativePath || file.name;
             
@@ -82,17 +82,18 @@ export default function UploadBox({
 
             const text = await file.text();
             const json = JSON.parse(text);
-            return [relPath, json];
+            return {
+              filename: relPath,
+              content: json
+            };
           })
         );
-
-        const filesMap = Object.fromEntries(entries);
 
         // Send to backend
         const token = localStorage.getItem('access_token');
         await axios.post('https://alder-backend-265736855150.us-west1.run.app/link', {
           platform: "meta",
-          data: filesMap,
+          data: dataList,
           account_name: "Instagram User" // You can prompt user for this or extract from data
         }, {
           headers: {
