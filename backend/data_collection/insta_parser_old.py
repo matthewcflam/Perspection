@@ -1,65 +1,95 @@
 import json
+from pathlib import Path
 from collections import Counter
 from datetime import date, datetime, timedelta
-from typing import Any
 
 class InstagramParser:
-    def __init__(self, filemap: dict[str, Any]):
-        """
-        filemap: dict where keys are filenames like:
-            - "personal_information.json"
-            - "followers_1.json"
-            - "following.json"
-            - "liked_posts.json"
-            - "story_likes.json"
-            - "recent_follow_requests.json"
-            - "recently_unfollowed_profiles.json"
-            - "close_friends.json"
-            - "messages.json" or "message_1.json", "message_2.json", ...
-        and values are the already-parsed JSON objects.
-        """
-        if not isinstance(filemap, dict):
-            raise ValueError("filemap must be a dict[str, Any]")
-        self.filemap = filemap
+    def __init__(self, export_root: str):
+        self.export_root = Path(export_root)
+
+        # === Messages-related ===
+        self.messages_path = (
+            self.export_root
+            / "your_instagram_activity"
+            / "messages"
+            / "inbox"
+        )
 
         # username used in message stats
         raw_username = self._extract_personal_name()
         self.username = self._decode_name(raw_username)
 
-        # === Messages-related ===
         self.messages: list[dict] = []
         self.total_msg_sent = 0
-        self.top_recievers: dict[str, int] = {}
-        self.top_users: dict[str, int] = {}
-        self.dm_dates_by_other: dict[str, set[date]] = {}
-        self.after_midnight_times: list[datetime] = []
-        self.late_msg_by_user: dict[str, list[datetime]] = {}
+        self.top_recievers = {}
+        self.top_users = {}
+        self.dm_dates_by_other = {}
+        self.after_midnight_times = []
+        self.late_msg_by_user = {}
         self.total_reels_sent = 0
         self.recent_messages: dict[str, list[str]] = {}
 
         # === Activity-related ===
+        self.liked_posts_path = (
+            self.export_root
+            / "your_instagram_activity"
+            / "likes"
+            / "liked_posts.json"
+        )
+
+        self.liked_stories_path = (
+            self.export_root
+            / "your_instagram_activity"
+            / "story_interactions"
+            / "story_likes.json"
+        )
+
         self.liked_posts: list[dict] = []
         self.liked_stories: list[str] = []
 
         # === Connections-related ===
+        self.followers_path = (
+            self.export_root
+            / "connections"
+            / "followers_and_following"
+            / "followers_1.json"
+        )
+
+        self.following_path = (
+            self.export_root
+            / "connections"
+            / "followers_and_following"
+            / "following.json"
+        )
+
+        self.close_friends_path = (
+            self.export_root
+            / "connections"
+            / "followers_and_following"
+            / "close_friends.json"
+        )
+
+        self.follow_requests_path = (
+            self.export_root
+            / "connections"
+            / "followers_and_following"
+            / "recent_follow_requests.json"
+        )
+
+        self.unfollowed_path = (
+            self.export_root
+            / "connections"
+            / "followers_and_following"
+            / "recently_unfollowed_profiles.json"
+        )
+
         self.followers: set[str] = set()
         self.following: set[str] = set()
         self.close_friends: set[str] = set()
         self.follow_requests: set[str] = set()
         self.unfollowed: set[str] = set()
 
-    # --------------------------------------------------
-    # Shared helper methods
-    # --------------------------------------------------
-    def _get_file(self, filename: str) -> Any:
-        """
-        Return the parsed JSON object for the given filename key.
-        Raises FileNotFoundError if missing.
-        """
-        if filename not in self.filemap:
-            raise FileNotFoundError(f"{filename} not found in filemap")
-        return self.filemap[filename]
-
+    # Shared helper methods (from original InstagramParser base)
     @staticmethod
     def _extract_username_value(item: dict) -> str | None:
         sld = item.get("string_list_data")
@@ -70,33 +100,27 @@ class InstagramParser:
 
     @staticmethod
     def _extract_username_title(item: dict) -> str | None:
-        title = item.get("title")
-        if not title:
+        sld = item.get("title")
+        if not sld:
             return None
-        return title
+        return sld
 
     def _extract_personal_name(self) -> str | None:
-        """
-        Try to extract the profile name from 'personal_information.json'
-        if present in filemap. If missing or badly formatted, just return None.
-        """
-        filename_candidates = [
-            "personal_information.json",
-            # If you ever decide to keep the original relative path as key
-            "personal_information/personal_information/personal_information.json",
-        ]
+        name_path = (
+            self.export_root
+            / "personal_information"
+            / "personal_information"
+            / "personal_information.json"
+        )
 
-        data = None
-        for fname in filename_candidates:
-            if fname in self.filemap:
-                data = self.filemap[fname]
-                break
+        if not name_path.exists():
+            raise ValueError(f"File not found {name_path}")
 
-        if data is None:
-            # No personal info file – fine, username will be None
-            return None
+        with name_path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
 
         profile_user = data.get("profile_user")
+
         if not isinstance(profile_user, list) or not profile_user:
             return None
 
@@ -119,112 +143,95 @@ class InstagramParser:
     def _ts_to_date(self, ts_ms: int) -> date:
         return datetime.fromtimestamp(ts_ms / 1000).date()
 
-    # --------------------------------------------------
-    # Messages-related methods
-    # --------------------------------------------------
-    def _iter_message_threads(self):
-        """
-        Yield (thread_name, data_dict) for each messages file in filemap.
-
-        We treat keys that:
-            - start with "message_" and end with ".json", OR
-            - equal "messages.json"
-        as thread JSONs with the standard Instagram export format.
-        """
-        for filename, data in self.filemap.items():
-            if not filename.endswith(".json"):
-                continue
-            if filename == "messages.json" or filename.startswith("message_"):
-                # title inside JSON takes precedence; fallback to filename
-                title = data.get("title") or filename
-                yield title, data
-
-    def load_all_messages(self) -> None:
+    # Messages-related methods (from InstagramMessagesParser)
+    def load_all_messages(self):
         all_messages = []
         total_sent = 0
-        top_msg_by_user: dict[str, int] = {}
-        top_msg_users: dict[str, int] = {}
-        dm_dates_by_other: dict[str, set[date]] = {}
-        after_midnight_times: list[datetime] = []
-        late_msg_by_user: dict[str, list[datetime]] = {}
+        top_msg_by_user = {}
+        top_msg_users = {}
+        dm_dates_by_other = {}
+        after_midnight_times = []
+        late_msg_by_user = {}
         total_reels_sent = 0
         messages_by_other: dict[str, list[tuple[int, str]]] = {}
 
-        for thread_title, data in self._iter_message_threads():
-            # participants
-            raw_participants = [
-                p.get("name", "") for p in data.get("participants", [])
-            ]
-            participants = [self._decode_name(name) for name in raw_participants]
-            title = data.get("title", thread_title)
+        if not self.messages_path.exists():
+            raise FileNotFoundError(f"File not found: {self.messages_path}")
 
-            for m in data.get("messages", []):
-                raw_sender = m.get("sender_name")
-                sender = self._decode_name(raw_sender)
-                content = m.get("content")
-                timestamp_ms = m.get("timestamp_ms")
-                share = m.get("share")
+        for thread_dir in self.messages_path.iterdir():
+            if not thread_dir.is_dir():
+                continue
 
-                info = {
-                    "thread": title,
-                    "participants": participants,
-                    "sender": sender,
-                    "content": content,
-                    "timestamp_ms": timestamp_ms,
-                    "share": share,
-                }
-                all_messages.append(info)
+            for msg_file in sorted(thread_dir.glob("message_*.json")):
+                with msg_file.open("r", encoding="utf-8") as f:
+                    data = json.load(f)
 
-                # Only meaningful for 1:1 DMs where we are a participant
-                if len(participants) == 2 and self.username in participants:
-                    others = [p for p in participants if p != self.username]
-                    if not others:
-                        continue
+                raw_participants = []
+                for p in data.get("participants", []):
+                    raw_participants.append(p.get("name", ""))
 
-                    other = others[0]
+                participants = [self._decode_name(name) for name in raw_participants]
+                title = data.get("title", thread_dir.name)
 
-                    # Messages we sent
-                    if sender == self.username:
-                        total_sent += 1
-                        top_msg_by_user[other] = top_msg_by_user.get(other, 0) + 1
+                for m in data.get("messages", []):
+                    raw_sender = m.get("sender_name")
+                    sender = self._decode_name(raw_sender)
+                    content = m.get("content")
+                    timestamp_ms = m.get("timestamp_ms")
+                    share = m.get("share")
 
-                        if isinstance(timestamp_ms, int):
-                            dt = datetime.fromtimestamp(timestamp_ms / 1000)
-                            day = dt.date()
-                            top_dates = dm_dates_by_other.setdefault(other, set())
-                            top_dates.add(day)
+                    info = {
+                        "thread": title,
+                        "participants": participants,
+                        "sender": sender,
+                        "content": content,
+                        "timestamp_ms": timestamp_ms,
+                        "share": share,
+                    }
+                    all_messages.append(info)
 
-                            if 0 <= dt.hour < 5:
-                                after_midnight_times.append(dt)
-                                late_msg_by_user.setdefault(other, []).append(dt)
+                    if len(participants) == 2 and self.username in participants:
+                        others = [p for p in participants if p != self.username]
+                        if not others:
+                            continue
 
-                        # For recent messages content by other
-                        if (
-                            isinstance(content, str)
-                            and isinstance(timestamp_ms, int)
-                        ):
+                        other = others[0]
+
+                        if sender == self.username:
+                            total_sent += 1
+                            top_msg_by_user[other] = top_msg_by_user.get(other, 0) + 1
+
+                            if timestamp_ms:
+                                day = datetime.fromtimestamp(timestamp_ms / 1000).date()
+                                top_dates = dm_dates_by_other.setdefault(other, set())
+                                top_dates.add(day)
+
+                                dt = datetime.fromtimestamp(timestamp_ms / 1000)
+                                if 0 <= dt.hour < 5:
+                                    after_midnight_times.append(dt)
+                                    late_msg_by_user.setdefault(other, []).append(dt)
+                                    
+                    if isinstance(content, str) and isinstance(timestamp_ms, int) and len(participants) == 2:
                             bucket = messages_by_other.setdefault(other, [])
                             bucket.append((timestamp_ms, content))
 
-                    # Messages we received
                     if sender != self.username and sender and len(participants) == 2:
                         top_msg_users[sender] = top_msg_users.get(sender, 0) + 1
 
-                # Reel detection
-                is_reel = False
-                if isinstance(share, dict):
-                    link = share.get("link") or ""
-                    if "instagram.com/reel" in link:
-                        is_reel = True
+                    is_reel = False
 
-                if not is_reel and isinstance(content, str):
-                    if "instagram.com/reel" in content:
-                        is_reel = True
+                    if isinstance(share, dict):
+                        link = share.get("link") or ""
+                        if "instagram.com/reel" in link:
+                            is_reel = True
 
-                if sender == self.username and is_reel:
-                    total_reels_sent += 1
+                    if not is_reel and isinstance(content, str):
+                        if "instagram.com/reel" in content:
+                            is_reel = True
 
-        # Build recent messages by most recent timestamp per user
+                    if sender == self.username and is_reel:
+                        total_reels_sent += 1
+                        
         recent_messages: dict[str, list[str]] = {}
 
         NUM_USERS = 10
@@ -234,16 +241,18 @@ class InstagramParser:
         for other, items in messages_by_other.items():
             last_ts_by_other[other] = max(ts for ts, _ in items)
 
+        # Sort users by recency of that last message (newest first)
         sorted_others = sorted(
             last_ts_by_other.items(),
             key=lambda kv: kv[1],
             reverse=True,
         )[:NUM_USERS]
-
+        
         for other, _ in sorted_others:
             items = messages_by_other[other]
-            # newest → oldest
+            # sort that conversation newest -> oldest
             items.sort(key=lambda x: x[0], reverse=True)
+            # keep the top 5 contents
             recent_messages[other] = [content for _, content in items[:NUM_MSGS_PER_USER]]
 
         self.messages = all_messages
@@ -256,7 +265,8 @@ class InstagramParser:
         self.total_reels_sent = total_reels_sent
         self.recent_messages = recent_messages
 
-    # Message statistics
+    # Message Statistics (same names)
+
     def get_total_msg_sent(self) -> int:
         return self.total_msg_sent
 
@@ -266,8 +276,8 @@ class InstagramParser:
     def get_top_5_user_msg(self) -> list[tuple[str, int]]:
         return Counter(self.top_users).most_common(5)
 
-    def get_dm_streaks(self) -> dict[str, int]:
-        streaks: dict[str, int] = {}
+    def get_dm_streaks(self) -> dict:
+        streaks = {}
 
         for other, dates in self.dm_dates_by_other.items():
             if not dates:
@@ -314,7 +324,7 @@ class InstagramParser:
         td = timedelta(seconds=int(total))
         return str(td)
 
-    def _compute_time_from_timestamps(self, timestamps: list[datetime]) -> int:
+    def _compute_time_from_timestamps(self, timestamps: list) -> int:
         if len(timestamps) < 2:
             return 0
 
@@ -332,41 +342,41 @@ class InstagramParser:
         return int(total)
 
     def get_top_5_user_late_msg(self) -> list[tuple[str, str]]:
-        results: list[tuple[str, str]] = []
+        results = []
 
         for user, timestamps in self.late_msg_by_user.items():
             total_seconds = self._compute_time_from_timestamps(timestamps)
             td = timedelta(seconds=total_seconds)
             results.append((user, str(td)))
 
-        # Sort descending by total time string interpreted as HH:MM:SS
-        def _time_to_seconds(time_str: str) -> int:
-            parts = [int(p) for p in time_str.split(":")]
-            while len(parts) < 3:
-                parts.insert(0, 0)
-            h, m, s = parts
-            return h * 3600 + m * 60 + s
+        results.sort(
+            key=lambda x: sum(
+                int(t) * 60**i for i, t in enumerate(reversed(x[1].split(":")))
+            ),
+            reverse=True,
+        )
 
-        results.sort(key=lambda x: _time_to_seconds(x[1]), reverse=True)
         return results[:5]
 
     def get_total_reels_sent(self) -> int:
         return self.total_reels_sent
 
-    def get_recent_messages(self) -> dict[str, list[str]]:
-        return self.recent_messages
+    # ==========================================================
+    # Activity-related methods (from InstagramActivityParser)
+    # ==========================================================
 
-    # --------------------------------------------------
-    # Activity-related methods
-    # --------------------------------------------------
     def load_liked_posts(self) -> None:
-        data = self._get_file("liked_posts.json")
+        if not self.liked_posts_path.exists():
+            raise FileNotFoundError(f"File not found: {self.liked_posts_path}")
 
-        liked_posts: list[dict] = []
+        with self.liked_posts_path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        liked_posts = []
 
         items = data.get("likes_media_likes")
         if not isinstance(items, list):
-            raise ValueError("Unexpected format in liked_posts.json")
+            raise ValueError("Unexpected format in json file")
 
         for item in items:
             username = self._extract_username_title(item)
@@ -379,22 +389,24 @@ class InstagramParser:
             url = first.get("href")
             ts = first.get("timestamp")
 
-            liked_posts.append(
-                {
-                    "username": username,
-                    "url": url,
-                    "timestamp": ts,
-                }
-            )
+            liked_posts.append({
+                "username": username,
+                "url": url,
+                "timestamp": ts,
+            })
 
         self.liked_posts = liked_posts
 
     def load_liked_stories(self) -> None:
-        data = self._get_file("story_likes.json")
+        if not self.liked_stories_path.exists():
+            raise FileNotFoundError(f"File not found: {self.liked_stories_path}")
+
+        with self.liked_stories_path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
 
         items = data.get("story_activities_story_likes")
         if not isinstance(items, list):
-            raise ValueError("Unexpected format in story_likes.json")
+            raise ValueError("Unexpected format in json file")
 
         liked_stories: list[str] = []
         for item in items:
@@ -404,7 +416,8 @@ class InstagramParser:
 
         self.liked_stories = liked_stories
 
-    # Activity statistics
+    # Activity Statistics (same names)
+
     def get_total_liked_posts(self) -> int:
         return len(self.liked_posts)
 
@@ -415,11 +428,16 @@ class InstagramParser:
     def get_total_liked_stories(self) -> int:
         return len(self.liked_stories)
 
-    # --------------------------------------------------
-    # Connections-related methods
-    # --------------------------------------------------
+    # ==========================================================
+    # Connections-related methods (from InstagramConnectionsParser)
+    # ==========================================================
+
     def load_followers(self) -> None:
-        data = self._get_file("followers_1.json")
+        if not self.followers_path.exists():
+            raise FileNotFoundError(f"File not found: {self.followers_path}")
+
+        with self.followers_path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
 
         followers: set[str] = set()
 
@@ -428,19 +446,21 @@ class InstagramParser:
                 username = self._extract_username_value(item)
                 if username:
                     followers.add(username)
-        else:
-            raise ValueError("followers_1.json must be a list")
 
         self.followers = followers
 
     def load_following(self) -> None:
-        data = self._get_file("following.json")
+        if not self.following_path.exists():
+            raise ValueError(f"File not found {self.following_path}")
+
+        with self.following_path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
 
         following: set[str] = set()
         items = data.get("relationships_following")
 
         if not isinstance(items, list):
-            raise ValueError("Unexpected format in following.json")
+            raise ValueError("Unexpected format in json file")
 
         for item in items:
             username = self._extract_username_title(item)
@@ -450,13 +470,17 @@ class InstagramParser:
         self.following = following
 
     def load_close_friends(self) -> None:
-        data = self._get_file("close_friends.json")
+        if not self.close_friends_path.exists():
+            raise ValueError(f"File not found {self.close_friends_path}")
+
+        with self.close_friends_path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
 
         close_friends: set[str] = set()
         items = data.get("relationships_close_friends")
 
         if not isinstance(items, list):
-            raise ValueError("Unexpected format in close_friends.json")
+            raise ValueError("Unexpected format in json file")
 
         for item in items:
             username = self._extract_username_value(item)
@@ -466,13 +490,17 @@ class InstagramParser:
         self.close_friends = close_friends
 
     def load_follow_requests(self) -> None:
-        data = self._get_file("recent_follow_requests.json")
+        if not self.follow_requests_path.exists():
+            raise ValueError(f"File not found {self.follow_requests_path}")
+
+        with self.follow_requests_path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
 
         follow_requests: set[str] = set()
         items = data.get("relationships_permanent_follow_requests")
 
         if not isinstance(items, list):
-            raise ValueError("Unexpected format in recent_follow_requests.json")
+            raise ValueError("Unexpected format in json file")
 
         for item in items:
             username = self._extract_username_value(item)
@@ -482,13 +510,17 @@ class InstagramParser:
         self.follow_requests = follow_requests
 
     def load_unfollowed(self) -> None:
-        data = self._get_file("recently_unfollowed_profiles.json")
+        if not self.unfollowed_path.exists():
+            raise ValueError(f"File not found {self.unfollowed_path}")
+
+        with self.unfollowed_path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
 
         unfollowed: set[str] = set()
         items = data.get("relationships_unfollowed_users")
 
         if not isinstance(items, list):
-            raise ValueError("Unexpected format in recently_unfollowed_profiles.json")
+            raise ValueError("Unexpected format in json file")
 
         for item in items:
             username = self._extract_username_value(item)
@@ -501,10 +533,10 @@ class InstagramParser:
         self.load_followers()
         self.load_following()
 
-    # Comparison / counts
+    # Comparison methods
     def get_follower_count(self) -> int:
         return len(self.followers)
-
+    
     def get_following_count(self) -> int:
         return len(self.following)
 
@@ -516,21 +548,24 @@ class InstagramParser:
 
     def get_followers_only(self) -> int:
         return len(self.followers - self.following)
-
+    
     def get_follow_req(self) -> int:
         return len(self.follow_requests)
-
+    
     def get_unfollowed(self) -> int:
         return len(self.unfollowed)
-
+    
     def get_close_friends(self) -> int:
         return len(self.close_friends)
-
+    
     def get_only_following(self) -> set[str]:
+
         SHOW_N = 5
 
-        diff = self.following - self.followers
-        if not diff:
+        if not self.following - self.followers:
             return set()
 
-        return set(list(sorted(diff))[:SHOW_N])
+        return set(list(sorted(self.following - self.followers))[:SHOW_N])
+
+    def get_recent_messages(self) -> dict[str, list[str]]:
+        return self.recent_messages
