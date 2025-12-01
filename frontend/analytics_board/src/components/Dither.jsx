@@ -261,12 +261,12 @@ function DitheredWaves({
 }
 
 export default function Dither({
-  waveSpeed = 0.05,
+  waveSpeed = 0.15,
   waveFrequency = 3,
   waveAmplitude = 0.3,
-  waveColor = [0.5, 0.5, 0.5],
+  waveColor = [0.2, 0.7, 0.9],
   colorNum = 4,
-  pixelSize = 2,
+  pixelSize = 3,
   disableAnimation = false,
   enableMouseInteraction = true,
   mouseRadius = 1

@@ -1,4 +1,4 @@
-import GlobalBackground from "../components/GlobalBackground";
+import GlobalBackground from "../../components/GlobalBackground";
 import OpenDashboardButton from "../components/OpenDashboardButton";
 import GoogleButton from "../components/GoogleButton";
 import InstagramButton from "../components/InstagramButton";

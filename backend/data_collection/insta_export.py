@@ -1,4 +1,4 @@
-from insta_parser import InstagramParser  # adjust import to your filename
+from backend.data_collection.insta_parser_old import InstagramParser  # adjust import to your filename
 
 def main():
     export_root = input("Enter path to data folder: ").strip()
