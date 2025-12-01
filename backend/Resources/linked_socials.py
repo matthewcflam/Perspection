@@ -164,10 +164,10 @@ class LinkSocials(MethodView):
 
                     google = GoogleModel(
                         name=account_name,
-                        linked_socials_id=linked_socials.id  # safer than object assign if not flushed
+                        linked_socials_id=linked_socials.id 
                     )
                     db.session.add(google)
-                    db.session.flush()  # ✅ Critical: assigns google.id
+                    db.session.flush()  
 
                     youtube = YoutubeModel(
                         google_id=google.id, 
@@ -175,7 +175,7 @@ class LinkSocials(MethodView):
                         total_liked_videos=total_liked_videos
                     )
                     db.session.add(youtube)
-                    db.session.flush()  # ✅ assigns youtube.id
+                    db.session.flush() 
 
                     # --- 4. Save liked videos ---
                     for video in liked_videos:
@@ -200,14 +200,14 @@ class LinkSocials(MethodView):
                             cid = "unknown_channel"
                         subscription = YoutubeSubscribedModel(
                             youtube_id=youtube.id,
-                            channel_id=cid  # ✅ Required & non-null — using title as stand-in
+                            channel_id=cid  
                         )
                         db.session.add(subscription)
 
                     # --- 6. Save top liked creators ---
                     for creator in top_liked_creators[:5]:  # Top 5
                         creator_entry = TopLikedCreatorModel(
-                            youtube_metrics_id=youtube.id,  # ✅ Correct FK (to youtube_metrics.id)
+                            youtube_metrics_id=youtube.id,  
                             channel_name=(creator.get("name") or "Unknown")[:100],
                             liked_videos_count=creator.get("liked_count", 0)
                         )

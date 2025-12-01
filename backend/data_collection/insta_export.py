@@ -1,4 +1,4 @@
-from backend.data_collection.insta_parser_old import InstagramParser  # adjust import to your filename
+from backend.data_collection.insta_parser_old import InstagramParser
 
 def main():
     export_root = input("Enter path to data folder: ").strip()
@@ -18,8 +18,8 @@ def main():
     # Messages
     ig.load_all_messages()
 
-    personal_name = ig._extract_personal_name()  # same as before
-
+    personal_name = ig._extract_personal_name()
+    
     follow_requests = ig.get_follow_req()
     unfollowed = ig.get_unfollowed()
     close_friends = ig.get_close_friends()

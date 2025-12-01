@@ -1,6 +1,3 @@
-# app.py instantiates the app, and connects to all necessary tools
-# such as the database, CORS config, JWT, and other configs.
-
 import os
 from datetime import timedelta
 
@@ -11,8 +8,9 @@ from flask_migrate import Migrate
 from flask_smorest import Api
 
 from DataBase import db
+# IMPORTED TokenBlocklistModel for the logout callback
+from Models import TokenBlocklistModel 
 
-# .[file] should match resource names. Will finalize once endpoints are setup
 from Resources.user import blp as UserBlueprint
 from Resources.linked_socials import blp as LinkedSocialsBlueprint
 from Resources.meta import blp as MetaBlueprint
@@ -29,8 +27,6 @@ def create_app():
 
     # ==== CORS config ====
     FRONTEND_URL = os.getenv("FRONTEND_URL", "*")
-
-    # Splits by comma to support multiple origins
     origins = [url.strip() for url in FRONTEND_URL.split(",")] if FRONTEND_URL != "*" else ["*"]
 
     CORS(
@@ -61,8 +57,24 @@ def create_app():
 
     # ==== Extensions init ====
     db.init_app(app)
+
+    # ==== TEMP FIX: Create tables if they don't exist (Fixes 500 Error) ====
+    # Remove this block after your tables are successfully created in Cloud SQL
+    with app.app_context():
+        db.create_all()
+
     Migrate(app, db)
+    
+    # JWT Blocklist Callback
     jwt = JWTManager(app)
+
+    @jwt.token_in_blocklist_loader
+    def check_if_token_in_blocklist(jwt_header, jwt_payload):
+        jti = jwt_payload["jti"]
+        # Check if the JTI is in the blocklist table
+        token = db.session.query(TokenBlocklistModel.id).filter_by(expired_jwt=jti).scalar()
+        return token is not None
+
     api = Api(app)
 
     # ==== Blueprints ====
@@ -76,4 +88,4 @@ def create_app():
 
 if __name__ == "__main__":
     app = create_app()
-    app.run(debug=True)
+    app.run(debug=False)

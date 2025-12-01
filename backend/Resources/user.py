@@ -70,7 +70,7 @@ class UserLogin(MethodView):
         # Verify password
         if user and pbkdf2_sha256.verify(user_data["password"], user.password):
             # Grant access token
-            access_token = create_access_token(identity = user.id)
+            access_token = create_access_token(identity = str(user.id))
             return {"access_token": access_token}
         
         # If not returned by this point, invalid credentials
@@ -85,8 +85,8 @@ class UserLogout(MethodView):
     def post(self):
         # Get jwt id
         jti = get_jwt()["jti"]
-        if not TokenBlocklistModel.query.filter_by(blocked_jwt = jti).first():
-            db.session.add(TokenBlocklistModel(blocked_jwt = jti))
+        if not TokenBlocklistModel.query.filter_by(expired_jwt = jti).first():
+            db.session.add(TokenBlocklistModel(expired_jwt = jti))
             db.session.commit()
         return {"message": "Logged out successfully"}
     
@@ -100,11 +100,11 @@ class User(MethodView):
     def get(self, user_id):
         current_user_id = get_jwt_identity()
 
-        if current_user_id != user_id:
+        # FIX: Cast user_id to string so it matches current_user_id
+        if current_user_id != str(user_id):
             abort(403, message = "Unauthorized to perform this action")
 
         user = UserModel.query.get_or_404(user_id)
-        # Returns the user's linked socials, username, and user id
         return user
     
     @jwt_required()
