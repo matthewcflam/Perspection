@@ -44,7 +44,7 @@ class InstagramParser:
         # === Connections-related ===
         self.followers: set[str] = set()
         self.following: set[str] = set()
-        self.close_friends: set[str] = set()
+        # self.close_friends: set[str] = set()
         self.follow_requests: set[str] = set()
         self.unfollowed: set[str] = set()
 
@@ -449,21 +449,21 @@ class InstagramParser:
 
         self.following = following
 
-    def load_close_friends(self) -> None:
-        data = self._get_file("close_friends.json")
+    # def load_close_friends(self) -> None:
+    #     data = self._get_file("close_friends.json")
 
-        close_friends: set[str] = set()
-        items = data.get("relationships_close_friends")
+    #     close_friends: set[str] = set()
+    #     items = data.get("relationships_close_friends")
 
-        if not isinstance(items, list):
-            raise ValueError("Unexpected format in close_friends.json")
+    #     if not isinstance(items, list):
+    #         raise ValueError("Unexpected format in close_friends.json")
 
-        for item in items:
-            username = self._extract_username_value(item)
-            if username:
-                close_friends.add(username)
+    #     for item in items:
+    #         username = self._extract_username_value(item)
+    #         if username:
+    #             close_friends.add(username)
 
-        self.close_friends = close_friends
+    #     self.close_friends = close_friends
 
     def load_follow_requests(self) -> None:
         data = self._get_file("recent_follow_requests.json")
@@ -523,8 +523,8 @@ class InstagramParser:
     def get_unfollowed(self) -> int:
         return len(self.unfollowed)
 
-    def get_close_friends(self) -> int:
-        return len(self.close_friends)
+    # def get_close_friends(self) -> int:
+    #     return len(self.close_friends)
 
     def get_only_following(self) -> set[str]:
         SHOW_N = 5
