@@ -1,48 +1,93 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 
-export default function UploadBox({ label, onUploaded }) {
-  const [status, setStatus] = useState("idle");
+
+export default function UploadBox({
+  label,
+  provider,         // "google" or "instagram"
+  uploaded,         // false | "loading" | true
+  setUploaded,      // setter passed from App.jsx
+  onUploaded        // callback for VIEW STATISTICS click
+}) {
   const fileInputRef = useRef(null);
+
+  // Upload icon (SVG)
+  const uploadIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="white"
+      viewBox="0 0 24 24"
+      className="w-10 h-10 opacity-90 mb-2"
+    >
+      <path d="M12 16c-.55 0-1-.45-1-1V9.83l-1.59 1.58a.996.996 0 11-1.41-1.41l3.3-3.29c.39-.39 1.03-.39 1.42 0l3.3 3.29a.996.996 0 11-1.41 1.41L13 9.83V15c0 .55-.45 1-1 1zm8-4c-.55 0-1 .45-1 1v5H5v-5c0-.55-.45-1-1-1s-1 .45-1 1v6c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-6c0-.55-.45-1-1-1z"/>
+    </svg>
+  );
+
+  // Full-color Google / Instagram icons
+  const providerIcon =
+  provider === "google" ? (
+    <img 
+        src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Google_Favicon_2025.svg"
+      alt="Google Icon"
+      className="w-8 h-8 mb-1"
+    />
+  ) : (
+    <img 
+      src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"
+      alt="Instagram Icon"
+      className="w-9 h-9 mb-1 rounded-lg"
+    />
+  );
+
+
+  // GIANT glow tint around the box
+  const glowClass =
+    provider === "google"
+      ? "shadow-[0_0_25px_4px_rgba(100,200,100,0.8)]" // Google blue glow
+      : "shadow-[0_0_25px_4px_rgba(225,48,108,0.8)]"; // Instagram pink-purple glow
 
   const handleFileSelect = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    simulateUpload();
+
+    setUploaded("loading");
+
+    setTimeout(() => {
+      setUploaded(true);
+    }, 900);
   };
 
-  const simulateUpload = () => {
-    setStatus("loading");
-    setTimeout(() => {
-      setStatus("done");
-    }, 900);
+  const handleClick = () => {
+    if (uploaded === true) {
+      onUploaded();
+    } else {
+      fileInputRef.current?.click();
+    }
   };
 
   return (
     <div
-      onClick={() => {
-        if (status === "done") {
-          onUploaded(); // clicking "VIEW STATISTICS"
-        } else {
-          fileInputRef.current?.click();
-        }
-      }}
+      onClick={handleClick}
       className={`
         w-64 h-64 cursor-pointer rounded-3xl border-2 border-white/40
-        flex items-center justify-center text-center p-6
+        flex flex-col items-center justify-center text-center p-6
         transition-all duration-300 relative
-        bg-white/30 backdrop-blur-md
+        bg-white/30 backdrop-blur-lg
         hover:bg-white/40
+
+        ${glowClass}
       `}
     >
+
       {/* dotted inner border */}
       <div
         className="
-          absolute inset-[6px] rounded-2xl 
-          border-2 border-dotted border-white/60
+          absolute inset-[6px] rounded-2xl
+          border-2 border-dotted border-white/70
           pointer-events-none
         "
       ></div>
 
+      {/* hidden file input */}
       <input
         ref={fileInputRef}
         type="file"
@@ -50,27 +95,30 @@ export default function UploadBox({ label, onUploaded }) {
         onChange={handleFileSelect}
       />
 
-      {/* CONTENT STATES */}
-      {status === "idle" && (
-        <div className="flex flex-col items-center gap-2 z-10">
-          <span className="text-xl font-semibold">{label}</span>
+      {/* STATES */}
+      {uploaded === false && (
+        <div className="flex flex-col items-center z-10">
+          {uploadIcon}
+          {providerIcon}
+          <span className="text-xl font-semibold mt-1">{label}</span>
           <span className="text-sm opacity-70">Click or drag to upload</span>
         </div>
       )}
 
-      {status === "loading" && (
+      {uploaded === "loading" && (
         <div className="text-lg text-white/80 animate-pulse z-10">
           Uploading…
         </div>
       )}
 
-      {status === "done" && (
-        <div className="flex flex-col items-center gap-2 z-10">
-          <span className="text-2xl font-bold text-green-300">
-            VIEW
+      {uploaded === true && (
+        <div className="flex flex-col items-center gap-1 z-10">
+          {providerIcon}
+          <span className="text-xl font-bold text-green-300">
+            VIEW STATISTICS
           </span>
-          <span className="text-sm font-semibold uppercase tracking-wide">
-            {label} Statistics
+          <span className="text-xs font-semibold uppercase tracking-wide">
+            {label}
           </span>
         </div>
       )}
