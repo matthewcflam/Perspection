@@ -103,7 +103,7 @@ class YouTubeClient:
                 maxResults=min(limit, 50),
             ).execute()
         except Exception as e:
-            print(f"⚠️ API error: {e}")
+            print(f"API error: {e}")
             return []
 
         channel_ids = []
@@ -139,7 +139,7 @@ class YouTubeClient:
                 for item in channels_response.get("items", [])
             ]
         except Exception as e:
-            print(f"⚠️ Failed to resolve channel names: {e}")
+            print(f" Failed to resolve channel names: {e}")
             return [f"[Channel ID: {cid}]" for cid in channel_ids]
    
     #params: starting and ending range (written in ISO 8601 format)
@@ -217,7 +217,7 @@ class YouTubeClient:
                         video["channel_title"] = details["channelTitle"]
 
         except Exception as e:
-            print(f"⚠️ Error fetching liked videos: {e}")
+            print(f" Error fetching liked videos: {e}")
             return {"count": 0, "videos": []}
         
         return {
