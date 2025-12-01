@@ -6,8 +6,10 @@
 - Worked on receiving the endpoints from the backend  
 
 ## Matthew Lam
-- Used React with TailwindCSS to build and style frontend components  
-- Assisted with UI development  
+- Drafted Wireframes in Figma
+- Used React, JavaScript, and CSS with TailwindCSS to set up the frontend. 
+- Connected frontend to backend APIs
+
 
 ## Rui Chang
 - Worked on backend parsing logic  
