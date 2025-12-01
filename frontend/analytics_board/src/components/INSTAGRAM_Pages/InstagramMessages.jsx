@@ -128,7 +128,7 @@ export default function MessagesDashboard() {
 
       {/* HERO */}
       <HeroHeader
-        title="You sent over 1,000 messages this week!"
+        title="You sent sooooo many messages this week!"
         subtitle="You really love talking."
       />
 

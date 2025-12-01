@@ -91,7 +91,7 @@ export default function FollowersDashboard() {
         title={
           newThisWeek != null
             ? `You gained ${newThisWeek} followers last week!`
-            : "Your Follower Analytics"
+            : "Let's look through your follower analytics!"
         }
         subtitle="See who follows you, who you follow, and who doesn't follow back."
       />
