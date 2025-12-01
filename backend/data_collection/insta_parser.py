@@ -3,10 +3,20 @@ from collections import Counter
 from datetime import date, datetime, timedelta
 from typing import Any
 
+
 class InstagramParser:
-    def __init__(self, filemap: dict[str, Any]):
+    def __init__(self, json_list: list[Any]):
         """
-        filemap: dict where keys are filenames like:
+        json_list: list that are the CONTENTS of the JSON files, e.g.
+            [
+                {...},  # following.json contents
+                [...],  # followers_1.json contents
+                {...},  # liked_posts.json contents
+                {...},  # messages.json contents
+                ...
+            ]
+        We infer which is which and build an internal filemap dict
+        so the rest of the code can keep using filename keys:
             - "personal_information.json"
             - "followers_1.json"
             - "following.json"
@@ -16,11 +26,12 @@ class InstagramParser:
             - "recently_unfollowed_profiles.json"
             - "close_friends.json"
             - "messages.json" or "message_1.json", "message_2.json", ...
-        and values are the already-parsed JSON objects.
         """
-        if not isinstance(filemap, dict):
-            raise ValueError("filemap must be a dict[str, Any]")
-        self.filemap = filemap
+        if not isinstance(json_list, list):
+            raise ValueError("json_list must be a list[Any]")
+
+        # Build the internal filename -> JSON object map from the raw contents
+        self.filemap: dict[str, Any] = self._build_filemap_from_list(json_list)
 
         # username used in message stats
         raw_username = self._extract_personal_name()
@@ -47,6 +58,89 @@ class InstagramParser:
         # self.close_friends: set[str] = set()
         self.follow_requests: set[str] = set()
         self.unfollowed: set[str] = set()
+
+    # --------------------------------------------------
+    # Adapter: build filemap from list-of-JSON-objects
+    # --------------------------------------------------
+    def _build_filemap_from_list(self, json_list: list[Any]) -> dict[str, Any]:
+        """
+        Turn a list of JSON contents into an internal dict that looks like:
+            {
+                "following.json": {...},
+                "followers_1.json": [...],
+                "liked_posts.json": {...},
+                "story_likes.json": {...},
+                "recent_follow_requests.json": {...},
+                "recently_unfollowed_profiles.json": {...},
+                "close_friends.json": {...},
+                "message_1.json": {...},
+                "message_2.json": {...},
+                ...
+            }
+        based purely on the CONTENTS (their keys/shape).
+        """
+        filemap: dict[str, Any] = {}
+        msg_idx = 1  # for synthetic message_1.json, message_2.json, ...
+
+        for obj in json_list:
+            if not isinstance(obj, (dict, list)):
+                continue
+
+            # ---- Dict-shaped JSONs ----
+            if isinstance(obj, dict):
+                # following.json
+                if "relationships_following" in obj:
+                    filemap.setdefault("following.json", obj)
+                    continue
+
+                # liked_posts.json
+                if "likes_media_likes" in obj:
+                    filemap.setdefault("liked_posts.json", obj)
+                    continue
+
+                # story_likes.json
+                if "story_activities_story_likes" in obj:
+                    filemap.setdefault("story_likes.json", obj)
+                    continue
+
+                # recent_follow_requests.json
+                if "relationships_permanent_follow_requests" in obj:
+                    filemap.setdefault("recent_follow_requests.json", obj)
+                    continue
+
+                # recently_unfollowed_profiles.json
+                if "relationships_unfollowed_users" in obj:
+                    filemap.setdefault("recently_unfollowed_profiles.json", obj)
+                    continue
+
+                # close_friends.json (if you re-enable that loader later)
+                if "relationships_close_friends" in obj:
+                    filemap.setdefault("close_friends.json", obj)
+                    continue
+
+                # personal_information.json (profile_user with string_map_data)
+                if "profile_user" in obj:
+                    pu = obj.get("profile_user")
+                    if isinstance(pu, list) and pu and isinstance(pu[0], dict):
+                        if "string_map_data" in pu[0]:
+                            filemap.setdefault("personal_information.json", obj)
+                            continue
+
+                # messages thread: has "messages" and "participants"
+                if "messages" in obj and "participants" in obj:
+                    fname = f"message_{msg_idx}.json"
+                    msg_idx += 1
+                    filemap[fname] = obj
+                    continue
+
+            # ---- List-shaped JSONs (followers_1.json) ----
+            if isinstance(obj, list):
+                # We assume followers_1.json is a list whose items have "string_list_data"
+                if obj and isinstance(obj[0], dict) and "string_list_data" in obj[0]:
+                    filemap.setdefault("followers_1.json", obj)
+                    continue
+
+        return filemap
 
     # --------------------------------------------------
     # Shared helper methods
@@ -451,18 +545,18 @@ class InstagramParser:
 
     # def load_close_friends(self) -> None:
     #     data = self._get_file("close_friends.json")
-
+    #
     #     close_friends: set[str] = set()
     #     items = data.get("relationships_close_friends")
-
+    #
     #     if not isinstance(items, list):
     #         raise ValueError("Unexpected format in close_friends.json")
-
+    #
     #     for item in items:
     #         username = self._extract_username_value(item)
     #         if username:
     #             close_friends.add(username)
-
+    #
     #     self.close_friends = close_friends
 
     def load_follow_requests(self) -> None:
