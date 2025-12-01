@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 // Back end base URL (e.g. Cloud Run URL)
 // In Vite: VITE_API_BASE_URL="https://your-cloud-run-url.a.run.app"
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const API_BASE = "https://alder-backend-265736855150.us-west1.run.app";
 
 export default function InstagramLikes() {
   const [likedUsers, setLikedUsers] = useState([]);

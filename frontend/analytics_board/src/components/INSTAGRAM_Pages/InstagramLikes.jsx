@@ -1,6 +1,7 @@
+// InstagramLikes.jsx
 import React, { useEffect, useState } from "react";
-import HeroHeader from "../HeroHeader";
 
+import HeroHeader from "../HeroHeader";
 import StatBlock from "../stats/StatBlock";
 import StatMetric from "../stats/StatMetric";
 import StatChart from "../stats/StatChart";
@@ -8,16 +9,14 @@ import StatChart from "../stats/StatChart";
 // Backend base URL (Cloud Run or localhost)
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
-export default function LikesDashboard() {
-  const [likedUsers, setLikedUsers] = useState([]);
-  const [dailyLikes, setDailyLikes] = useState([]);
+// Back end base URL (e.g. Cloud Run URL)
+const API_BASE = "https://alder-backend-265736855150.us-west1.run.app";
+
+export default function InstagramLikes() {
+  const [likedUsers, setLikedUsers] = useState([]);   // [{ id, liked_name, number_likes }]
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-
-  // ───────────────────────────────────────
-  // FETCH DATA
-  // ───────────────────────────────────────
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (!token) {
@@ -26,7 +25,7 @@ export default function LikesDashboard() {
       return;
     }
 
-    async function fetchData() {
+    async function fetchLikedUsers() {
       try {
         const res = await fetch(`${API_BASE}/meta/top-likers`, {
           method: "GET",
@@ -38,34 +37,29 @@ export default function LikesDashboard() {
 
         if (!res.ok) {
           const body = await res.json().catch(() => ({}));
-          throw new Error(body.message || `Request failed with ${res.status}`);
+          throw new Error(
+            body.message || `Request failed with status ${res.status}`
+          );
         }
 
-        const data = await res.json(); 
+        const data = await res.json();
+        // data is an array of MetaLikedSchema:
+        // { id, liked_name, number_likes }
         setLikedUsers(data);
-
-        // Fake chart placeholder based on likes — improves UI
-        setDailyLikes(
-          data.slice(0, 7).map((x) => Math.min(x.number_likes, 50))
-        );
-
       } catch (err) {
-        setError(err.message || "Unknown error.");
+        setError(err.message || "Unknown error");
       } finally {
         setLoading(false);
       }
     }
 
-    fetchData();
+    fetchLikedUsers();
   }, []);
 
-  // ───────────────────────────────────────
-  // LOADING / ERROR STATES
-  // ───────────────────────────────────────
   if (loading) {
     return (
       <div className="h-full w-full flex items-center justify-center text-white">
-        Loading liked post analytics…
+        Loading liked posts analytics…
       </div>
     );
   }
@@ -78,69 +72,86 @@ export default function LikesDashboard() {
     );
   }
 
-  // ───────────────────────────────────────
-  // RENDER
-  // ───────────────────────────────────────
+  // ----- Derived metrics for stat blocks -----
+  const totalAccounts = likedUsers.length;
+  const totalLikes = likedUsers.reduce(
+    (sum, u) => sum + (u.number_likes ?? 0),
+    0
+  );
+
+  const topAccount = likedUsers[0]?.liked_name ?? null;
+  const topAccountLikes = likedUsers[0]?.number_likes ?? null;
+
+  // For chart: just take top N accounts' like counts (e.g. top 7)
+  const chartData = likedUsers
+    .slice(0, 7)
+    .map((u) => u.number_likes ?? 0);
+
   return (
     <div className="w-full h-full overflow-y-auto">
-
       {/* HERO */}
       <HeroHeader
-        title="Your Top Likes on Instagram"
+        title="Your Most Liked Accounts"
         subtitle="See whose content you engage with the most."
       />
 
       {/* CONTENT */}
-      <div className="min-h-screen w-full flex flex-col items-center justify-center p-8">
-
+      <div className="min-h-screen w-full flex flex-col items-center justify-start p-8">
         <h1 className="text-4xl font-bold mb-8 mt-8 text-white">
-          Your Likes
+          Likes Analytics
         </h1>
 
-        {/* SECTION 1 — Most Liked Accounts */}
+        {/* -------- Likes Overview -------- */}
         <StatBlock
-          title="Top Accounts You Like"
-          description="People whose posts you engage with the most."
+          title="Likes Overview"
+          description="A high-level summary of the accounts you like the most."
         >
-          {likedUsers.length > 0 ? (
-            likedUsers.slice(0, 3).map((u, i) => (
-              <StatMetric
-                key={i}
-                label={u.liked_name}
-                value={`${u.number_likes} likes`}
-              />
-            ))
-          ) : (
-            <p className="text-white/80">No like data available.</p>
+          <StatMetric
+            label="Total Liked Accounts"
+            value={totalAccounts.toLocaleString()}
+          />
+          <StatMetric
+            label="Total Likes Given"
+            value={totalLikes.toLocaleString()}
+          />
+          {topAccount && (
+            <StatMetric
+              label="Top Liked Account"
+              value={topAccount}
+              trend={
+                topAccountLikes != null
+                  ? `${topAccountLikes} likes`
+                  : undefined
+              }
+            />
           )}
         </StatBlock>
 
-        {/* SECTION 2 — Daily Likes Activity */}
+        {/* -------- Top Liked Accounts (your existing list, just inside StatBlock) -------- */}
         <StatBlock
-          title="Daily Like Activity"
-          description="How many posts you liked recently."
-        >
-          <StatChart data={dailyLikes.length ? dailyLikes : [0,0,0,0,0,0,0]} />
-        </StatBlock>
-
-        {/* SECTION 3 — Full Ranked List */}
-        <StatBlock
-          title="All Liked Accounts (Ranked)"
-          description="Your complete like distribution."
+          title="Top Accounts by Number of Likes"
+          description="These are the accounts whose posts you like the most."
         >
           {likedUsers.length > 0 ? (
-            likedUsers.map((u, i) => (
-              <StatMetric
-                key={i}
-                label={`${i + 1}. ${u.liked_name}`}
-                value={`${u.number_likes} likes`}
-              />
-            ))
+            <ul className="divide-y divide-white/10 w-full">
+              {likedUsers.map((u) => (
+                <li
+                  key={u.id}
+                  className="py-3 flex justify-between text-white/90"
+                >
+                  <span className="font-medium">{u.liked_name}</span>
+                  <span className="text-sm text-white/60">
+                    {u.number_likes} likes
+                  </span>
+                </li>
+              ))}
+            </ul>
           ) : (
-            <p className="text-white/70">No liked accounts found.</p>
+            <p className="text-white/70">
+              No liked post data found for your account yet.
+            </p>
           )}
         </StatBlock>
-
       </div>
     </div>
   );

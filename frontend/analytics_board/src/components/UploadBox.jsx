@@ -1,5 +1,5 @@
 import { useRef } from "react";
-
+import axios from "axios";
 
 export default function UploadBox({
   label,
@@ -45,16 +45,89 @@ export default function UploadBox({
       ? "shadow-[0_0_25px_4px_rgba(250,255,255,0.8)]" // Google blue glow
       : "shadow-[0_0_25px_4px_rgba(225,48,108,0.8)]"; // Instagram pink-purple glow
 
-  const handleFileSelect = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+
+  //=======================================================
+  //    File -> InstagramExportUploader -> linked_socials
+  //=======================================================
+  const handleFileSelect = async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
 
     setUploaded("loading");
 
-    setTimeout(() => {
-      setUploaded(true);
-    }, 900);
+    try {
+      if (provider === "instagram") {
+        // Parse Instagram folder
+        const fileList = Array.from(files);
+        const jsonFiles = fileList.filter((file) =>
+          file.name.toLowerCase().endsWith(".json")
+        );
+
+        if (jsonFiles.length === 0) {
+          alert("No JSON files found in the selected folder.");
+          setUploaded(false);
+          return;
+        }
+
+        // Parse all JSON files into a map
+        const entries = await Promise.all(
+          jsonFiles.map(async (file) => {
+            let relPath = file.webkitRelativePath || file.name;
+            
+            // Strip top-level folder from path
+            const firstSlash = relPath.indexOf("/");
+            if (firstSlash !== -1) {
+              relPath = relPath.slice(firstSlash + 1);
+            }
+
+            const text = await file.text();
+            const json = JSON.parse(text);
+            return [relPath, json];
+          })
+        );
+
+        const filesMap = Object.fromEntries(entries);
+
+        // Send to backend
+        const token = localStorage.getItem('access_token');
+        await axios.post('https://alder-backend-265736855150.us-west1.run.app/link', {
+          platform: "meta",
+          data: filesMap,
+          account_name: "Instagram User" // You can prompt user for this or extract from data
+        }, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        // Upload successful
+        setUploaded(true);
+      } else if (provider == "google"){
+        // Google - send to backend
+        const token = localStorage.getItem('access_token');
+        await axios.post('https://alder-backend-265736855150.us-west1.run.app/link', {
+          platform: "google",
+          data: {},
+          account_name: "Google User"
+        }, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        // Upload successful
+        setUploaded(true);
+      }
+    } catch (error) {
+      console.error('Upload failed:', error);
+      alert('Upload failed: ' + (error.response?.data?.message || error.message));
+      setUploaded(false);
+    }
   };
+
+//========== FILE UPLOAD DONE ===============
 
   const handleClick = () => {
     if (uploaded === true) {
@@ -93,6 +166,11 @@ export default function UploadBox({
         type="file"
         className="hidden"
         onChange={handleFileSelect}
+        {...(provider === "instagram" ? {
+          webkitdirectory: "true",
+          directory: "true",
+          multiple: true
+        } : {})}
       />
 
       {/* STATES */}
