@@ -55,15 +55,12 @@ export default function InstagramDashboardPages({ dashPage, setDashPage }) {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {dashboards.map((Component, i) => (
-        <div
-          key={i}
-          className="w-full h-full flex-shrink-0 snap-start"
-          style={{ display: i === dashPage ? "block" : "none" }}
-        >
-          {Component}
-        </div>
-      ))}
+      <div //builds snap
+   key={dashPage}  
+  className="w-full h-full flex-shrink-0 snap-start overflow-y-auto"
+>
+  {dashboards[dashPage]}
+</div>
 
       {/* Arrows for navigation */}
       {dashPage > 0 && (

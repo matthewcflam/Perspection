@@ -5,15 +5,29 @@ import StatBlock from "../stats/StatBlock";
 import StatMetric from "../stats/StatMetric";
 import StatChart from "../stats/StatChart";
 
+
+
 export default function EngagementDashboard() {
+
+
+
+  // ---- PLACEHOLDERS for YouTube Likes Stats ----
+const totalLikedVideos = 482;      // from youtube.total_liked_videos
+const topLikedCreator = "MrBeast"; // from /youtube/top-liked-creators[0].creator_name
+const topCreatorLikes = 93;        // from /youtube/top-liked-creators[0].like_count
+
+
+
   return (
     <div className="w-full h-full overflow-y-auto">
 
       {/* HERO HEADER */}
       <HeroHeader
-        title="You texted Justin 100 times last night."
-        subtitle="Are you guys gay?"
-      />
+  stat={`${totalLikedVideos} Liked Videos`}
+  title="You probably could've done something productive instead of watching these lol."
+  subtitle={`Your most-liked creator is ${topLikedCreator} with ${topCreatorLikes} likes.`}
+  />
+
 
       {/* CONTENT BELOW — centered */}
       <div className="min-h-screen w-full flex flex-col items-center justify-center p-8 bg-transparent">

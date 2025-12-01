@@ -290,22 +290,24 @@ useEffect(() => {
                   >
                     <Step>
                       <h2 className="text-xl font-bold mb-2">Welcome!</h2>
-                      <p>This short guide explains what our analytics app does.</p>
+                      <p>This short guide will explain what this analytics app does.</p>
                     </Step>
 
                     <Step>
-                      <h2 className="text-xl font-bold mb-2">Track Stats</h2>
-                      <p>We analyze your followers, activity, and engagement.</p>
+                      <h2 className="text-xl font-bold mb-2">Learn About Yourself</h2>
+                      <p>We take your uploaded Instagram and Youtube data and synthesize it for you. Learn about 
+                        your likes, messages, and more!
+                      </p>
                     </Step>
 
                     <Step>
-                      <h2 className="text-xl font-bold mb-2">See Trends</h2>
-                      <p>Upload your data to explore your analytics.</p>
+                      <h2 className="text-xl font-bold mb-2">How it Works</h2>
+                      <p> Just upload your data by selecting your Instagram Data Folder or logging into your Google account.</p>
                     </Step>
 
                     <Step>
-                      <h2 className="text-xl font-bold mb-2">Get Started</h2>
-                      <p>You're ready to continue.</p>
+                      <h2 className="text-xl font-bold mb-2">Get Started!</h2>
+                      <p>Happy learning!</p>
                     </Step>
                   </Stepper>
                 </div>
@@ -329,7 +331,7 @@ useEffect(() => {
                 <div className="flex flex-row gap-12 mt-4">
 
         <UploadBox
-          label="Google Data"
+          label="Youtube Data"
           provider="google"
           uploaded={googleUploaded}
           setUploaded={setGoogleUploaded}

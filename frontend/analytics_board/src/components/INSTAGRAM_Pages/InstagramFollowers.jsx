@@ -1,9 +1,14 @@
 import React from "react";
 import HeroHeader from "../HeroHeader";
 
+
+// STILL NEED TO MOVE API LOGIC OVER!
+
+
 import StatBlock from "../stats/StatBlock";
 import StatMetric from "../stats/StatMetric";
 import StatChart from "../stats/StatChart";
+
 
 export default function FollowersDashboard() {
   return (

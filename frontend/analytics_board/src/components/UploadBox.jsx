@@ -42,7 +42,7 @@ export default function UploadBox({
   // GIANT glow tint around the box
   const glowClass =
     provider === "google"
-      ? "shadow-[0_0_25px_4px_rgba(100,200,100,0.8)]" // Google blue glow
+      ? "shadow-[0_0_25px_4px_rgba(250,255,255,0.8)]" // Google blue glow
       : "shadow-[0_0_25px_4px_rgba(225,48,108,0.8)]"; // Instagram pink-purple glow
 
   const handleFileSelect = (e) => {

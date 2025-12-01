@@ -5,15 +5,26 @@ import StatBlock from "../stats/StatBlock";
 import StatMetric from "../stats/StatMetric";
 import StatChart from "../stats/StatChart";
 
+
 export default function FollowersDashboard() {
+
+
+  // ---- PLACEHOLDERS for YouTube subscription stats ----
+const totalSubscriptions = 342;        // from /youtube/summary.total_subscriptions
+const firstSubscribed = "2018-06-14";  // earliest date from /youtube/subscriptions
+
+
+
   return (
     <div className="w-full h-full overflow-y-auto">
 
       {/* HERO HEADER */}
       <HeroHeader
-        title="You texted Justin 100 times last night."
-        subtitle="Are you guys gay?"
-      />
+  stat={`${totalSubscriptions} Subscriptions`}
+  title="Thats uh, a lot of parasocial relationships my friend..."
+  subtitle={`Your first subscription was on ${firstSubscribed}!`}
+ />
+
 
       {/* CONTENT BELOW — centered */}
       <div className="min-h-screen w-full flex flex-col items-center justify-center p-8 bg-transparent">

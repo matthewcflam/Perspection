@@ -1,77 +1,46 @@
 import React from "react";
+import ShaderComponents from "./ShaderComponents";
 
-export default function HeroHeader({ title, subtitle }) {
-  // low opacity, always present, no scroll logic
-  const ARROW_OPACITY = 0.35;  // adjust 0 → 1
-  const ARROW_VERTICAL_POSITION = "60%"; // move higher so it disappears once you scroll
-
-  const scrollDown = () => {
-    window.scrollTo({
-      top: window.innerHeight,
-      behavior: "smooth",
-    });
-  };
+export default function HeroHeader({ stat, title, subtitle }) {
+  const scrollDown = () =>
+    window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
 
   return (
-    <section className="relative w-full h-screen snap-start flex flex-col items-center justify-center text-white gap-10">
-      {/* Bounce keyframes */}
-      <style>{`
-        @keyframes bounceArrow {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(12px); }
-        }
-      `}</style>
+    <section className="relative w-full h-screen snap-start flex flex-col items-center justify-center text-white overflow-hidden">
 
-      <div className="flex flex-row items-center justify-center gap-3 text-5xl sm:text-6xl font-bold">
-        
-        {/* BG filler */}
-        <div
-          className="relative w-full bg-black overflow-y-visible"
-          style={{ minHeight: "100vh", paddingBottom: "50vh" }}
-        ></div>
+      {/* RANDOM SHADER BACKGROUND */}
+      <ShaderComponents />
 
-        {/* Title */}
-        <div className="absolute inset-0 flex top-1/4 justify-center z-10">
-          <h1
-            className="text-6xl font-bold text-white drop-shadow-lg text-center"
-            style={{ fontFamily: "Aileron" }}
-          >
-            {title}
-          </h1>
-        </div>
+      {/*GLASS BOX */}
+      <div
+        className="
+          relative z-10 flex flex-col items-center text-center px-10 py-8
+          bg-white/20 backdrop-blur-2xl border border-white/30 rounded-3xl shadow-2xl
+          max-w-xl
+        "
+      >
+        {stat && (
+          <div className="text-7xl sm:text-7xl font-extrabold mb-6 tracking-tight">
+            {stat}
+          </div>
+        )}
 
-        {/* Divider */}
-        <div className="absolute inset-0 flex top-[45%] justify-center z-10">
-          <div className="w-24 h-px bg-white mb-4"></div>
-        </div>
+        <h1 className="text-3xl sm:text-4xl font-bold mb-4 leading-tight">
+          {title}
+        </h1>
 
-        {/* Subtitle */}
-        <div className="absolute inset-0 flex top-1/2 justify-center z-10">
-          <h1
-            className="text-2xl text-white/80 drop-shadow-lg text-center w-120"
-            style={{ fontFamily: "Aileron" }}
-          >
-            {subtitle}
-          </h1>
-        </div>
-
-        {/* Down Arrow – low opacity + bounce */}
-        <div
-          className="absolute inset-0 flex justify-center z-10"
-          style={{ top: ARROW_VERTICAL_POSITION }}
-        >
-          <button
-            onClick={scrollDown}
-            className="text-6xl text-white hover:scale-125 transition-transform duration-300"
-            style={{
-              opacity: ARROW_OPACITY,
-              animation: "bounceArrow 1.3s infinite ease-in-out",
-            }}
-          >
-            ↓
-          </button>
-        </div>
+        <p className="text-lg sm:text-xl text-white/80">
+          {subtitle}
+        </p>
       </div>
+
+      {/* ↓ Scroll Arrow */}
+      <button
+        onClick={scrollDown}
+        className="absolute bottom-10 text-6xl opacity-70 hover:opacity-100 hover:scale-125 transition-all"
+      >
+        ↓
+      </button>
     </section>
   );
 }

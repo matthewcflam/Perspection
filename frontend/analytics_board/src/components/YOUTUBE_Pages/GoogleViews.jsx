@@ -5,14 +5,22 @@ import StatMetric from "../stats/StatMetric";
 import StatChart from "../stats/StatChart";
 import StatSection from "../stats/StatBlock";
 
+
+
 export default function GoogleViewsDashboard() {
+
+   // ---- PLACEHOLDERS for YouTube Account Age data ----
+  const accountAgeDays = 1287;  // CHANGE TO API LATER
+  const accountAgeYears = (accountAgeDays / 365).toFixed(1);
+
   return (
     <div className="w-full h-full overflow-y-auto">
 
-      {/* HERO HEADER */}
+      {/* HERO HEADER — now using account age */}
       <HeroHeader
-        title="You texted Justin 100 times last night."
-        subtitle="Are you guys gay?"
+        stat={`${accountAgeDays} Days`}
+        title="You've been on YouTube for a long time buddy."
+        subtitle={`That's about ${accountAgeYears} years of watching, liking, and eating alone!`}
       />
 
       {/* CONTENT BELOW — centered */}
