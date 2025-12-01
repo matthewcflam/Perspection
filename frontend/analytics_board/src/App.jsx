@@ -85,15 +85,15 @@ export default function App() {
   }, [mode]);
 
 
-useEffect(() => {
-  if (mode === "googledashboard" || mode === "instagramdashboard") {
-    const el = dashScrollRef.current;
-    if (!el) return;
+  useEffect(() => {
+    if (mode === "googledashboard" || mode === "instagramdashboard") {
+      const el = dashScrollRef.current;
+      if (!el) return;
 
-    // Reset scroll position inside the dashboard vertical area
-    el.scrollTo({ top: 0, behavior: "auto" });
-  }
-}, [dashPage]);
+      // Reset scroll position inside the dashboard vertical area
+      el.scrollTo({ top: 0, behavior: "auto" });
+    }
+  }, [dashPage]);
 
 
 
@@ -114,7 +114,7 @@ useEffect(() => {
       {mode === "main" && (
         <div className="absolute inset-0 -z-10 bg-black">
           <div style={{ width: '100%', height: '600px', position: 'relative' }}>
-            <DarkVeil speed={2.0}  hueshift={250}/>
+            <DarkVeil speed={2.0} hueshift={250} />
           </div>
         </div>
       )}
@@ -328,16 +328,16 @@ useEffect(() => {
 
                 <div className="flex flex-row gap-12 mt-4">
 
-        <UploadBox
-          label="Google Data"
-          provider="google"
-          uploaded={googleUploaded}
-          setUploaded={setGoogleUploaded}
-          onUploaded={() => {
-            setDashPage(0);
-            setMode("googledashboard");
-          }}
-        />
+                  <UploadBox
+                    label="Google Data"
+                    provider="google"
+                    uploaded={googleUploaded}
+                    setUploaded={setGoogleUploaded}
+                    onUploaded={() => {
+                      setDashPage(0);
+                      setMode("googledashboard");
+                    }}
+                  />
 
                   <UploadBox
                     label="Instagram Data"
