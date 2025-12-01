@@ -6,9 +6,6 @@ import StatBlock from "../stats/StatBlock";
 import StatMetric from "../stats/StatMetric";
 import StatChart from "../stats/StatChart";
 
-// Backend base URL (Cloud Run or localhost)
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-
 // Back end base URL (e.g. Cloud Run URL)
 const API_BASE = "https://alder-backend-265736855150.us-west1.run.app";
 
