@@ -17,6 +17,8 @@ import Stepper, { Step } from "./components/Stepper";
 
 import LightRays from './components/LightRays';
 import DashboardPages from "./components/DashboardPages";
+import UploadBox from "./components/UploadBox";
+
 
 
 export default function App() {
@@ -94,6 +96,40 @@ export default function App() {
           <GlobalBackground />
         </div>
       )}
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       {/* =====================================================
           MODE: MAIN (LANDING + SIGN-IN)
@@ -119,7 +155,7 @@ export default function App() {
                 <div className="absolute inset-0 shimmer-pointer-events-none"></div>
 
                 <RotatingText
-                  texts={["statistics", "followers", "messages", "reach", "history"]}
+                  texts={["STATISTICS", "FOLLOWERS", "MESSAGES", "REACH", "HISTORY"]}
                   mainClassName="text-5xl sm:text-6xl font-bold text-white"
                   staggerDuration={0.08}
                   rotationInterval={3000}
@@ -142,88 +178,178 @@ export default function App() {
 
 
 
-          {/* ---------- SIGN-IN PAGE ---------- */}
-          <section className="
-                  relative w-full h-screen snap-start 
-                  flex flex-col items-center justify-center 
-                  text-white
-                ">
 
-            <div className="flex flex-col items-center justify-center">
 
-              {/* STEPPER */}
-              <div
-                className={`
-                        w-[350px] sm:w-[600px]
-                        transition-opacity duration-600
-                        flex justify-center
-                        ${showButtonsAfterStepper ? "opacity-0 pointer-events-none" : "opacity-100"}
-                      `}
-              >
-                <div className="
-                        w-full rounded-4xl p-6
-                        bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl
-                      ">
-                  <Stepper
-                    initialStep={1}
-                    onFinalStepCompleted={() => {
-                      setShowButtonsAfterStepper(true);
-                      setTimeout(() => setShowButtons(true), 700);
-                    }}
-                  >
-                    <Step>
-                      <h2 className="text-xl font-bold mb-2">Welcome!</h2>
-                      <p>This short guide explains what our analytics app does.</p>
-                    </Step>
 
-                    <Step>
-                      <h2 className="text-xl font-bold mb-2">Track Stats</h2>
-                      <p>We analyze your followers, activity, and engagement.</p>
-                    </Step>
 
-                    <Step>
-                      <h2 className="text-xl font-bold mb-2">See Trends</h2>
-                      <p>Just upload your data!</p>
-                    </Step>
 
-                    <Step>
-                      <h2 className="text-xl font-bold mb-2">Get Started</h2>
-                      <p>Now you're ready to explore your dashboard!</p>
-                    </Step>
-                  </Stepper>
-                </div>
-              </div>
 
-              {/* BUTTONS */}
-              <div
-                className={`
-                        -mt-28 flex flex-col gap-6 w-[300px]
-                        transition-opacity duration-700
-                        ${showButtons ? "opacity-100" : "opacity-0 pointer-events-none"}
-                      `}
-              >
-                <OpenDashboardButton
-                  onOpen={() => {
-                    setDashPage(0);
-                    setMode("dashboard");
-                  }}
-                />
 
-                <OpenDashboardButton
-                  onOpen={() => {
-                    setDashPage(0);
-                    setMode("dashboard");
-                  }}
-                />
-                
-                <GoogleButton onPress={() => console.log("Google login")} />
-                <InstagramButton onPress={() => console.log("Instagram login")} />
-              </div>
 
-            </div>
-          </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        {/* ---------- SIGN-IN PAGE ---------- */}
+<section className="
+  relative w-full h-screen snap-start
+  flex flex-col items-center justify-center
+  text-white
+  text-center
+">
+
+ <div className="relative w-full h-full flex items-center justify-center text-center">
+
+  {/* ===================================================
+      PART 1 — STEPPER (centered absolute)
+  =================================================== */}
+  <div
+    className={`
+      absolute inset-0 flex items-center justify-center
+      transition-opacity duration-600
+      ${showButtonsAfterStepper ? "opacity-0 pointer-events-none" : "opacity-100"}
+    `}
+  >
+    <div className="
+      w-[350px] sm:w-[600px]
+      rounded-4xl p-6
+      bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl
+    ">
+      <Stepper
+        initialStep={1}
+        onFinalStepCompleted={() => {
+          setShowButtonsAfterStepper(true);
+          setTimeout(() => setShowButtons(true), 700);
+        }}
+      >
+        <Step>
+          <h2 className="text-xl font-bold mb-2">Welcome!</h2>
+          <p>This short guide explains what our analytics app does.</p>
+        </Step>
+
+        <Step>
+          <h2 className="text-xl font-bold mb-2">Track Stats</h2>
+          <p>We analyze your followers, activity, and engagement.</p>
+        </Step>
+
+        <Step>
+          <h2 className="text-xl font-bold mb-2">See Trends</h2>
+          <p>Upload your data to explore your analytics.</p>
+        </Step>
+
+        <Step>
+          <h2 className="text-xl font-bold mb-2">Get Started</h2>
+          <p>You're ready to continue.</p>
+        </Step>
+      </Stepper>
+    </div>
+  </div>
+
+
+  {/* ===================================================
+      PART 2 — UPLOAD UI (also centered absolute)
+  =================================================== */}
+  <div
+    className={`
+      absolute inset-0 flex flex-col items-center justify-center
+      transition-opacity duration-700
+      ${showButtons ? "opacity-100" : "opacity-0 pointer-events-none"}
+    `}
+  >
+    <h1 className="text-5xl sm:text-6xl font-bold mb-12">
+      Upload your data
+    </h1>
+
+    <div className="flex flex-row gap-12 mt-4">
+      <UploadBox
+        label="Google Data"
+        onUploaded={() => {
+          setDashPage(0);
+          setMode("dashboard");
+        }}
+      />
+
+      <UploadBox
+        label="Instagram Data"
+        onUploaded={() => {
+          setDashPage(0);
+          setMode("Instagram");
+        }}
+      />
+    </div>
+  </div>
+
+</div>
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    {/*end MODE: MAIN*/}
         </div>
       )}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       {/* =====================================================
           MODE: DEMO DASHBOARD
@@ -246,6 +372,34 @@ export default function App() {
           </div>
         </div>
       )}
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       
       {/* =====================================================
           MODE: INSTAGRAM DASHBOARD
