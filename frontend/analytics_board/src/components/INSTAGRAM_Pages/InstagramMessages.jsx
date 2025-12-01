@@ -22,15 +22,17 @@ export default function MessagesDashboard() {
           Your Messages
         </h1>
 
+        {/* SECTION 1 — Message Frequency */}
         <StatBlock
           title="Message Frequency"
           description="How often you're messaging people."
         >
-          <StatMetric label="Messages Sent Today" value="142" trend="+18" />
-          <StatMetric label="Messages Received Today" value="127" trend="+12" />
+          <StatMetric label="Messages Sent Today" value="142" />
+          <StatMetric label="Messages Received Today" value="127" />
           <StatMetric label="Most Active Hour" value="9 PM" />
         </StatBlock>
 
+        {/* SECTION 2 — Top Contacts */}
         <StatBlock
           title="Top Contacts"
           description="Your most active conversation partners."
@@ -40,6 +42,7 @@ export default function MessagesDashboard() {
           <StatMetric label="David" value="198 messages" />
         </StatBlock>
 
+        {/* SECTION 3 — Weekly Message Trends */}
         <StatBlock
           title="Weekly Message Trends"
           description="Your message activity over 7 days."

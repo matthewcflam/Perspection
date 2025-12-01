@@ -18,15 +18,17 @@ export default function EngagementDashboard() {
       {/* CONTENT BELOW — centered */}
       <div className="min-h-screen w-full flex flex-col items-center justify-center p-8 bg-transparent">
 
-        <h1 className="text-4xl font-bold mb-8 mt-8 text-white">Your Engagement</h1>
+        <h1 className="text-4xl font-bold mb-8 mt-8 text-white">
+          Your Engagement
+        </h1>
 
         {/* SECTION 1 — Likes & Comments */}
         <StatBlock
           title="Likes & Comments"
           description="Your most liked posts and comment interactions."
         >
-          <StatMetric label="Total Likes (This Week)" value="1,204" trend="+12%" />
-          <StatMetric label="Total Comments (This Week)" value="349" trend="+5%" />
+          <StatMetric label="Total Likes (This Week)" value="1,204" />
+          <StatMetric label="Total Comments (This Week)" value="349" />
           <StatMetric label="Most Liked Post" value="147 likes" />
         </StatBlock>
 
@@ -35,7 +37,7 @@ export default function EngagementDashboard() {
           title="Engagement Rate"
           description="How your audience responds to your content."
         >
-          <StatMetric label="Overall Engagement Rate" value="8.4%" trend="+1.1%" />
+          <StatMetric label="Overall Engagement Rate" value="8.4%" />
           <StatMetric label="Best Performing Day" value="Saturday" />
         </StatBlock>
 

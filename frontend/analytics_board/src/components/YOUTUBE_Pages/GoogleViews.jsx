@@ -1,7 +1,6 @@
 import React from "react";
 import HeroHeader from "../HeroHeader";
 
-
 import StatMetric from "../stats/StatMetric";
 import StatChart from "../stats/StatChart";
 import StatSection from "../stats/StatBlock";
@@ -28,8 +27,8 @@ export default function GoogleViewsDashboard() {
           title="Message Frequency"
           description="See how often you send and receive messages."
         >
-          <StatMetric label="Messages Sent Today" value="142" trend="+18" />
-          <StatMetric label="Messages Received Today" value="127" trend="+12" />
+          <StatMetric label="Messages Sent Today" value="142" />
+          <StatMetric label="Messages Received Today" value="127" />
           <StatMetric label="Most Active Hour" value="9 PM" />
         </StatSection>
 

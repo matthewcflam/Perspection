@@ -22,15 +22,17 @@ export default function FollowersDashboard() {
           Your Followers
         </h1>
 
+        {/* SECTION 1 — Follower Count */}
         <StatBlock
           title="Follower Count"
           description="Track your follower growth over time."
         >
-          <StatMetric label="Total Followers" value="6,129" trend="+102" />
-          <StatMetric label="New This Week" value="100" trend="+100" />
-          <StatMetric label="Unfollows" value="12" trend="-4" />
+          <StatMetric label="Total Followers" value="6,129" />
+          <StatMetric label="New This Week" value="100" />
+          <StatMetric label="Unfollows" value="12" />
         </StatBlock>
 
+        {/* SECTION 2 — Top Followers */}
         <StatBlock
           title="Top Followers"
           description="People who engage with you the most."
@@ -40,6 +42,7 @@ export default function FollowersDashboard() {
           <StatMetric label="David" value="214 interactions" />
         </StatBlock>
 
+        {/* SECTION 3 — Follower Growth Chart */}
         <StatBlock
           title="Follower Growth (7 Days)"
           description="Daily new follower trends."

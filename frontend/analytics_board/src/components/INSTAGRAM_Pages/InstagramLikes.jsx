@@ -22,6 +22,7 @@ export default function LikesDashboard() {
           Your Likes
         </h1>
 
+        {/* SECTION 1 — Most Liked Posts */}
         <StatBlock
           title="Most Liked Posts"
           description="Your strongest performing content."
@@ -31,6 +32,7 @@ export default function LikesDashboard() {
           <StatMetric label="Top Carousel" value="198 likes" />
         </StatBlock>
 
+        {/* SECTION 2 — Daily Like Activity */}
         <StatBlock
           title="Daily Like Activity"
           description="Likes received throughout the last 7 days."
@@ -38,6 +40,7 @@ export default function LikesDashboard() {
           <StatChart data={[12, 22, 14, 30, 18, 40, 55]} />
         </StatBlock>
 
+        {/* SECTION 3 — Top Engagers */}
         <StatBlock
           title="Top Engagers"
           description="Who likes your posts the most."

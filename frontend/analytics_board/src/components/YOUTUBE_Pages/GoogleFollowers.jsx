@@ -25,9 +25,9 @@ export default function FollowersDashboard() {
           title="Follower Count"
           description="Track your follower growth over time."
         >
-          <StatMetric label="Total Followers" value="1,294" trend="+23" />
-          <StatMetric label="New Followers This Week" value="82" trend="+8" />
-          <StatMetric label="Unfollows" value="12" trend="-3" />
+          <StatMetric label="Total Followers" value="1,294" />
+          <StatMetric label="New Followers This Week" value="82" />
+          <StatMetric label="Unfollows" value="12" />
         </StatBlock>
 
         {/* SECTION 2 — Top Followers */}
