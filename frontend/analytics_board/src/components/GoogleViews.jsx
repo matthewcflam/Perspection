@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 
-export default function GoogleViewsDashboard() {
+export default function GoogleViews() {
   return (
 
     <div className="h-full w-full overflow-y-auto flex flex-col items-center p-8 bg-transparent">
@@ -14,7 +14,7 @@ export default function GoogleViewsDashboard() {
 
           <div className="absolute inset-0 flex top-1/4 justify-center z-10">
             <h1 className="text-6xl font-bold text-white drop-shadow-lg text-center" style={{ fontFamily: 'Aileron' }}>
-              You texted Justin 100 times last night.
+            You channel reached 100 subscribers!
             </h1>
           </div>
 
@@ -24,7 +24,7 @@ export default function GoogleViewsDashboard() {
 
           <div className="absolute inset-0 flex top-1/2 justify-center z-10">
             <h1 className="text-2xl text-white/80 drop-shadow-lg text-center w-120" style={{ fontFamily: 'aileron' }}>
-              Are you guys gay?
+              Congrats! Do you think a dirt playbutton exist?
             </h1>
           </div>
 

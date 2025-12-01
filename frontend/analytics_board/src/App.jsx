@@ -20,7 +20,7 @@ import GoogleDashboardPages from "./components/GoogleDashboardPages";
 import InstagramDashboardPages from "./components/InstagramDashboardPages";
 import CardSwap from "./components/CardSwap"
 import UploadBox from "./components/UploadBox";
-
+import LiquidEther from "./components/LiquidEther";
 
 
 export default function App() {
@@ -39,7 +39,7 @@ export default function App() {
   const [showButtons, setShowButtons] = useState(false);
 
   const [googleUploaded, setGoogleUploaded] = useState(false);
-const [instagramUploaded, setInstagramUploaded] = useState(false);
+  const [instagramUploaded, setInstagramUploaded] = useState(false);
 
 
 
@@ -99,7 +99,26 @@ const [instagramUploaded, setInstagramUploaded] = useState(false);
       {/* GLOBAL BACKGROUND - Only show in main mode */}
       {mode === "main" && (
         <div className="absolute inset-0 -z-10 bg-black">
-          <GlobalBackground />
+
+          <div style={{ width: '100%', height: 600, position: 'relative' }}>
+            <LiquidEther
+              colors={['#5227FF', '#FF9FFC', '#B19EEF']}
+              mouseForce={20}
+              cursorSize={100}
+              isViscous={false}
+              viscous={30}
+              iterationsViscous={32}
+              iterationsPoisson={32}
+              resolution={0.5}
+              isBounce={false}
+              autoDemo={true}
+              autoSpeed={0.5}
+              autoIntensity={2.2}
+              takeoverDuration={0.25}
+              autoResumeDelay={3000}
+              autoRampDuration={0.6}
+            />
+          </div>
         </div>
       )}
 
@@ -239,108 +258,106 @@ const [instagramUploaded, setInstagramUploaded] = useState(false);
 
 
 
-{/* ---------- SIGN-IN PAGE ---------- */}
-<section
-  className="
+          {/* ---------- SIGN-IN PAGE ---------- */}
+          <section
+            className="
     relative w-full h-screen snap-start
     flex flex-col items-center justify-center
     text-white
     text-center
   "
->
-  <div className="relative w-full h-full flex items-center justify-center text-center">
+          >
+            <div className="relative w-full h-full flex items-center justify-center text-center">
 
-    {/* ===================================================
+              {/* ===================================================
         PART 1 — STEPPER (centered absolute)
     =================================================== */}
-    <div
-      className={`
+              <div
+                className={`
         absolute inset-0 flex items-center justify-center
         transition-opacity duration-600
         ${showButtonsAfterStepper ? "opacity-0 pointer-events-none" : "opacity-100"}
       `}
-    >
-      <div className="
+              >
+                <div className="
         w-[350px] sm:w-[600px]
         rounded-4xl p-6
         bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl
       ">
-        <Stepper
-          initialStep={1}
-          onFinalStepCompleted={() => {
-            setShowButtonsAfterStepper(true);
-            setTimeout(() => setShowButtons(true), 700);
-          }}
-        >
-          <Step>
-            <h2 className="text-xl font-bold mb-2">Welcome!</h2>
-            <p>This short guide explains what our analytics app does.</p>
-          </Step>
+                  <Stepper
+                    initialStep={1}
+                    onFinalStepCompleted={() => {
+                      setShowButtonsAfterStepper(true);
+                      setTimeout(() => setShowButtons(true), 700);
+                    }}
+                  >
+                    <Step>
+                      <h2 className="text-xl font-bold mb-2">Welcome!</h2>
+                      <p>This short guide explains what our analytics app does.</p>
+                    </Step>
 
-          <Step>
-            <h2 className="text-xl font-bold mb-2">Track Stats</h2>
-            <p>We analyze your followers, activity, and engagement.</p>
-          </Step>
+                    <Step>
+                      <h2 className="text-xl font-bold mb-2">Track Stats</h2>
+                      <p>We analyze your followers, activity, and engagement.</p>
+                    </Step>
 
-          <Step>
-            <h2 className="text-xl font-bold mb-2">See Trends</h2>
-            <p>Upload your data to explore your analytics.</p>
-          </Step>
+                    <Step>
+                      <h2 className="text-xl font-bold mb-2">See Trends</h2>
+                      <p>Upload your data to explore your analytics.</p>
+                    </Step>
 
-          <Step>
-            <h2 className="text-xl font-bold mb-2">Get Started</h2>
-            <p>You're ready to continue.</p>
-          </Step>
-        </Stepper>
-      </div>
-    </div>
+                    <Step>
+                      <h2 className="text-xl font-bold mb-2">Get Started</h2>
+                      <p>You're ready to continue.</p>
+                    </Step>
+                  </Stepper>
+                </div>
+              </div>
 
 
-    {/* ===================================================
+              {/* ===================================================
         PART 2 — UPLOAD UI (centered absolute)
     =================================================== */}
-    <div
-      className={`
+              <div
+                className={`
         absolute inset-0 flex flex-col items-center justify-center
         transition-opacity duration-700
         ${showButtons ? "opacity-100" : "opacity-0 pointer-events-none"}
       `}
-    >
-      <h1 className="text-5xl sm:text-6xl font-bold mb-12">
-        Upload your data
-      </h1>
+              >
+                <h1 className="text-5xl sm:text-6xl font-bold mb-12">
+                  Upload your data
+                </h1>
 
-      <div className="flex flex-row gap-12 mt-4">
+                <div className="flex flex-row gap-12 mt-4">
 
-        <UploadBox
-          label="Google Data"
-          provider="google"
-          uploaded={googleUploaded}
-          setUploaded={setGoogleUploaded}
-          onUploaded={() => {
-            setDashPage(0);
-            setMode("googledashboard");
-          }}
-        />
+                  <UploadBox
+                    label="Google Data"
+                    provider="google"
+                    uploaded={googleUploaded}
+                    setUploaded={setGoogleUploaded}
+                    onUploaded={() => {
+                      setDashPage(0);
+                      setMode("googledashboard");
+                    }}
+                  />
 
-        <UploadBox
-          label="Instagram Data"
-          provider="instagram"
-          uploaded={instagramUploaded}
-          setUploaded={setInstagramUploaded}
-          onUploaded={() => {
-            setDashPage(0);
-            setMode("instagramdashboard"); // lowercase
-          }}
-        />
+                  <UploadBox
+                    label="Instagram Data"
+                    provider="instagram"
+                    uploaded={instagramUploaded}
+                    setUploaded={setInstagramUploaded}
+                    onUploaded={() => {
+                      setDashPage(0);
+                      setMode("instagramdashboard"); // lowercase
+                    }}
+                  />
 
-      </div>
-    </div>
+                </div>
+              </div>
 
-  </div>
-</section>
-
-
+            </div>
+          </section>
 
 
 
@@ -358,7 +375,9 @@ const [instagramUploaded, setInstagramUploaded] = useState(false);
 
 
 
-    {/*end MODE: MAIN*/}
+
+
+          {/*end MODE: MAIN*/}
         </div>
       )}
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function FollowersDashboard() {
+export default function GoogleFollowers() {
   return (
     <div className="h-full w-full overflow-y-auto flex flex-col items-center p-8 bg-transparent">
       <h1 className="text-4xl font-bold mb-8 mt-8 text-white">Your Followers</h1>
