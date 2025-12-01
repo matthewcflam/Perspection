@@ -319,7 +319,7 @@ const [instagramUploaded, setInstagramUploaded] = useState(false);
           setUploaded={setGoogleUploaded}
           onUploaded={() => {
             setDashPage(0);
-            setMode("dashboard");
+            setMode("googledashboard");
           }}
         />
 
@@ -330,7 +330,7 @@ const [instagramUploaded, setInstagramUploaded] = useState(false);
           setUploaded={setInstagramUploaded}
           onUploaded={() => {
             setDashPage(0);
-            setMode("instagram"); // lowercase
+            setMode("instagramdashboard"); // lowercase
           }}
         />
 
@@ -407,55 +407,6 @@ const [instagramUploaded, setInstagramUploaded] = useState(false);
         </div>
       )}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      {/* =====================================================
-          MODE: INSTAGRAM DASHBOARD
-      ====================================================== */}
-      {mode === "instagram" && (
-        <div className="relative w-full h-full bg-gray-900">
-          {/* Dashboard Background - separate from main */}
-          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-gray-900 via-gray-800 to-black"></div>
-
-          {/* Close button */}
-          <button
-            className="absolute top-4 right-4 z-50 text-white/80 hover:text-white transition"
-            onClick={() => setMode("main")}
-          >
-            ✕ Close
-          </button>
-
-          <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
-            <DashboardPages dashPage={dashPage} setDashPage={setDashPage} />
-          </div>
-        </div>
-      )}
 
     </div>
   );
