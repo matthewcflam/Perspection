@@ -16,7 +16,8 @@ import CloseDashboardButton from "./components/CloseDashboardButton";
 import Stepper, { Step } from "./components/Stepper";
 
 import LightRays from './components/LightRays';
-import DashboardPages from "./components/DashboardPages";
+import GoogleDashboardPages from "./components/GoogleDashboardPages";
+import InstagramDashboardPages from "./components/InstagramDashboardPages";
 import CardSwap from "./components/CardSwap"
 import UploadBox from "./components/UploadBox";
 
@@ -101,7 +102,7 @@ const [instagramUploaded, setInstagramUploaded] = useState(false);
           <GlobalBackground />
         </div>
       )}
-      
+
 
 
 
@@ -174,6 +175,7 @@ const [instagramUploaded, setInstagramUploaded] = useState(false);
                   splitLevelClassName="overflow-hidden"
                 />
               </div>*/}
+
               <div className="relative w-full bg-black overflow-y-visible" style={{ minHeight: '100vh', paddingBottom: '50vh' }}></div>
 
               <div className="absolute inset-0 flex top-2/11 justify-center z-10">
@@ -317,7 +319,7 @@ const [instagramUploaded, setInstagramUploaded] = useState(false);
           setUploaded={setGoogleUploaded}
           onUploaded={() => {
             setDashPage(0);
-            setMode("dashboard");
+            setMode("googledashboard");
           }}
         />
 
@@ -328,7 +330,7 @@ const [instagramUploaded, setInstagramUploaded] = useState(false);
           setUploaded={setInstagramUploaded}
           onUploaded={() => {
             setDashPage(0);
-            setMode("instagram"); // lowercase
+            setMode("instagramdashboard"); // lowercase
           }}
         />
 
@@ -361,111 +363,50 @@ const [instagramUploaded, setInstagramUploaded] = useState(false);
       )}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       {/* =====================================================
-          MODE: DEMO DASHBOARD
+          MODE: GOOGLE DASHBOARD
       ====================================================== */}
-      {mode === "dashboard" && (
+      {mode === "googledashboard" && (
         <div className="relative w-full h-full bg-gray-900">
           {/* Dashboard Background - separate from main */}
           <div className="absolute inset-0 -z-10 bg-gradient-to-br from-gray-900 via-gray-800 to-black"></div>
 
           {/* Close button */}
           <button
-            className="absolute top-4 right-4 z-50 text-white/80 hover:text-white transition"
+            className="absolute top-4 right-6 z-50 text-white/80 hover:text-white transition"
             onClick={() => setMode("main")}
           >
-            ✕ Close
+            ✕
           </button>
 
           <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
-            <DashboardPages dashPage={dashPage} setDashPage={setDashPage} />
+            <GoogleDashboardPages dashPage={dashPage} setDashPage={setDashPage} />
           </div>
         </div>
       )}
-      
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
       {/* =====================================================
           MODE: INSTAGRAM DASHBOARD
       ====================================================== */}
-     {mode === "instagram" && (
+      {mode === "instagramdashboard" && (
         <div className="relative w-full h-full bg-gray-900">
           {/* Dashboard Background - separate from main */}
           <div className="absolute inset-0 -z-10 bg-gradient-to-br from-gray-900 via-gray-800 to-black"></div>
 
           {/* Close button */}
           <button
-            className="absolute top-4 right-4 z-50 text-white/80 hover:text-white transition"
+            className="absolute top-4 right-6 z-50 text-white/80 hover:text-white transition"
             onClick={() => setMode("main")}
           >
-            ✕ Close
+            ✕
           </button>
 
           <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
-            <DashboardPages dashPage={dashPage} setDashPage={setDashPage} />
+            <InstagramDashboardPages dashPage={dashPage} setDashPage={setDashPage} />
           </div>
         </div>
       )}
+
 
     </div>
   );

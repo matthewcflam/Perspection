@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 
-export default function MessagingDashboard() {
+export default function GoogleViewsDashboard() {
   return (
 
     <div className="h-full w-full overflow-y-auto flex flex-col items-center p-8 bg-transparent">
@@ -12,15 +12,9 @@ export default function MessagingDashboard() {
         <div className="flex flex-row items-center justify-center gap-3 text-5xl sm:text-6xl font-bold">
           <div className="relative w-full bg-black overflow-y-visible" style={{ minHeight: '100vh', paddingBottom: '50vh' }}></div>
 
-          <div className="absolute inset-0 flex top-2/11 justify-center z-10">
-            <h1 className="italic text-white/80 text-xl drop-shadow-lg text-center w-120" style={{ fontFamily: 'aileron' }}>
-              "The #1 app for data insights" - Wired
-            </h1>
-          </div>
-
           <div className="absolute inset-0 flex top-1/4 justify-center z-10">
             <h1 className="text-6xl font-bold text-white drop-shadow-lg text-center" style={{ fontFamily: 'Aileron' }}>
-              See who your real friends are.
+              You texted Justin 100 times last night.
             </h1>
           </div>
 
@@ -30,7 +24,7 @@ export default function MessagingDashboard() {
 
           <div className="absolute inset-0 flex top-1/2 justify-center z-10">
             <h1 className="text-2xl text-white/80 drop-shadow-lg text-center w-120" style={{ fontFamily: 'aileron' }}>
-              View your follower count, unsubscribe from spam, and rule the world.
+              Are you guys gay?
             </h1>
           </div>
 

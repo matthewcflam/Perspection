@@ -1,13 +1,13 @@
 import React from "react";
-import MessagingDashboard from "./MessagingDashboard";
-import FollowersDashboard from "./FollowersDashboard";
-import EngagementDashboard from "./EngagementDashboard";
+import GoogleViews from "./GoogleViews";
+import GoogleFollowers from "./GoogleFollowers";
+import GoogleEngagement from "./GoogleEngagement";
 
-export default function DashboardPages({ dashPage, setDashPage }) {
+export default function GoogleDashboardPages({ dashPage, setDashPage }) {
   const dashboards = [
-    <MessagingDashboard key="messaging" />,
-    <FollowersDashboard key="followers" />,
-    <EngagementDashboard key="engagement" />,
+    <GoogleViews key="views" />,
+    <GoogleFollowers key="followers" />,
+    <GoogleEngagement key="engagement" />,
   ];
 
   return (
