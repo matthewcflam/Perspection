@@ -114,9 +114,19 @@ export default function UploadBox({
       {uploaded === true && (
         <div className="flex flex-col items-center gap-1 z-10">
           {providerIcon}
-          <span className="text-xl font-bold text-green-300">
-            VIEW STATISTICS
-          </span>
+          <span
+  className={`
+    text-xl font-bold 
+    ${
+      provider === "instagram"
+        ? "text-pink-400"
+        : "text-green-300"
+    }
+  `}
+>
+  VIEW STATISTICS
+</span>
+
           <span className="text-xs font-semibold uppercase tracking-wide">
             {label}
           </span>
