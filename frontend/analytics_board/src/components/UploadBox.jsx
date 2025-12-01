@@ -26,7 +26,7 @@ export default function UploadBox({
   const providerIcon =
   provider === "google" ? (
     <img 
-        src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Google_Favicon_2025.svg"
+        src="https://upload.wikimedia.org/wikipedia/commons/5/5b/YouTube_Bottom.png"
       alt="Google Icon"
       className="w-8 h-8 mb-1"
     />

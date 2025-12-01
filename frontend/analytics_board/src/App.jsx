@@ -4,21 +4,11 @@ import { useState, useEffect, useRef } from "react";
 import RotatingText from "./components/RotatingText";
 import GlobalBackground from "./components/GlobalBackground";
 
-import OpenDashboardButton from "./components/OpenDashboardButton";
-import GoogleButton from "./components/GoogleButton";
-import InstagramButton from "./components/InstagramButton";
 
-import StatCard from "./components/StatCard";
-import ActivityCard from "./components/ActivityCard";
-import EngagementCard from "./components/EngagementCard";
-
-import CloseDashboardButton from "./components/CloseDashboardButton";
 import Stepper, { Step } from "./components/Stepper";
 
-import LightRays from './components/LightRays';
-import GoogleDashboardPages from "./components/GoogleDashboardPages";
-import InstagramDashboardPages from "./components/InstagramDashboardPages";
-import CardSwap from "./components/CardSwap"
+import GoogleDashboardPages from "./components/YOUTUBE_Pages/GoogleDashboardPages";
+import InstagramDashboardPages from "./components/INSTAGRAM_Pages/InstagramDashboardPages";
 import UploadBox from "./components/UploadBox";
 
 
@@ -92,6 +82,29 @@ const [instagramUploaded, setInstagramUploaded] = useState(false);
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [mode]);
+
+
+useEffect(() => {
+  if (mode === "googledashboard" || mode === "instagramdashboard") {
+    const el = dashScrollRef.current;
+    if (!el) return;
+
+    // Reset scroll position inside the dashboard vertical area
+    el.scrollTo({ top: 0, behavior: "auto" });
+  }
+}, [dashPage]);
+
+
+
+
+
+
+
+
+
+
+
+
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
@@ -313,7 +326,7 @@ const [instagramUploaded, setInstagramUploaded] = useState(false);
       <div className="flex flex-row gap-12 mt-4">
 
         <UploadBox
-          label="Google Data"
+          label="Youtube Data"
           provider="google"
           uploaded={googleUploaded}
           setUploaded={setGoogleUploaded}
