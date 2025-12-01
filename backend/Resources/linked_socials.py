@@ -135,8 +135,10 @@ class LinkSocials(MethodView):
                 if linked_socials.google:
                     abort(409, message = "Google account already linked")
                 try:
-                    client = GoogleClient(creds_path=data_root, token_path="token.json")
-                    
+                    client = GoogleClient(
+                        creds_path="backend/data_collection/credentials.json",
+                        token_path="backend/data_collection/token.json"
+                    )                    
                     start_date = "1970-01-01T00:00:00Z"
                     end_date = datetime.datetime.utcnow().isoformat().replace("+00:00", "Z")  # Ensure ISO 8601 with Z
 
