@@ -11,7 +11,7 @@ export default function DashboardPages({ dashPage, setDashPage }) {
   ];
 
   return (
-    <div className="relative w-full h-full flex overflow-x-auto snap-x snap-mandatory rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl no-scrollbar">
+    <div className="relative w-full h-full flex overflow-x-auto snap-x snap-mandatory bg-white/10 backdrop-blur-xl shadow-2xl no-scrollbar">
       {dashboards.map((Component, i) => (
         <div
           key={i}

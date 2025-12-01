@@ -17,6 +17,7 @@ import Stepper, { Step } from "./components/Stepper";
 
 import LightRays from './components/LightRays';
 import DashboardPages from "./components/DashboardPages";
+import CardSwap from "./components/CardSwap"
 
 
 export default function App() {
@@ -112,7 +113,7 @@ export default function App() {
 
             {/* Landing Text with Glass/Shimmer */}
             <div className="flex flex-row items-center justify-center gap-3 text-5xl sm:text-6xl font-bold">
-              <span>Perspective.</span>
+              {/* <span>Perspective.</span> */}
 
               {/* <div className="
                 relative inline-flex justify-center items-center
@@ -133,17 +134,42 @@ export default function App() {
                   splitLevelClassName="overflow-hidden"
                 />
               </div>*/}
+              <div className="relative w-full bg-black overflow-y-visible" style={{ minHeight: '100vh', paddingBottom: '50vh' }}></div>
+
+              <div className="absolute inset-0 flex top-2/11 justify-center z-10">
+                <h1 className="italic text-white/80 text-xl drop-shadow-lg text-center w-120" style={{ fontFamily: 'aileron' }}>
+                  "The #1 app for data insights" - Wired
+                </h1>
+              </div>
+
+              <div className="absolute inset-0 flex top-1/4 justify-center z-10">
+                <h1 className="text-6xl font-bold text-white drop-shadow-lg text-center" style={{ fontFamily: 'Aileron' }}>
+                  See who your real friends are.
+                </h1>
+              </div>
+
+              <div className="absolute inset-0 flex top-18/40 justify-center z-10">
+                <div className="w-24 h-px bg-white mb-4"></div>
+              </div>
+
+              <div className="absolute inset-0 flex top-1/2 justify-center z-10">
+                <h1 className="text-2xl text-white/80 drop-shadow-lg text-center w-120" style={{ fontFamily: 'aileron' }}>
+                  View your follower count, unsubscribe from spam, and rule the world.
+                </h1>
+              </div>
+
+              {/* Down Arrow - positioned higher up */}
+              <div className="absolute inset-0 flex top-4/5 justify-center z-10">
+                <button
+                  onClick={() => scrollToSection(1)}
+                  className="text-6xl animate-bounce hover:scale-125 transition text-white"
+                >
+                  ↓
+                </button>
+              </div>
             </div>
 
-            {/* Down Arrow */}
-            <button
-              onClick={() => scrollToSection(1)}
-              className="text-6xl animate-bounce hover:scale-125 transition"
-            >
-              ↓
-            </button>
           </section>
-
 
 
           {/* ---------- SIGN-IN PAGE ---------- */}
@@ -216,12 +242,13 @@ export default function App() {
                 <OpenDashboardButton
                   onOpen={() => {
                     setDashPage(0);
-                    setMode("dashboard");
+                    setMode("instagram");
                   }}
                 />
 
                 <GoogleButton onPress={() => console.log("Google login")} />
-                <InstagramButton onPress={() => console.log("Instagram login")} />
+                {/* <InstagramButton onPress={() => console.log("Instagram login")} /> */}
+                
               </div>
 
             </div>
@@ -236,61 +263,38 @@ export default function App() {
         <div className="relative w-full h-full bg-gray-900">
           {/* Dashboard Background - separate from main */}
           <div className="absolute inset-0 -z-10 bg-gradient-to-br from-gray-900 via-gray-800 to-black"></div>
-          
+
           {/* Close button */}
-          <button 
+          <button
             className="absolute top-4 right-4 z-50 text-white/80 hover:text-white transition"
             onClick={() => setMode("main")}
           >
             ✕ Close
           </button>
-          
-          <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-4">
+
+          <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
             <DashboardPages dashPage={dashPage} setDashPage={setDashPage} />
           </div>
         </div>
       )}
-      
+
       {/* =====================================================
           MODE: INSTAGRAM DASHBOARD
       ====================================================== */}
-      {mode === "Instagram" && (
+     {mode === "instagram" && (
         <div className="relative w-full h-full bg-gray-900">
           {/* Dashboard Background - separate from main */}
           <div className="absolute inset-0 -z-10 bg-gradient-to-br from-gray-900 via-gray-800 to-black"></div>
-          
+
           {/* Close button */}
-          <button 
+          <button
             className="absolute top-4 right-4 z-50 text-white/80 hover:text-white transition"
             onClick={() => setMode("main")}
           >
             ✕ Close
           </button>
-          
-          <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-4">
-            <DashboardPages dashPage={dashPage} setDashPage={setDashPage} />
-          </div>
-        </div>
-      )}
 
-      {/* =====================================================
-          MODE: INSTAGRAM STATS
-      ====================================================== */}
-
-      {mode === "InstagramStats" && (
-        <div className="relative w-full h-full bg-gray-900">
-          {/* Dashboard Background - separate from main */}
-          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-gray-900 via-gray-800 to-black"></div>
-          
-          {/* Close button */}
-          <button 
-            className="absolute top-4 right-4 z-50 text-white/80 hover:text-white transition"
-            onClick={() => setMode("main")}
-          >
-            ✕ Close
-          </button>
-          
-          <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-4">
+          <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
             <DashboardPages dashPage={dashPage} setDashPage={setDashPage} />
           </div>
         </div>
