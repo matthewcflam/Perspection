@@ -454,13 +454,20 @@ class InstagramParser:
     # Activity-related methods
     # --------------------------------------------------
     def load_liked_posts(self) -> None:
-        data = self._get_file("liked_posts.json")
+        try:
+            data = self._get_file("liked_posts.json")
+        except FileNotFoundError:
+            # Missing file; treat as no liked posts
+            self.liked_posts = []
+            return
 
         liked_posts: list[dict] = []
 
         items = data.get("likes_media_likes")
         if not isinstance(items, list):
-            raise ValueError("Unexpected format in liked_posts.json")
+            # Malformed, treat as empty
+            self.liked_posts = []
+            return
 
         for item in items:
             username = self._extract_username_title(item)
@@ -484,11 +491,16 @@ class InstagramParser:
         self.liked_posts = liked_posts
 
     def load_liked_stories(self) -> None:
-        data = self._get_file("story_likes.json")
+        try:
+            data = self._get_file("story_likes.json")
+        except FileNotFoundError:
+            self.liked_stories = []
+            return
 
         items = data.get("story_activities_story_likes")
         if not isinstance(items, list):
-            raise ValueError("Unexpected format in story_likes.json")
+            self.liked_stories = []
+            return
 
         liked_stories: list[str] = []
         for item in items:
@@ -513,7 +525,11 @@ class InstagramParser:
     # Connections-related methods
     # --------------------------------------------------
     def load_followers(self) -> None:
-        data = self._get_file("followers_1.json")
+        try:
+            data = self._get_file("followers_1.json")
+        except FileNotFoundError:
+            self.followers = set()
+            return
 
         followers: set[str] = set()
 
@@ -523,18 +539,25 @@ class InstagramParser:
                 if username:
                     followers.add(username)
         else:
-            raise ValueError("followers_1.json must be a list")
+            # Malformed, treat as empty
+            self.followers = set()
+            return
 
         self.followers = followers
 
     def load_following(self) -> None:
-        data = self._get_file("following.json")
+        try:
+            data = self._get_file("following.json")
+        except FileNotFoundError:
+            self.following = set()
+            return
 
         following: set[str] = set()
         items = data.get("relationships_following")
 
         if not isinstance(items, list):
-            raise ValueError("Unexpected format in following.json")
+            self.following = set()
+            return
 
         for item in items:
             username = self._extract_username_title(item)
@@ -560,13 +583,18 @@ class InstagramParser:
     #     self.close_friends = close_friends
 
     def load_follow_requests(self) -> None:
-        data = self._get_file("recent_follow_requests.json")
+        try:
+            data = self._get_file("recent_follow_requests.json")
+        except FileNotFoundError:
+            self.follow_requests = set()
+            return
 
         follow_requests: set[str] = set()
         items = data.get("relationships_permanent_follow_requests")
 
         if not isinstance(items, list):
-            raise ValueError("Unexpected format in recent_follow_requests.json")
+            self.follow_requests = set()
+            return
 
         for item in items:
             username = self._extract_username_value(item)
@@ -576,13 +604,18 @@ class InstagramParser:
         self.follow_requests = follow_requests
 
     def load_unfollowed(self) -> None:
-        data = self._get_file("recently_unfollowed_profiles.json")
+        try:
+            data = self._get_file("recently_unfollowed_profiles.json")
+        except FileNotFoundError:
+            self.unfollowed = set()
+            return
 
         unfollowed: set[str] = set()
         items = data.get("relationships_unfollowed_users")
 
         if not isinstance(items, list):
-            raise ValueError("Unexpected format in recently_unfollowed_profiles.json")
+            self.unfollowed = set()
+            return
 
         for item in items:
             username = self._extract_username_value(item)
