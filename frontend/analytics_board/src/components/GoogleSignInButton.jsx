@@ -5,22 +5,35 @@ export default function GoogleSignInButton({ uploaded, setUploaded, onUploaded }
   const [loading, setLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
+    console.log('Google sign-in button clicked');
+    console.log('Current upload status:', uploaded);
+    
     if (uploaded === true) {
       // Already signed in, go to dashboard
+      console.log('Already signed in, navigating to dashboard');
       onUploaded();
       return;
     }
 
+    console.log('Starting Google sign-in process...');
     setLoading(true);
     setUploaded("loading");
 
     try {
       const token = localStorage.getItem('access_token');
+      console.log('Retrieved token:', token ? 'Token exists' : 'No token found');
+      
+      console.log('Sending request to /link endpoint...');
+      console.log('Request payload:', {
+        platform: "google",
+        data: "ignore",
+        account_name: "Google User"
+      });
       
       // Call the /link endpoint with Google data
-      await axios.post("https://alder-backend-265736855150.us-west1.run.app/link", {
+      const response = await axios.post("https://alder-backend-265736855150.us-west1.run.app/link", {
         platform: "google",
-        data: "google_data_constant",
+        data: ["ignore"],
         account_name: "Google User"
       }, {
         headers: {
@@ -29,11 +42,17 @@ export default function GoogleSignInButton({ uploaded, setUploaded, onUploaded }
         }
       });
 
+      console.log('Google sign-in successful!');
+      console.log('Response data:', response.data);
+
       // Sign-in successful
       setUploaded(true);
       setLoading(false);
     } catch (error) {
       console.error('Google sign-in failed:', error);
+      console.error('Error status:', error.response?.status);
+      console.error('Error data:', error.response?.data);
+      console.error('Error message:', error.response?.data?.message || error.message);
       alert('Google sign-in failed: ' + (error.response?.data?.message || error.message));
       setUploaded(false);
       setLoading(false);

@@ -100,7 +100,7 @@ export default function UploadBox({
         const token = localStorage.getItem('access_token');
         const response = await axios.post('https://alder-backend-265736855150.us-west1.run.app/link', {
           platform: "google",
-          data: {},
+          data: "hello",
           account_name: "Google User"
         }, {
           headers: {
