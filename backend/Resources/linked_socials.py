@@ -65,13 +65,13 @@ class LinkSocials(MethodView):
 
                 # 1. Followers
                 try:
-                    meta.followers_count = processed_data.followers()
+                    meta.followers_count = processed_data.get_follower_count()
                 except (ValueError, FileNotFoundError, KeyError):
                     pass
 
                 # 2. Following
                 try:
-                    meta.following_count = processed_data.following()
+                    meta.following_count = processed_data.get_following_count()
                 except (ValueError, FileNotFoundError, KeyError):
                     pass
 
