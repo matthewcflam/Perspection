@@ -88,7 +88,7 @@ export default function InstagramLikes() {
     <div className="w-full h-full overflow-y-auto">
       {/* HERO */}
       <HeroHeader
-        title="Wow you have a lot of Likes!"
+        title="Wow, you like a lot of things!"
         subtitle="See whose content you engage with the most."
       />
 
