@@ -106,8 +106,11 @@ export default function UploadBox({
         setUploaded(true);
       } else if (provider == "google"){
         // Google - send to backend
+        console.log('Google upload initiated');
+        console.log('Token:', localStorage.getItem('access_token'));
+        
         const token = localStorage.getItem('access_token');
-        await axios.post('https://alder-backend-265736855150.us-west1.run.app/link', {
+        const response = await axios.post('https://alder-backend-265736855150.us-west1.run.app/link', {
           platform: "google",
           data: {},
           account_name: "Google User"
@@ -117,6 +120,8 @@ export default function UploadBox({
             'Content-Type': 'application/json'
           }
         });
+
+        console.log('Google upload response:', response.data);
 
         // Upload successful
         setUploaded(true);
