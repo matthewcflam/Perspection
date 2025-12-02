@@ -11,6 +11,9 @@ import GoogleDashboardPages from "./components/YOUTUBE_Pages/GoogleDashboardPage
 import InstagramDashboardPages from "./components/INSTAGRAM_Pages/InstagramDashboardPages";
 import UploadBox from "./components/UploadBox";
 import DarkVeil from "./components/DarkVeil";
+import LoginPage from "./components/LoginPage";
+import CreateAccountPage from "./components/CreateAccountPage";
+import GoogleSignInButton from "./components/GoogleSignInButton";
 
 
 
@@ -25,9 +28,12 @@ export default function App() {
   // Dashboard page index: 0 = Stat, 1 = Activity, 2 = Engagement
   const [dashPage, setDashPage] = useState(0);
   const dashScrollRef = useRef(null);
-  // For Stepper → fade out → buttons fade in
+  // For Stepper → fade out → login/setup page flow
   const [showButtonsAfterStepper, setShowButtonsAfterStepper] = useState(false);
   const [showButtons, setShowButtons] = useState(false);
+  
+  // Setup page flow: "stepper" -> "login" -> "createaccount" -> "upload"
+  const [setupPage, setSetupPage] = useState("stepper"); // stepper, login, createaccount, upload
 
   const [googleUploaded, setGoogleUploaded] = useState(false);
   const [instagramUploaded, setInstagramUploaded] = useState(false);
@@ -109,6 +115,21 @@ export default function App() {
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
+
+      {/* GLOBAL LOGO - Always visible in top left */}
+      <div className="fixed top-6 left-8 z-50 flex items-center gap-3">
+        <img 
+          src="/favicon.png" 
+          alt="Perspection Logo" 
+          className="w-8 h-8"
+        />
+        <h1 
+          className="text-xl font-bold text-white tracking-wide"
+          style={{ fontFamily: 'Aileron' }}
+        >
+        Perspection
+        </h1>
+      </div>
 
       {/* GLOBAL BACKGROUND - Only show in main mode */}
       {mode === "main" && (
@@ -269,11 +290,12 @@ export default function App() {
               {/* ===================================================
         PART 1 — STEPPER (centered absolute)
     =================================================== */}
+              {/* STEPPER */}
               <div
                 className={`
         absolute inset-0 flex items-center justify-center
         transition-opacity duration-600
-        ${showButtonsAfterStepper ? "opacity-0 pointer-events-none" : "opacity-100"}
+        ${setupPage === "stepper" ? "opacity-100" : "opacity-0 pointer-events-none"}
       `}
               >
                 <div className="
@@ -284,8 +306,7 @@ export default function App() {
                   <Stepper
                     initialStep={1}
                     onFinalStepCompleted={() => {
-                      setShowButtonsAfterStepper(true);
-                      setTimeout(() => setShowButtons(true), 700);
+                      setTimeout(() => setSetupPage("login"), 700);
                     }}
                   >
                     <Step>
@@ -313,6 +334,34 @@ export default function App() {
                 </div>
               </div>
 
+              {/* LOGIN PAGE */}
+              <div
+                className={`
+        absolute inset-0 flex items-center justify-center
+        transition-opacity duration-700
+        ${setupPage === "login" ? "opacity-100" : "opacity-0 pointer-events-none"}
+      `}
+              >
+                <LoginPage
+                  onLoginSuccess={() => setSetupPage("upload")}
+                  onCreateAccountClick={() => setSetupPage("createaccount")}
+                />
+              </div>
+
+              {/* CREATE ACCOUNT PAGE */}
+              <div
+                className={`
+        absolute inset-0 flex items-center justify-center
+        transition-opacity duration-700
+        ${setupPage === "createaccount" ? "opacity-100" : "opacity-0 pointer-events-none"}
+      `}
+              >
+                <CreateAccountPage
+                  onAccountCreated={() => setSetupPage("upload")}
+                  onBackToLogin={() => setSetupPage("login")}
+                />
+              </div>
+
 
               {/* ===================================================
         PART 2 — UPLOAD UI (centered absolute)
@@ -321,7 +370,7 @@ export default function App() {
                 className={`
         absolute inset-0 flex flex-col items-center justify-center
         transition-opacity duration-700
-        ${showButtons ? "opacity-100" : "opacity-0 pointer-events-none"}
+        ${setupPage === "upload" ? "opacity-100" : "opacity-0 pointer-events-none"}
       `}
               >
                 <h1 className="text-5xl sm:text-6xl font-bold mb-12">
@@ -330,9 +379,7 @@ export default function App() {
 
                 <div className="flex flex-row gap-12 mt-4">
 
-        <UploadBox
-          label="Google Data"
-          provider="google"
+        <GoogleSignInButton
           uploaded={googleUploaded}
           setUploaded={setGoogleUploaded}
           onUploaded={() => {
