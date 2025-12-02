@@ -94,7 +94,7 @@ export default function UploadBox({
         await axios.post('https://alder-backend-265736855150.us-west1.run.app/link', {
           platform: "meta",
           data: dataList,
-          account_name: "Instagram User" // You can prompt user for this or extract from data
+          account_name: "InstagramUser" // You can prompt user for this or extract from data
         }, {
           headers: {
             'Authorization': `Bearer ${token}`,

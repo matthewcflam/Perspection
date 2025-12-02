@@ -13,6 +13,7 @@ import UploadBox from "./components/UploadBox";
 import DarkVeil from "./components/DarkVeil";
 import LoginPage from "./components/LoginPage";
 import CreateAccountPage from "./components/CreateAccountPage";
+import GoogleSignInButton from "./components/GoogleSignInButton";
 
 
 
@@ -114,6 +115,21 @@ export default function App() {
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
+
+      {/* GLOBAL LOGO - Always visible in top left */}
+      <div className="fixed top-6 left-8 z-50 flex items-center gap-3">
+        <img 
+          src="/favicon.png" 
+          alt="Perspection Logo" 
+          className="w-8 h-8"
+        />
+        <h1 
+          className="text-xl font-bold text-white tracking-wide"
+          style={{ fontFamily: 'Aileron' }}
+        >
+        Perspection
+        </h1>
+      </div>
 
       {/* GLOBAL BACKGROUND - Only show in main mode */}
       {mode === "main" && (
@@ -363,9 +379,7 @@ export default function App() {
 
                 <div className="flex flex-row gap-12 mt-4">
 
-        <UploadBox
-          label="Google Data"
-          provider="google"
+        <GoogleSignInButton
           uploaded={googleUploaded}
           setUploaded={setGoogleUploaded}
           onUploaded={() => {
