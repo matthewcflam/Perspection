@@ -144,7 +144,7 @@ class LinkSocials(MethodView):
                         token_path="backend/data_collection/token.json"
                     )
                     start_date = "1970-01-01T00:00:00Z"
-                    end_date = datetime.datetime.utcnow().isoformat().replace("+00:00", "Z")
+                    end_date = "2025-11-01T00:00:00Z"
 
                     liked_data = client.youtube.get_user_liked_videos_in_range(
                         start_date=start_date, end_date=end_date, limit=500
