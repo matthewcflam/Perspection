@@ -69,32 +69,20 @@ export default function UploadBox({
           return;
         }
 
-        // Parse all JSON files into a list
+        // Parse all JSON files into a list of raw JSON contents
         const dataList = await Promise.all(
           jsonFiles.map(async (file) => {
-            let relPath = file.webkitRelativePath || file.name;
-            
-            // Strip top-level folder from path
-            const firstSlash = relPath.indexOf("/");
-            if (firstSlash !== -1) {
-              relPath = relPath.slice(firstSlash + 1);
-            }
-
             const text = await file.text();
-            const json = JSON.parse(text);
-            return {
-              filename: relPath,
-              content: json
-            };
+            return JSON.parse(text);
           })
         );
 
-        // Send to backend
+        // Send to backend (array of JSON contents expected by InstagramParser)
         const token = localStorage.getItem('access_token');
         await axios.post('https://alder-backend-265736855150.us-west1.run.app/link', {
           platform: "meta",
           data: dataList,
-          account_name: "InstagramUser" // You can prompt user for this or extract from data
+          account_name: "InstagramUser"
         }, {
           headers: {
             'Authorization': `Bearer ${token}`,
