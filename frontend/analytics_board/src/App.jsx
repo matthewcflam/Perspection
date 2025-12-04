@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
 // Components
-import RotatingText from "./components/RotatingText";
 import DarkVeil from "./components/DarkVeil";
 import UploadBox from "./components/UploadBox";
 import Stepper, { Step } from "./components/Stepper";
@@ -11,7 +10,6 @@ import InstagramDashboardPages from "./components/INSTAGRAM_Pages/InstagramDashb
 import StatsButtonBox from "./components/StatsButtonBox";
 import ClearDataBox from "./components/ClearDataBox";
 import SpotlightCard from './components/SpotlightCard';
-import Aurora from './components/Aurora';
 
 
 export default function App() {

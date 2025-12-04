@@ -1,9 +1,9 @@
 import React from "react";
 import HeroHeader from "../HeroHeader";
 
-import StatMetric from "../stats/StatMetric";
-import StatChart from "../stats/StatChart";
-import StatSection from "../stats/StatBlock";
+import StatMetric from "../../Stats/StatMetric";
+import StatChart from "../../Stats/StatChart";
+import StatSection from "../../Stats/StatBlock";
 
 
 

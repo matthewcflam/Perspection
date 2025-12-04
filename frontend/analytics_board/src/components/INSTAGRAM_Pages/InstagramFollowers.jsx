@@ -1,9 +1,9 @@
 // FollowersDashboard.jsx
 import React, { useEffect, useState } from "react";
 
-import HeroHeader from "../HeroHeader";
-import StatBlock from "../stats/StatBlock";
-import StatMetric from "../stats/StatMetric";
+import HeroHeader from "../Not being used/HeroHeader";
+import StatBlock from "../Stats/StatBlock";
+import StatMetric from "../Stats/StatMetric";
 import CircularGallery from '../CircularGallery'
 
 const API_BASE = "https://alder-backend-265736855150.us-west1.run.app";
