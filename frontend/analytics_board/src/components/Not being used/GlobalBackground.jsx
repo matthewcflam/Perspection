@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Dither from "./Dither";
+import Dither from "../Dither";
 
 export default function GlobalBackground() {
   const [color, setColor] = useState([0.3, 0.2, 0.1]);
