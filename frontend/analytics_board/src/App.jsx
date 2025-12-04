@@ -185,8 +185,8 @@ export default function App() {
             {/* Step 1 */}
             <div className="w-[1100px] flex items-center gap-8">
               <div className="flex-1">
-                <h3 className="text-4xl font-bold text-white mb-3">Step 1</h3>
-                <p className="text-white/80 text-xl">Go to the Instagram Accounts Center.</p>
+                <h3 className="text-4xl font-bold text-white mb-3" style={{ fontFamily: 'Aileron' }}>Step 1</h3>
+                <p className="text-white/80 text-xl" style={{ fontFamily: 'Aileron' }}>Go to the Instagram Accounts Center.</p>
               </div>
               <div className="w-[600px] h-[340px] rounded-3xl bg-white/10 backdrop-blur-xl border border-white/30 shadow-xl p-4">
                 <div className="w-full h-full bg-white/5 rounded-2xl border border-white/20 overflow-hidden">
@@ -198,8 +198,8 @@ export default function App() {
             {/* Step 2 */}
             <div className="w-[1100px] flex items-center gap-8">
               <div className="flex-1">
-                <h3 className="text-4xl font-bold text-white mb-3">Step 2</h3>
-                <p className="text-white/80 text-xl">Export your information to your device as a JSON file.</p>
+                <h3 className="text-4xl font-bold text-white mb-3" style={{ fontFamily: 'Aileron' }}>Step 2</h3>
+                <p className="text-white/80 text-xl" style={{ fontFamily: 'Aileron' }}>Export your information to your device as a JSON file.</p>
               </div>
               <div className="w-[600px] h-[340px] rounded-3xl bg-white/10 backdrop-blur-xl border border-white/30 shadow-xl p-4">
                 <div className="w-full h-full bg-white/5 rounded-2xl border border-white/20 overflow-hidden">
@@ -211,8 +211,8 @@ export default function App() {
             {/* Step 3 */}
             <div className="w-[1100px] flex items-center gap-8">
               <div className="flex-1">
-                <h3 className="text-4xl font-bold text-white mb-3">Step 3</h3>
-                <p className="text-white/80 text-xl">Choose between your Likes, Following, and Messages folders to Upload!</p>
+                <h3 className="text-4xl font-bold text-white mb-3" style={{ fontFamily: 'Aileron' }}>Step 3</h3>
+                <p className="text-white/80 text-xl" style={{ fontFamily: 'Aileron' }}>Choose between your Likes, Following, and Messages folders to Upload!</p>
               </div>
               <div className="w-[600px] h-[340px] rounded-3xl bg-white/10 backdrop-blur-xl border border-white/30 shadow-xl p-4">
                 <div className="w-full h-full bg-white/5 rounded-2xl border border-white/20 overflow-hidden">

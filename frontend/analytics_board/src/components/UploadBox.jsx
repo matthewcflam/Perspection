@@ -84,12 +84,7 @@ export default function UploadBox({
   };
 
   const handleClick = () => {
-    // If already uploaded → clicking should open dashboard
-    if (uploaded === true) {
-      onUploaded();
-      return;
-    }
-
+    // Always allow uploading, never redirect to dashboard
     fileInputRef.current?.click();
   };
 

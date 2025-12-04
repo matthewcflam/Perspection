@@ -309,11 +309,12 @@ class App {
   }
   createMedias(items, bend = 1, textColor, borderRadius, font) {
     const defaultItems = [
-      { text: 'You', panelColor: '#833AB4' },      // Instagram purple
-      { text: 'have', panelColor: '#C13584' },      // Instagram pink
-      { text: 'so', panelColor: '#E1306C' },     // Instagram magenta
-      { text: 'many', panelColor: '#FD1D1D' },     // Instagram red
-      { text: 'friends!', panelColor: '#F77737' }  // Instagram orange
+      { text: 'Who', panelColor: '#833AB4' },      // Instagram purple
+      { text: 'does', panelColor: '#C13584' },      // Instagram pink
+      { text: 'not', panelColor: '#C13584' },      // Instagram pink
+      { text: 'follow', panelColor: '#E1306C' },     // Instagram magenta
+      { text: 'you', panelColor: '#FD1D1D' },     // Instagram red
+      { text: 'back!?', panelColor: '#F77737' }  // Instagram orange
     ];
     const galleryItems = items && items.length ? items : defaultItems;
     this.mediasImages = galleryItems.concat(galleryItems);

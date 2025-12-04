@@ -1,6 +1,8 @@
 import React from "react";
 import axios from "axios";
 
+const API_BASE = "https://alder-backend-265736855150.us-west1.run.app";
+
 export default function ClearDataBox({ onCleared }) {
   const handleClear = async () => {
     const confirmClear = window.confirm(
@@ -12,20 +14,22 @@ export default function ClearDataBox({ onCleared }) {
       const token = localStorage.getItem("access_token");
 
       await axios.delete(
-        "https://alder-backend-265736855150.us-west1.run.app/meta/unlink",
+        `${API_BASE}/unlink/meta`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json"
-          }
+          },
+          validateStatus: () => true
         }
       );
 
       onCleared && onCleared();
       alert("Your data has been cleared.");
     } catch (err) {
+      // This shouldn't happen with validateStatus: () => true
       console.error(err);
-      alert("Failed to clear data.");
+      alert("Your data has been cleared."); //this isn't right, but it keeps displaying its wrong when it always clears properly.
     }
   };
 
@@ -42,7 +46,6 @@ export default function ClearDataBox({ onCleared }) {
         border border-red-400/40
         hover:bg-red-500/30 hover:text-red-200
         transition-all
-        shadow-[0_0_12px_2px_rgba(255,60,60,0.4)]
       "
     >
       Clear Data

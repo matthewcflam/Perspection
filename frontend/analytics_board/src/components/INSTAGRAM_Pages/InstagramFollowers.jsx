@@ -93,7 +93,7 @@ export default function FollowersDashboard() {
       <section>
         <div className="min-h-screen w-full flex flex-col items-center justify-start p-8">
           <h1 className="text-4xl font-bold mb-8 mt-8 text-white" style={{ fontFamily: 'Aileron' }}>
-            Followers Analytics
+            Who to Unfollow
           </h1>
 
           {/* --------- OVERVIEW BLOCK (based only on not-following-back) --------- */}
@@ -140,7 +140,7 @@ export default function FollowersDashboard() {
               </>
             ) : (
               <p className="text-white/70">
-                Everyone follows you back—nice!
+                Everyone follows you back — nice!
               </p>
             )}
           </StatBlock>

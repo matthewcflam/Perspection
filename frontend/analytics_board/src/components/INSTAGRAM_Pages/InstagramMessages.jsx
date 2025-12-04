@@ -129,12 +129,12 @@ export default function MessagesDashboard() {
     <div className="w-full h-full overflow-y-auto">
 
       {/* HERO */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-purple-600 via-blue-200 to-yellow-500">
+      <div className="absolute inset-0 -z-10 bg-gradient-to-bl from-yellow-400 via-purple-400 to-purple-900">
         <div style={{ width: '100%', height: '600px', position: 'relative' }}>
         </div>
       </div>
       <section className="relative w-full h-screen snap-start flex flex-col items-center justify-center text-white">
-        <CurvedLoop marqueeText="Damn. Do you ever shut up?" />
+        <CurvedLoop marqueeText="Slide into my DMs" />
       </section>
       
 

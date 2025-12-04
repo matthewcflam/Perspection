@@ -165,7 +165,7 @@ export default function InstagramLikes() {
       <section>
         <div className="min-h-screen w-full flex flex-col items-center justify-start p-8">
           <h1 className="text-4xl font-bold mb-8 mt-8 text-white" style={{ fontFamily: 'Aileron' }}>
-            Likes Analytics
+          Who do you like?
           </h1>
 
           {/* -------- Likes Overview -------- */}
