@@ -12,17 +12,19 @@ import StatsButtonBox from "./components/StatsButtonBox";
 import ClearDataBox from "./components/ClearDataBox";
 
 
-
 export default function App() {
-  const [mode, setMode] = useState("main"); 
+  const [mode, setMode] = useState("main");
   const scrollContainerRef = useRef(null);
   const prevModeRef = useRef(mode);
 
   const [dashPage, setDashPage] = useState(0);
   const dashScrollRef = useRef(null);
 
-  const [setupPage, setSetupPage] = useState("stepper");
+  const [setupPage, setSetupPage] = useState("login");
   const [instagramUploaded, setInstagramUploaded] = useState(false);
+  const [showArrow, setShowArrow] = useState(true);
+  const [showLoginButton, setShowLoginButton] = useState(true);
+  const [hasLoggedIn, setHasLoggedIn] = useState(false);
 
   const scrollToSection = (index) => {
     const el = scrollContainerRef.current;
@@ -43,14 +45,39 @@ export default function App() {
     prevModeRef.current = mode;
   }, [mode]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const el = scrollContainerRef.current;
+      if (!el) return;
+      if (el.scrollTop > 10) {
+        setShowArrow(false);
+      }
+
+      // Hide login button when scrolled to section 4 (login page)
+      const height = el.clientHeight;
+      const currentSection = Math.round(el.scrollTop / height);
+      if (currentSection == 4) {
+        setShowLoginButton(false);
+      } else {
+        setShowLoginButton(true);
+      }
+    };
+
+    const el = scrollContainerRef.current;
+    if (el) {
+      el.addEventListener('scroll', handleScroll);
+      return () => el.removeEventListener('scroll', handleScroll);
+    }
+  }, [mode]);
+
   return (
     <div className="relative w-full h-screen overflow-hidden">
 
       {/* GLOBAL LOGO */}
       <div className="fixed top-6 left-8 z-50 flex items-center gap-3">
-        <img 
-          src="/favicon.png" 
-          alt="Perspection Logo" 
+        <img
+          src="/favicon.png"
+          alt="Perspection Logo"
           className="w-8 h-8"
         />
         <h1
@@ -60,6 +87,15 @@ export default function App() {
           Perspection
         </h1>
       </div>
+
+      {/* LOGIN BUTTON */}
+      <button
+        onClick={() => scrollToSection(4)}
+        className={`fixed top-6 right-8 z-50 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/30 text-white font-semibold hover:bg-white/20 transition-all duration-500 shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:shadow-[0_0_25px_rgba(255,255,255,0.5)] ${(showLoginButton && !hasLoggedIn) ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
+      >
+        Login
+      </button>
 
       {/* BACKGROUND (only main) */}
       {mode === "main" && (
@@ -83,46 +119,111 @@ export default function App() {
           {/* LANDING PAGE */}
           <section className="relative w-full h-screen snap-start flex flex-col items-center justify-center text-white">
 
-            <div className="absolute inset-0 flex top-2/11 justify-center z-10">
+            <div className="absolute inset-0 flex top-3/10 justify-center z-10">
               <h1 className="italic text-white/80 text-xl drop-shadow-lg">
                 "The #1 app for data insights" — Wired
               </h1>
             </div>
 
-            <div className="absolute inset-0 flex top-1/4 justify-center z-10">
+            <div className="absolute inset-0 flex top-2/5 justify-center z-10">
               <h1 className="text-6xl font-bold text-white drop-shadow-lg" style={{ fontFamily: 'Aileron' }}>
                 See who your real friends are.
               </h1>
             </div>
 
-            <div className="absolute inset-0 flex top-18/40 justify-center z-10">
+            <div className="absolute inset-0 flex top-11/20 justify-center z-10">
               <div className="w-24 h-px bg-white mb-4"></div>
             </div>
 
-            <div className="absolute inset-0 flex top-1/2 justify-center z-10">
+            <div className="absolute inset-0 flex top-3/5 justify-center z-10">
               <h1 className="text-2xl text-white/80 drop-shadow-lg text-center w-120">
                 View your followers, messages, likes, and more.
               </h1>
             </div>
 
-            <div className="absolute inset-0 flex top-4/5 justify-center z-10">
+            {/* <div className="absolute inset-0 flex top-4/5 justify-center z-10">
               <button
                 onClick={() => scrollToSection(1)}
-                className="text-6xl animate-bounce hover:scale-125 transition text-white"
+                className={`text-4xl animate-subtle-bounce hover:scale-120 transition-all duration-400 text-white font-light ${showArrow ? 'opacity-80' : 'opacity-0 pointer-events-none'
+                  }`}
               >
                 ↓
               </button>
+            </div> */}
+
+          </section>
+
+          {/* IMAGE SHOWCASE SECTION */}
+          <section className="relative w-full h-screen snap-start flex items-center justify-center text-white">
+            <div className="w-[1180px] h-[750px] -translate-y-20 rounded-3xl bg-gradient-to-br from-purple-300/30 via-purple-400/35 to-pink-500/40 backdrop-blur-xl border border-white/30 shadow-2xl p-8 flex items-center justify-center">
+              <div className="relative w-full h-full rounded-2xl border border-white/20 flex items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 bg-white/5 rounded-2xl"></div>
+                <img src="Liked.png" className="relative rounded-2xl w-full h-full object-cover opacity- mix-blend-normal"></img>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="bg-black/60 backdrop-blur-md border border-white/20 rounded-2xl px-8 py-6 shadow-xl text-center">
+                    <h2 className="text-3xl font-bold text-white mb-2" style={{ fontFamily: 'Aileron' }}>Put a spotlight on your data</h2>
+                    <p className="text-white/80 text-lg">- and see everything in one place.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* TUTORIAL SECTION - 4 STACKED STEPS */}
+          <section className="relative w-full min-h-screen snap-start flex flex-col items-center justify-center text-white py-20 gap-8">
+
+            <h2 className="text-6xl font-bold text-white mb-8" style={{ fontFamily: 'Aileron' }}>Perspection in 3 steps</h2>
+
+            {/* Step 1 */}
+            <div className="w-[1100px] flex items-center gap-8">
+              <div className="flex-1">
+                <h3 className="text-4xl font-bold text-white mb-3">Step 1</h3>
+                <p className="text-white/80 text-xl">Go to the Instagram Accounts Center.</p>
+              </div>
+              <div className="w-[500px] h-[280px] rounded-3xl bg-white/10 backdrop-blur-xl border border-white/30 shadow-xl p-4">
+                <div className="w-full h-full bg-white/5 rounded-2xl border border-white/20 overflow-hidden">
+                  <img src="AccountCenter.png" className="rounded-2xl w-full h-full object-cover opacity-80"></img>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 2 */}
+            <div className="w-[1100px] flex items-center gap-8">
+              <div className="flex-1">
+                <h3 className="text-4xl font-bold text-white mb-3">Step 2</h3>
+                <p className="text-white/80 text-xl">Export your information to your device as a JSON file.</p>
+              </div>
+              <div className="w-[500px] h-[280px] rounded-3xl bg-white/10 backdrop-blur-xl border border-white/30 shadow-xl p-4">
+                <div className="w-full h-full bg-white/5 rounded-2xl border border-white/20 overflow-hidden">
+                  <img src="export.png" className="rounded-2xl w-full h-full object-cover opacity-80"></img>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 3 */}
+            <div className="w-[1100px] flex items-center gap-8">
+              <div className="flex-1">
+                <h3 className="text-4xl font-bold text-white mb-3">Step 3</h3>
+                <p className="text-white/80 text-xl">Choose between your Likes, Following, and Messages folders to Upload!</p>
+              </div>
+              <div className="w-[500px] h-[280px] rounded-3xl bg-white/10 backdrop-blur-xl border border-white/30 shadow-xl p-4">
+                <div className="w-full h-full bg-white/5 rounded-2xl border border-white/20 overflow-hidden">
+                  <img src="folders.png" className="rounded-2xl w-full h-full object-cover opacity-80"></img>
+                </div>
+              </div>
             </div>
 
           </section>
 
           {/* SIGN-IN / STEPS / UPLOAD PAGE */}
-          <section className="relative w-full h-screen snap-start flex items-center justify-center text-white">
+          <section
+            className="relative w-full h-screen snap-start flex items-center justify-center text-white"
+            onMouseEnter={() => setShowLoginButton(false)}
+            onMouseLeave={() => setShowLoginButton(true)}
+          >
 
-            <div className="relative w-full h-full flex items-center justify-center text-center">
-
-              {/* STEPPER */}
-              <div
+            {/* STEPPER */}
+            {/* <div
                 className={`
                   absolute inset-0 flex items-center justify-center
                   transition-opacity duration-700
@@ -137,20 +238,20 @@ export default function App() {
                     }
                   >
                     <Step>
-                      <h2 className="text-xl font-bold mb-2">Welcome!</h2>
-                      <p>This short guide explains what this app does.</p>
+                      <h2 className="text-xl font-bold mb-2">Welcome to Perspection.</h2>
+                      <p>This short guide explains how to use our app.</p>
                     </Step>
 
                     <Step>
                       <h2 className="text-xl font-bold mb-2">Learn About Yourself</h2>
-                      <p>We take your uploaded Instagram data and synthesize it for you. Learn about 
+                      <p>We take your uploaded Instagram data and synthesize it for you. Learn about
                         your likes, messages, and more!
                       </p>
                     </Step>
 
                     <Step>
                       <h2 className="text-xl font-bold mb-2">How to Get Your Instagram Data</h2>
-                      <p>Go to the Instagram Accounts Center. Export your information to your device as a JSON file. 
+                      <p>Go to the Instagram Accounts Center. Export your information to your device as a JSON file.
                       </p>
                     </Step>
 
@@ -160,7 +261,9 @@ export default function App() {
                     </Step>
                   </Stepper>
                 </div>
-              </div>
+              </div> */}
+
+            <div className="relative w-full h-full flex items-center justify-center text-center">
 
               {/* LOGIN */}
               <div
@@ -171,7 +274,10 @@ export default function App() {
                 `}
               >
                 <LoginPage
-                  onLoginSuccess={() => setSetupPage("upload")}
+                  onLoginSuccess={() => {
+                    setSetupPage("upload");
+                    setHasLoggedIn(true);
+                  }}
                   onCreateAccountClick={() => setSetupPage("createaccount")}
                 />
               </div>
@@ -185,7 +291,10 @@ export default function App() {
                 `}
               >
                 <CreateAccountPage
-                  onAccountCreated={() => setSetupPage("upload")}
+                  onAccountCreated={() => {
+                    setSetupPage("upload");
+                    setHasLoggedIn(true);
+                  }}
                   onBackToLogin={() => setSetupPage("login")}
                 />
               </div>
@@ -201,7 +310,7 @@ export default function App() {
                 <h1 className="text-5xl sm:text-6xl font-bold mb-8">Upload your data</h1>
 
                 <div className="flex flex-row gap-12 mt-4">
-                  
+
                   {/* Instagram Upload */}
                   <UploadBox
                     label="Instagram Data"
@@ -222,11 +331,11 @@ export default function App() {
                   />
 
                   <ClearDataBox
-  onCleared={() => {
-    setInstagramUploaded(false);
-    setGoogleUploaded(false); // safe even if unused
-  }}
-/>
+                    onCleared={() => {
+                      setInstagramUploaded(false);
+                      setGoogleUploaded(false); // safe even if unused
+                    }}
+                  />
 
 
                 </div>
@@ -256,8 +365,6 @@ export default function App() {
           />
         </div>
       )}
-
-
 
     </div>
   );

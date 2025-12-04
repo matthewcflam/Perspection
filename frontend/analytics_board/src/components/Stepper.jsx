@@ -132,12 +132,7 @@ export default function Stepper({
 
               <button
                 onClick={isLastStep ? handleComplete : handleNext}
-                className="
-                  bg-green-500 hover:bg-green-600
-                  active:bg-green-700
-                  text-white px-4 py-2 rounded-full
-                  shadow-md transition
-                "
+                className="text-neutral-300 hover:text-white transition"
                 {...nextButtonProps}
               >
                 {isLastStep ? "Complete" : nextButtonText}

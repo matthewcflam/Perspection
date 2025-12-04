@@ -26,16 +26,24 @@ export default function StatsButtonBox({ onClick }) {
         "
       ></div>
 
-      <span className="text-3xl font-bold text-gray-200 drop-shadow-lg z-20">
-        See Your
-      </span>
-      <span className="text-3xl font-bold text-gray-100 drop-shadow-lg -mt-2 z-20">
-        Statistics
+      {/* <span className="text-3xl font-bold text-gray-200 drop-shadow-lg z-20">
+        Run the numbers.
       </span>
 
       <span className="text-xs mt-4 text-gray-300/70 tracking-wide z-20">
-        (Click Here!)
-      </span>
+        (Click here to see your data!)
+      </span> */}
+    
+    <div className="flex flex-col items-center z-10">
+        <img src="favicon.png" className="w-20 h-20 mb-2"/>
+          <>
+            <span className="text-xl font-semibold mt-1">Run the Numbers.</span>
+            <span className="text-sm opacity-70">
+              Click here to see your data!
+            </span>
+          </>
+      </div> 
+
     </div>
   );
 }

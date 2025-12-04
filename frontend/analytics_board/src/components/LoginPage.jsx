@@ -46,7 +46,7 @@ export default function LoginPage({ onLoginSuccess, onCreateAccountClick }) {
   return (
     <div className="flex flex-col items-center justify-center w-full h-full">
       <div className="w-[400px] rounded-2xl p-8 bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
-        <h2 className="text-3xl font-bold mb-6 text-white text-center">
+        <h2 className="text-3xl font-bold mb-6 text-white text-center" style={{ fontFamily: 'Aileron' }}>
           Sign In
         </h2>
 
