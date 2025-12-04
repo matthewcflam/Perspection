@@ -1,7 +1,7 @@
 import React from "react";
 import ShaderComponents from "./ShaderComponents";
 
-export default function HeroHeader({ stat, title, subtitle }) {
+export default function HeroHeader({ stat, title, subtitle, titleStyle }) {
   const scrollDown = () =>
     window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
 
@@ -25,7 +25,7 @@ export default function HeroHeader({ stat, title, subtitle }) {
           </div>
         )}
 
-        <h1 className="text-3xl sm:text-4xl font-bold mb-4 leading-tight">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-4 leading-tight" style={{ fontFamily: 'Aileron' }}>
           {title}
         </h1>
 

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import HeroHeader from "../HeroHeader";
 import StatBlock from "../stats/StatBlock";
 import StatMetric from "../stats/StatMetric";
+import CircularGallery from '../CircularGallery'
 
 const API_BASE = "https://alder-backend-265736855150.us-west1.run.app";
 
@@ -77,70 +78,74 @@ export default function FollowersDashboard() {
   return (
     <div className="w-full h-full overflow-y-auto">
       {/* HERO */}
-      <HeroHeader
-        title={
-          totalNFB > 0
-            ? `You have ${totalNFB} accounts not following you back`
-            : "Everyone that you follow follows you back, congrats!"
-        }
-        subtitle="Find out who’s not returning your follows."
-      />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-blue-600 to-green-500">
+        <div style={{ width: '100%', height: '600px', position: 'relative' }}>
+        </div>
+      </div>
+      <section className="relative w-full h-screen snap-start flex flex-col items-center justify-center text-white">
+        <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+          <CircularGallery bend={3} textColor="#ffffff" borderRadius={0.15} scrollEase={0.02} />
+        </div>
+
+      </section>
 
       {/* CONTENT */}
-      <div className="min-h-screen w-full flex flex-col items-center justify-start p-8">
-        <h1 className="text-4xl font-bold mb-8 mt-8 text-white">
-          Your Followers
-        </h1>
+      <section>
+        <div className="min-h-screen w-full flex flex-col items-center justify-start p-8">
+          <h1 className="text-4xl font-bold mb-8 mt-8 text-white" style={{ fontFamily: 'Aileron' }}>
+            Followers Analytics
+          </h1>
 
-        {/* --------- OVERVIEW BLOCK (based only on not-following-back) --------- */}
-        <StatBlock
-          title="Follower Overview"
-          description="Summary based on accounts that are not following you back."
-        >
-          <StatMetric
-            label="Not Following You Back"
-            value={totalNFB.toLocaleString()}
-            trend={totalNFB > 0 ? `-${totalNFB}` : "+0"}
-          />
-        </StatBlock>
+          {/* --------- OVERVIEW BLOCK (based only on not-following-back) --------- */}
+          <StatBlock
+            title="Follower Overview"
+            description="Summary based on accounts that are not following you back."
+          >
+            <StatMetric
+              label="Not Following You Back"
+              value={totalNFB.toLocaleString()}
+              trend={totalNFB > 0 ? `-${totalNFB}` : "+0"}
+            />
+          </StatBlock>
 
-        {/* --------- NOT FOLLOWING BACK LIST --------- */}
-        <StatBlock
-          title="Not Following You Back"
-          description="Accounts you follow that don't follow you back."
-        >
-          {totalNFB > 0 ? (
-            <>
-              <div className="max-h-64 w-full overflow-y-auto border border-white/10 rounded-lg">
-                <ul className="divide-y divide-white/10">
-                  {visibleList.map((u) => (
-                    <li key={u.id} className="py-2 px-3 text-white/90">
-                      {u.username}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {totalNFB > 20 && (
-                <div className="mt-3 flex justify-end">
-                  <button
-                    onClick={() =>
-                      setVisibleCount(isShowingAll ? 20 : totalNFB)
-                    }
-                    className="text-sm text-white/80 underline hover:text-white"
-                  >
-                    {isShowingAll ? "Show less" : `Show all (${totalNFB})`}
-                  </button>
+          {/* --------- NOT FOLLOWING BACK LIST --------- */}
+          <StatBlock
+            title="Not Following You Back"
+            description="Accounts you follow that don't follow you back."
+          >
+            {totalNFB > 0 ? (
+              <>
+                <div className="max-h-64 w-full overflow-y-auto border border-white/10 rounded-lg">
+                  <ul className="divide-y divide-white/10">
+                    {visibleList.map((u) => (
+                      <li key={u.id} className="py-2 px-3 text-white/90">
+                        {u.username}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              )}
-            </>
-          ) : (
-            <p className="text-white/70">
-              Everyone follows you back—nice!
-            </p>
-          )}
-        </StatBlock>
-      </div>
+
+                {totalNFB > 20 && (
+                  <div className="mt-3 flex justify-end">
+                    <button
+                      onClick={() =>
+                        setVisibleCount(isShowingAll ? 20 : totalNFB)
+                      }
+                      className="text-sm text-white/80 underline hover:text-white"
+                    >
+                      {isShowingAll ? "Show less" : `Show all (${totalNFB})`}
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <p className="text-white/70">
+                Everyone follows you back—nice!
+              </p>
+            )}
+          </StatBlock>
+        </div>
+      </section>
     </div>
   );
 }

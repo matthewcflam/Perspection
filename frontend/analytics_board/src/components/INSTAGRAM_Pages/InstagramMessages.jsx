@@ -4,6 +4,7 @@ import HeroHeader from "../HeroHeader";
 import StatBlock from "../stats/StatBlock";
 import StatMetric from "../stats/StatMetric";
 import StatChart from "../stats/StatChart";
+import CurvedLoop from '../CurvedLoop';
 
 const API_BASE = "https://alder-backend-265736855150.us-west1.run.app";
 
@@ -15,7 +16,7 @@ export default function MessagesDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  
+
 
   // ───────────────────────────────────────────
   // FETCH DATA
@@ -88,11 +89,11 @@ export default function MessagesDashboard() {
   // ───────────────────────────────────────────
   const today = new Date().toISOString().split("T")[0];
 
-  const messagesSentToday = messages.filter(m => 
+  const messagesSentToday = messages.filter(m =>
     (m.sender || m.from_user) === "YOU" && (m.timestamp || m.time)?.startsWith(today)
   ).length;
 
-  const messagesReceivedToday = messages.filter(m => 
+  const messagesReceivedToday = messages.filter(m =>
     (m.receiver || m.to_user) === "YOU" && (m.timestamp || m.time)?.startsWith(today)
   ).length;
 
@@ -118,7 +119,8 @@ export default function MessagesDashboard() {
 
   // Weekly trend (7 most recent days)
   const last7 = messages.slice(-50).map((m) => 1); // placeholder: count messages
-  const trendData = last7.length ? last7 : [0,0,0,0,0,0,0];
+  const trendData = last7.length ? last7 : [0, 0, 0, 0, 0, 0, 0];
+
 
   // ───────────────────────────────────────────
   // RENDER
@@ -127,51 +129,57 @@ export default function MessagesDashboard() {
     <div className="w-full h-full overflow-y-auto">
 
       {/* HERO */}
-      <HeroHeader
-        title="You've sent a lot of messages recently!"
-        subtitle="Let's break down your texting habits."
-      />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-purple-600 via-blue-200 to-yellow-500">
+        <div style={{ width: '100%', height: '600px', position: 'relative' }}>
+        </div>
+      </div>
+      <section className="relative w-full h-screen snap-start flex flex-col items-center justify-center text-white">
+        <CurvedLoop marqueeText="Damn. Do you ever shut up?" />
+      </section>
+      
 
       {/* CONTENT */}
-      <div className="min-h-screen w-full flex flex-col items-center justify-center p-8">
+      <section>
+        <div className="min-h-screen w-full flex flex-col items-center justify-start p-8">
 
-        <h1 className="text-4xl font-bold mb-8 mt-8 text-white">
-          Your Messages
-        </h1>
+          <h1 className="text-4xl font-bold mb-8 mt-8 text-white" style={{ fontFamily: 'Aileron' }}>
+            Message Analytics
+          </h1>
 
-        {/* SECTION 1 — Message Frequency */}
-        <StatBlock
-          title="Message Frequency"
-          description="How often you're messaging people."
-        >
-          <StatMetric label="Messages Sent Today" value={messagesSentToday} />
-          <StatMetric label="Messages Received Today" value={messagesReceivedToday} />
-          <StatMetric label="Most Active Hour" value={mostActiveHour} />
-        </StatBlock>
+          {/* SECTION 1 — Message Frequency */}
+          <StatBlock
+            title="Message Frequency"
+            description="How often you're messaging people."
+          >
+            <StatMetric label="Messages Sent Today" value={messagesSentToday} />
+            <StatMetric label="Messages Received Today" value={messagesReceivedToday} />
+            <StatMetric label="Most Active Hour" value={mostActiveHour} />
+          </StatBlock>
 
-        {/* SECTION 2 — Top Contacts */}
-        <StatBlock
-          title="Top Contacts"
-          description="Your most active conversation partners."
-        >
-          {topSenders.slice(0,3).map((s, i) => (
-            <StatMetric
-              key={i}
-              label={s.username || s.sender || s.user}
-              value={`${s.count || s.total_messages} messages`}
-            />
-          ))}
-        </StatBlock>
+          {/* SECTION 2 — Top Contacts */}
+          <StatBlock
+            title="Top Contacts"
+            description="Your most active conversation partners."
+          >
+            {topSenders.slice(0, 3).map((s, i) => (
+              <StatMetric
+                key={i}
+                label={s.username || s.sender || s.user}
+                value={`${s.count || s.total_messages} messages`}
+              />
+            ))}
+          </StatBlock>
 
-        {/* SECTION 3 — Weekly Message Trends */}
-        <StatBlock
-          title="Weekly Message Trends"
-          description="Your message activity over 7 days."
-        >
-          <StatChart data={trendData} />
-        </StatBlock>
+          {/* SECTION 3 — Weekly Message Trends */}
+          <StatBlock
+            title="Weekly Message Trends"
+            description="Your message activity over 7 days."
+          >
+            <StatChart data={trendData} />
+          </StatBlock>
 
-      </div>
+        </div>
+      </section>
     </div>
   );
 }
