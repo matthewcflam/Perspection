@@ -60,7 +60,7 @@ export default function ShaderComponents() {
     <div
       className="absolute inset-0 w-full h-full -z-10"
       style={{
-        opacity: 0.50, // so it doesnt burn your eyes
+        opacity: 0.30, // so it doesnt burn your eyes
       }}
     >
       {selected}
