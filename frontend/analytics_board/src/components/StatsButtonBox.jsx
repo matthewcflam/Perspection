@@ -37,7 +37,7 @@ export default function StatsButtonBox({ onClick }) {
     <div className="flex flex-col items-center z-10">
         <img src="favicon.png" className="w-20 h-20 mb-2"/>
           <>
-            <span className="text-xl font-semibold mt-1">Finally. Perspection.</span>
+            <span className="text-xl font-semibold mt-1">Finally. Social Perspective.</span>
             <span className="text-sm opacity-70">
               Click here to see your data
             </span>

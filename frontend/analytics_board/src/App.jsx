@@ -92,7 +92,7 @@ export default function App() {
           className="text-xl font-bold text-white tracking-wide"
           style={{ fontFamily: 'Aileron' }}
         >
-          Perspection
+          Social Perspective
         </h1>
       </button>
 
@@ -173,7 +173,7 @@ export default function App() {
 
           {/* IMAGE SHOWCASE SECTION */}
           <section className="relative w-full h-screen snap-start flex items-center justify-center text-white">
-            <SpotlightCard className="w-[1180px] h-[750px] -translate-y-20 rounded-3xl bg-gradient-to-br from-purple-300/30 via-orange-300 to-pink-500/40 backdrop-blur-xl border border-white/30 shadow-2xl p-8 flex items-center justify-center" spotlightColor="rgba(255, 255, 120, 0.8)">
+            <SpotlightCard className="w-[1180px] h-[750px] -translate-y-20 rounded-3xl bg-gradient-to-br from-purple-300/30 via-purple-300 to-pink-500/40 backdrop-blur-xl border border-white/30 shadow-2xl p-8 flex items-center justify-center" spotlightColor="rgba(255, 255, 120, 0.8)">
               <div className="relative w-full h-full rounded-2xl border border-white/20 flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 bg-white/5 rounded-2xl"></div>
                 <img src="Liked.png" className="relative rounded-2xl w-full h-full object-cover opacity-30 mix-blend-normal"></img>
@@ -190,7 +190,7 @@ export default function App() {
           {/* TUTORIAL SECTION - 4 STACKED STEPS */}
           <section className="relative w-full min-h-screen snap-start flex flex-col items-center justify-center text-white py-20 gap-8">
 
-            <h2 className="text-6xl font-bold text-white mb-8" style={{ fontFamily: 'Aileron' }}>Perspection in 3 steps</h2>
+            <h2 className="text-6xl font-bold text-white mb-8" style={{ fontFamily: 'Aileron' }}>Social Perspective in 3 steps</h2>
 
               {/* Step 1 */}
               <div className="w-[1100px] flex items-center gap-8">
