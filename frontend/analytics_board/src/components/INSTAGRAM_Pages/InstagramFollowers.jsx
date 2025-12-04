@@ -81,9 +81,9 @@ export default function FollowersDashboard() {
         title={
           totalNFB > 0
             ? `You have ${totalNFB} accounts not following you back`
-            : "Everyone you follow follows you back!"
+            : "Everyone that you follow follows you back, congrats!"
         }
-        subtitle="See which accounts you follow that don't follow you back."
+        subtitle="Find out who’s not returning your follows."
       />
 
       {/* CONTENT */}

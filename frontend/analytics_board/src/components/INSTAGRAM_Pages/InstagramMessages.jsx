@@ -128,8 +128,8 @@ export default function MessagesDashboard() {
 
       {/* HERO */}
       <HeroHeader
-        title="You sent sooooo many messages this week!"
-        subtitle="You really love talking."
+        title="You've sent a lot of messages recently!"
+        subtitle="Let's break down your texting habits."
       />
 
       {/* CONTENT */}
