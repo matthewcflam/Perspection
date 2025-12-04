@@ -207,7 +207,7 @@ export default function App() {
 
                   {/* BUTTON GOES HERE */}
                   <div
-                    onClick={() => window.open("https://help.instagram.com/181231772500920", "_blank")}
+                    onClick={() => window.open("https://accountscenter.instagram.com/info_and_permissions", "_blank")}
                     className="
                       mt-1 w-40 h-10 cursor-pointer rounded-2xl border-2 border-white/40
                       flex items-center justify-center
@@ -216,7 +216,7 @@ export default function App() {
                     "
                   >
                     <span className="text-white font-medium text-xs" style={{ fontFamily: 'Aileron' }}>
-                      Open Help Center
+                      Open Accounts Center
                     </span>
                   </div>
                 </div>
