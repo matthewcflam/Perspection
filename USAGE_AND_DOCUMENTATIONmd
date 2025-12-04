@@ -9,7 +9,7 @@
 and then use:
 
 6. npm install  
-7. npm run  
+7. npm run dev
 
 A localhost link will pop up (should look something like http://localhost:1234).
 
