@@ -194,18 +194,42 @@ export default function App() {
 
             <h2 className="text-6xl font-bold text-white mb-8" style={{ fontFamily: 'Aileron' }}>Perspection in 3 steps</h2>
 
-            {/* Step 1 */}
-            <div className="w-[1100px] flex items-center gap-8">
-              <div className="flex-1">
-                <h3 className="text-4xl font-bold text-white mb-3" style={{ fontFamily: 'Aileron' }}>Step 1</h3>
-                <p className="text-white/80 text-xl" style={{ fontFamily: 'Aileron' }}>Go to the Instagram Accounts Center.</p>
-              </div>
-              <div className="w-[600px] h-[340px] rounded-3xl bg-white/10 backdrop-blur-xl border border-white/30 shadow-xl p-4">
-                <div className="w-full h-full bg-white/5 rounded-2xl border border-white/20 overflow-hidden">
-                  <img src="AccountCenter.png" className="rounded-2xl w-full h-full object-cover opacity-80"></img>
+              {/* Step 1 */}
+              <div className="w-[1100px] flex items-center gap-8">
+                <div className="flex-1">
+                  <h3 className="text-4xl font-bold text-white mb-3" style={{ fontFamily: 'Aileron' }}>
+                    Step 1
+                  </h3>
+
+                  <p className="text-white/80 text-xl mb-3" style={{ fontFamily: 'Aileron' }}>
+                    Go to the Instagram Accounts Center.
+                  </p>
+
+                  {/* BUTTON GOES HERE */}
+                  <div
+                    onClick={() => window.open("https://help.instagram.com/181231772500920", "_blank")}
+                    className="
+                      mt-1 w-40 h-10 cursor-pointer rounded-2xl border-2 border-white/40
+                      flex items-center justify-center
+                      transition-all duration-300
+                      bg-white/20 backdrop-blur-md hover:bg-white/30
+                    "
+                  >
+                    <span className="text-white font-medium text-xs" style={{ fontFamily: 'Aileron' }}>
+                      Open Help Center
+                    </span>
+                  </div>
+                </div>
+
+                <div className="w-[600px] h-[340px] rounded-3xl bg-white/10 backdrop-blur-xl border border-white/30 shadow-xl p-4">
+                  <div className="w-full h-full bg-white/5 rounded-2xl border border-white/20 overflow-hidden">
+                    <img src="AccountCenter.png" className="rounded-2xl w-full h-full object-cover opacity-80" />
+                  </div>
                 </div>
               </div>
-            </div>
+
+            
+
 
             {/* Step 2 */}
             <div className="w-[1100px] flex items-center gap-8">
