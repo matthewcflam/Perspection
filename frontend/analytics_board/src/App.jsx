@@ -11,6 +11,7 @@ import InstagramDashboardPages from "./components/INSTAGRAM_Pages/InstagramDashb
 import StatsButtonBox from "./components/StatsButtonBox";
 import ClearDataBox from "./components/ClearDataBox";
 import SpotlightCard from './components/SpotlightCard';
+import Aurora from './components/Aurora';
 
 
 export default function App() {
@@ -110,10 +111,16 @@ export default function App() {
       {mode === "main" && (
         <div className="absolute inset-0 -z-10 bg-black">
           <div style={{ width: '100%', height: '600px', position: 'relative' }}>
-            <DarkVeil speed={2.0} hueshift={250} />
+            <DarkVeil speed={2.0} hueShift={0} />
           </div>
+          {/* <img src="wallpaperfinal.webp"/> */}
         </div>
       )}
+
+      {/* {mode === "main" && (
+        <div className="absolute inset-0 -z-10" style={{ backgroundColor: '#221d34' }}>
+        </div>
+      )} */}
 
       {/* ===========================
             MODE: MAIN (Landing + Login)
@@ -126,25 +133,29 @@ export default function App() {
         >
 
           {/* LANDING PAGE */}
+           {/* WALLPAPER */}
           <section className="relative w-full h-screen snap-start flex flex-col items-center justify-center text-white">
-
-            <div className="absolute inset-0 flex top-3/10 justify-center z-10">
+            {/* <div className="absolute inset-0 -z-10" style={{ backgroundColor: '#221d34' }}>
+            <img src="wallpaperpromise.jpg"/>
+          </div> */}
+        
+            <div className="absolute inset-0 flex top-3/12 justify-center z-10">
               <h1 className="italic text-white/80 text-xl drop-shadow-lg">
                 "The #1 app for data insights" — Wired
               </h1>
             </div>
 
-            <div className="absolute inset-0 flex top-2/5 justify-center z-10">
+            <div className="absolute inset-0 flex top-2/6 justify-center z-10">
               <h1 className="text-6xl font-bold text-white drop-shadow-lg" style={{ fontFamily: 'Aileron' }}>
                 See who your real friends are.
               </h1>
             </div>
 
-            <div className="absolute inset-0 flex top-11/20 justify-center z-10">
+            {/* <div className="absolute inset-0 flex top-11/20 justify-center z-10">
               <div className="w-24 h-px bg-white mb-4"></div>
-            </div>
+            </div> */}
 
-            <div className="absolute inset-0 flex top-3/5 justify-center z-10">
+            <div className="absolute inset-0 flex top-2/4 justify-center z-10">
               <h1 className="text-2xl text-white/80 drop-shadow-lg text-center w-120">
                 View your followers, messages, likes, and more.
               </h1>
@@ -164,7 +175,7 @@ export default function App() {
 
           {/* IMAGE SHOWCASE SECTION */}
           <section className="relative w-full h-screen snap-start flex items-center justify-center text-white">
-            <SpotlightCard className="w-[1180px] h-[750px] -translate-y-20 rounded-3xl bg-gradient-to-br from-purple-300/30 via-purple-400/35 to-pink-500/40 backdrop-blur-xl border border-white/30 shadow-2xl p-8 flex items-center justify-center" spotlightColor="rgba(255, 255, 0, 0.4)">
+            <SpotlightCard className="w-[1180px] h-[750px] -translate-y-20 rounded-3xl bg-gradient-to-br from-purple-300/30 via-orange-300 to-pink-500/40 backdrop-blur-xl border border-white/30 shadow-2xl p-8 flex items-center justify-center" spotlightColor="rgba(255, 255, 120, 0.8)">
               <div className="relative w-full h-full rounded-2xl border border-white/20 flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 bg-white/5 rounded-2xl"></div>
                 <img src="Liked.png" className="relative rounded-2xl w-full h-full object-cover opacity-30 mix-blend-normal"></img>
