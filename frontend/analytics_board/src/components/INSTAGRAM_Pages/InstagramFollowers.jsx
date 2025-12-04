@@ -4,13 +4,11 @@ import React, { useEffect, useState } from "react";
 import HeroHeader from "../HeroHeader";
 import StatBlock from "../stats/StatBlock";
 import StatMetric from "../stats/StatMetric";
-import StatChart from "../stats/StatChart";
 
 const API_BASE = "https://alder-backend-265736855150.us-west1.run.app";
 
 export default function FollowersDashboard() {
-  const [metrics, setMetrics] = useState(null);                  // followers & following
-  const [notFollowingBack, setNotFollowingBack] = useState([]);  // [{ id, username }]
+  const [notFollowingBack, setNotFollowingBack] = useState([]); // [{ id, username }]
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -44,13 +42,10 @@ export default function FollowersDashboard() {
 
     (async () => {
       try {
-        const [metricsData, nfbData] = await Promise.all([
-          fetchJSON("/meta/all_meta_metrics"),
-          fetchJSON("/meta/not-following-back"),
-        ]);
-
-        setMetrics(metricsData);
-        setNotFollowingBack(nfbData); // array of { id, username }
+        // ✅ Only hit this endpoint now
+        const nfbData = await fetchJSON("/meta/not-following-back");
+        // Expect: array of { id, username }
+        setNotFollowingBack(nfbData || []);
       } catch (err) {
         setError(err.message || "Unknown error occurred");
       } finally {
@@ -79,21 +74,16 @@ export default function FollowersDashboard() {
   const isShowingAll = visibleCount >= totalNFB;
   const visibleList = notFollowingBack.slice(0, visibleCount);
 
-  // If your backend has these fields, great; otherwise we fall back
-  const totalFollowers = metrics?.followers ?? 0;
-  const totalFollowing = metrics?.following ?? 0;
-  const newThisWeek = metrics?.new_followers_last_7d ?? null; // adjust to your actual key
-
   return (
     <div className="w-full h-full overflow-y-auto">
       {/* HERO */}
       <HeroHeader
         title={
-          newThisWeek != null
-            ? `You gained ${newThisWeek} followers last week!`
-            : "Let's look through your follower analytics!"
+          totalNFB > 0
+            ? `You have ${totalNFB} accounts not following you back`
+            : "Everyone you follow follows you back!"
         }
-        subtitle="See who follows you, who you follow, and who doesn't follow back."
+        subtitle="See which accounts you follow that don't follow you back."
       />
 
       {/* CONTENT */}
@@ -102,19 +92,11 @@ export default function FollowersDashboard() {
           Your Followers
         </h1>
 
-        {/* --------- OVERVIEW BLOCK (metrics + NFB count) --------- */}
+        {/* --------- OVERVIEW BLOCK (based only on not-following-back) --------- */}
         <StatBlock
           title="Follower Overview"
-          description="High-level totals based on your Instagram data."
+          description="Summary based on accounts that are not following you back."
         >
-          <StatMetric
-            label="Total Followers"
-            value={totalFollowers.toLocaleString()}
-          />
-          <StatMetric
-            label="Total Following"
-            value={totalFollowing.toLocaleString()}
-          />
           <StatMetric
             label="Not Following You Back"
             value={totalNFB.toLocaleString()}
@@ -122,7 +104,7 @@ export default function FollowersDashboard() {
           />
         </StatBlock>
 
-        {/* --------- NOT FOLLOWING BACK LIST (same logic as before) --------- */}
+        {/* --------- NOT FOLLOWING BACK LIST --------- */}
         <StatBlock
           title="Not Following You Back"
           description="Accounts you follow that don't follow you back."

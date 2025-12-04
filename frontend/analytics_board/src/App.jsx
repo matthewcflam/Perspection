@@ -316,19 +316,20 @@ export default function App() {
 
                     <Step>
                       <h2 className="text-xl font-bold mb-2">Learn About Yourself</h2>
-                      <p>We take your uploaded Instagram and Youtube data and synthesize it for you. Learn about 
+                      <p>We take your uploaded Instagram data and synthesize it for you. Learn about 
                         your likes, messages, and more!
                       </p>
                     </Step>
 
                     <Step>
-                      <h2 className="text-xl font-bold mb-2">How it Works</h2>
-                      <p> Just upload your data by selecting your Instagram Data Folder or logging into your Google account.</p>
+                      <h2 className="text-xl font-bold mb-2">How to Get Your Instagram Data</h2>
+                      <p>Go to the Instagram Accounts Center. Export your information to your device as a JSON file. 
+                      </p>
                     </Step>
 
                     <Step>
-                      <h2 className="text-xl font-bold mb-2">Get Started!</h2>
-                      <p>Happy learning!</p>
+                      <h2 className="text-xl font-bold mb-2">What Data to Upload</h2>
+                      <p>Choose between your Likes, Following, and Messages JSON files to Upload!</p>
                     </Step>
                   </Stepper>
                 </div>
