@@ -14,7 +14,7 @@
 
 7. Test in Insomnia API client, setting up environment variables as {
 	"url": "http://localhost:5001",
-	"access_token": "{% response 'body', 'req_c85a268a8c3648d6bc0ab62f222f8c8b', 'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'when-expired', 300 %}"
+	REMOVED SECRETS
 }
 
 
