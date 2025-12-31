@@ -29,55 +29,59 @@ export default function CreateAccountPage({ onAccountCreated, onBackToLogin }) {
       return;
     }
 
-    setLoading(true);
+    // Backend is no longer running - bypass account creation
+    onAccountCreated();
 
-    try {
-      const response = await fetch(`${API_BASE}/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
-      });
+    // COMMENTED OUT: Original backend API calls
+    // setLoading(true);
 
-      const data = await response.json();
+    // try {
+    //   const response = await fetch(`${API_BASE}/register`, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       username,
+    //       password,
+    //     }),
+    //   });
 
-      if (response.ok) {
-        // Account created successfully
-        // Now automatically log in
-        const loginResponse = await fetch(`${API_BASE}/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username,
-            password,
-          }),
-        });
+    //   const data = await response.json();
 
-        const loginData = await loginResponse.json();
+    //   if (response.ok) {
+    //     // Account created successfully
+    //     // Now automatically log in
+    //     const loginResponse = await fetch(`${API_BASE}/login`, {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify({
+    //         username,
+    //         password,
+    //       }),
+    //     });
 
-        if (loginResponse.ok) {
-          // Store the access token
-          localStorage.setItem("access_token", loginData.access_token);
-          // Call success callback
-          onAccountCreated();
-        } else {
-          setError("Account created but login failed. Please try logging in.");
-        }
-      } else {
-        setError(data.message || "Registration failed");
-      }
-    } catch (err) {
-      setError("Network error. Please try again.");
-      console.error("Registration error:", err);
-    } finally {
-      setLoading(false);
-    }
+    //     const loginData = await loginResponse.json();
+
+    //     if (loginResponse.ok) {
+    //       // Store the access token
+    //       localStorage.setItem("access_token", loginData.access_token);
+    //       // Call success callback
+    //       onAccountCreated();
+    //     } else {
+    //       setError("Account created but login failed. Please try logging in.");
+    //     }
+    //   } else {
+    //     setError(data.message || "Registration failed");
+    //   }
+    // } catch (err) {
+    //   setError("Network error. Please try again.");
+    //   console.error("Registration error:", err);
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (

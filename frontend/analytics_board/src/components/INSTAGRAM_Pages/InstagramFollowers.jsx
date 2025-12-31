@@ -17,42 +17,45 @@ export default function FollowersDashboard() {
   const [visibleCount, setVisibleCount] = useState(20);
 
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-      setError("No access token found. Please log in.");
-      setLoading(false);
-      return;
-    }
+    // COMMENTED OUT: Backend API call - using mock data instead
+    // const token = localStorage.getItem("access_token");
+    // if (!token) {
+    //   setError("No access token found. Please log in.");
+    //   setLoading(false);
+    //   return;
+    // }
 
-    async function fetchJSON(path) {
-      const res = await fetch(`${API_BASE}${path}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    // async function fetchJSON(path) {
+    //   const res = await fetch(`${API_BASE}${path}`, {
+    //     method: "GET",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   });
 
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.message || `Request failed with status ${res.status}`);
-      }
+    //   if (!res.ok) {
+    //     const body = await res.json().catch(() => ({}));
+    //     throw new Error(body.message || `Request failed with status ${res.status}`);
+    //   }
 
-      return res.json();
-    }
+    //   return res.json();
+    // }
 
-    (async () => {
-      try {
-        // ✅ Only hit this endpoint now
-        const nfbData = await fetchJSON("/meta/not-following-back");
-        // Expect: array of { id, username }
-        setNotFollowingBack(nfbData || []);
-      } catch (err) {
-        setError(err.message || "Unknown error occurred");
-      } finally {
-        setLoading(false);
-      }
-    })();
+    // (async () => {
+    //   try {
+    //     const nfbData = await fetchJSON("/meta/not-following-back");
+    //     setNotFollowingBack(nfbData || []);
+    //   } catch (err) {
+    //     setError(err.message || "Unknown error occurred");
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // })();
+
+    // Use mock data for demonstration
+    setNotFollowingBack([]);
+    setLoading(false);
   }, []);
 
   if (loading) {

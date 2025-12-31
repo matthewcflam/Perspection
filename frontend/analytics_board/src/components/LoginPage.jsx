@@ -10,37 +10,41 @@ export default function LoginPage({ onLoginSuccess, onCreateAccountClick }) {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
+    // Backend is no longer running to save money - bypass login
+    onLoginSuccess();
 
-    try {
-      const response = await fetch(`${API_BASE}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
-      });
+    // COMMENTED OUT: Original backend API call
+    // setError("");
+    // setLoading(true);
 
-      const data = await response.json();
+    // try {
+    //   const response = await fetch(`${API_BASE}/login`, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       username,
+    //       password,
+    //     }),
+    //   });
 
-      if (response.ok) {
-        // Store the access token
-        localStorage.setItem("access_token", data.access_token);
-        // Call success callback
-        onLoginSuccess();
-      } else {
-        setError(data.message || "Login failed");
-      }
-    } catch (err) {
-      setError("Network error. Please try again.");
-      console.error("Login error:", err);
-    } finally {
-      setLoading(false);
-    }
+    //   const data = await response.json();
+
+    //   if (response.ok) {
+    //     // Store the access token
+    //     localStorage.setItem("access_token", data.access_token);
+    //     // Call success callback
+    //     onLoginSuccess();
+    //   } else {
+    //     setError(data.message || "Login failed");
+    //   }
+    // } catch (err) {
+    //   setError("Network error. Please try again.");
+    //   console.error("Login error:", err);
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (
@@ -51,7 +55,7 @@ export default function LoginPage({ onLoginSuccess, onCreateAccountClick }) {
         </h2>
 
         <form onSubmit={handleLogin} className="space-y-4">
-          <div>
+          {/* <div>
             <label className="block text-white/80 text-sm font-medium mb-2">
               Username
             </label>
@@ -63,9 +67,9 @@ export default function LoginPage({ onLoginSuccess, onCreateAccountClick }) {
               placeholder="Enter your username"
               required
             />
-          </div>
+          </div> */}
 
-          <div>
+          {/* <div>
             <label className="block text-white/80 text-sm font-medium mb-2">
               Password
             </label>
@@ -77,24 +81,24 @@ export default function LoginPage({ onLoginSuccess, onCreateAccountClick }) {
               placeholder="Enter your password"
               required
             />
-          </div>
+          </div> */}
 
-          {error && (
+          {/* {error && (
             <div className="text-red-400 text-sm text-center bg-red-500/10 border border-red-500/20 rounded-lg p-2">
               {error}
             </div>
-          )}
+          )} */}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-lg bg-white/20 hover:bg-white/30 text-white font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full h-45 px-6 rounded-lg bg-white/20 hover:bg-white/30 text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed leading-loose text-base flex items-center justify-center"
           >
-            {loading ? "Signing in..." : "Sign In"}
+            The backend is no longer running (to save money), so the sign-in no longer works! Press to upload your stats locally!
           </button>
         </form>
 
-        <div className="mt-6 text-center">
+        {/* <div className="mt-6 text-center">
           <p className="text-white/60 text-sm mb-2">Don't have an account?</p>
           <button
             onClick={onCreateAccountClick}
@@ -102,7 +106,7 @@ export default function LoginPage({ onLoginSuccess, onCreateAccountClick }) {
           >
             Create Account
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -17,42 +17,45 @@ export default function InstagramLikes() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-      setError("No access token found. Please log in.");
-      setLoading(false);
-      return;
-    }
+    // COMMENTED OUT: Backend API call - using mock data instead
+    // const token = localStorage.getItem("access_token");
+    // if (!token) {
+    //   setError("No access token found. Please log in.");
+    //   setLoading(false);
+    //   return;
+    // }
 
-    async function fetchLikedUsers() {
-      try {
-        const res = await fetch(`${API_BASE}/meta/top-likers`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+    // async function fetchLikedUsers() {
+    //   try {
+    //     const res = await fetch(`${API_BASE}/meta/top-likers`, {
+    //       method: "GET",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         Authorization: `Bearer ${token}`,
+    //       },
+    //     });
 
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({}));
-          throw new Error(
-            body.message || `Request failed with status ${res.status}`
-          );
-        }
+    //     if (!res.ok) {
+    //       const body = await res.json().catch(() => ({}));
+    //       throw new Error(
+    //         body.message || `Request failed with status ${res.status}`
+    //       );
+    //     }
 
-        const data = await res.json();
-        // data is an array of MetaLikedSchema:
-        // { id, liked_name, number_likes }
-        setLikedUsers(data);
-      } catch (err) {
-        setError(err.message || "Unknown error");
-      } finally {
-        setLoading(false);
-      }
-    }
+    //     const data = await res.json();
+    //     setLikedUsers(data);
+    //   } catch (err) {
+    //     setError(err.message || "Unknown error");
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // }
 
-    fetchLikedUsers();
+    // fetchLikedUsers();
+
+    // Use mock data for demonstration
+    setLikedUsers([]);
+    setLoading(false);
   }, []);
 
 

@@ -92,7 +92,7 @@ export default function App() {
           className="text-xl font-bold text-white tracking-wide"
           style={{ fontFamily: 'Aileron' }}
         >
-          Social Perspective
+          Perspection
         </h1>
       </button>
 

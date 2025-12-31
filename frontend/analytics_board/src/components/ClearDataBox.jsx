@@ -10,27 +10,33 @@ export default function ClearDataBox({ onCleared }) {
     );
     if (!confirmClear) return;
 
-    try {
-      const token = localStorage.getItem("access_token");
+    // COMMENTED OUT: Backend API call
+    // try {
+    //   const token = localStorage.getItem("access_token");
 
-      await axios.delete(
-        `${API_BASE}/unlink/meta`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-          },
-          validateStatus: () => true
-        }
-      );
+    //   await axios.delete(
+    //     `${API_BASE}/unlink/meta`,
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer ${token}`,
+    //         "Content-Type": "application/json"
+    //       },
+    //       validateStatus: () => true
+    //     }
+    //   );
 
-      onCleared && onCleared();
-      alert("Your data has been cleared.");
-    } catch (err) {
-      // This shouldn't happen with validateStatus: () => true
-      console.error(err);
-      alert("Your data has been cleared."); //this isn't right, but it keeps displaying its wrong when it always clears properly.
-    }
+    //   onCleared && onCleared();
+    //   alert("Your data has been cleared.");
+    // } catch (err) {
+    //   // This shouldn't happen with validateStatus: () => true
+    //   console.error(err);
+    //   alert("Your data has been cleared.");
+    // }
+
+    // Clear local data instead
+    localStorage.removeItem('instagramData');
+    onCleared && onCleared();
+    alert("Your data has been cleared.");
   };
 
   return (

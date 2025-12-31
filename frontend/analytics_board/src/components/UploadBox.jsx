@@ -59,22 +59,25 @@ export default function UploadBox({
         })
       );
 
-      const token = localStorage.getItem("access_token");
-      await axios.post(
-        "https://alder-backend-265736855150.us-west1.run.app/link",
-        {
-          platform: "meta",
-          data: dataList,
-          account_name: "InstagramUser",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      // COMMENTED OUT: Backend API call
+      // const token = localStorage.getItem("access_token");
+      // await axios.post(
+      //   "https://alder-backend-265736855150.us-west1.run.app/link",
+      //   {
+      //     platform: "meta",
+      //     data: dataList,
+      //     account_name: "InstagramUser",
+      //   },
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // );
 
+      // Store data locally instead
+      localStorage.setItem('instagramData', JSON.stringify(dataList));
       setUploaded(true);
     } catch (error) {
       console.error("Upload failed:", error);

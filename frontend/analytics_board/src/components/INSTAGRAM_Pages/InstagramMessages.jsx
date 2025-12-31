@@ -22,47 +22,54 @@ export default function MessagesDashboard() {
   // FETCH DATA
   // ───────────────────────────────────────────
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-      setError("No access token found. Please log in.");
-      setLoading(false);
-      return;
-    }
+    // COMMENTED OUT: Backend API calls - using mock data instead
+    // const token = localStorage.getItem("access_token");
+    // if (!token) {
+    //   setError("No access token found. Please log in.");
+    //   setLoading(false);
+    //   return;
+    // }
 
-    async function fetchJSON(path) {
-      const res = await fetch(`${API_BASE}${path}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    // async function fetchJSON(path) {
+    //   const res = await fetch(`${API_BASE}${path}`, {
+    //     method: "GET",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   });
 
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.message || `Request failed with ${res.status}`);
-      }
+    //   if (!res.ok) {
+    //     const body = await res.json().catch(() => ({}));
+    //     throw new Error(body.message || `Request failed with ${res.status}`);
+    //   }
 
-      return res.json();
-    }
+    //   return res.json();
+    // }
 
-    (async () => {
-      try {
-        const [senders, receivers, allMessages] = await Promise.all([
-          fetchJSON("/meta/top5/senders"),
-          fetchJSON("/meta/top5/receivers"),
-          fetchJSON("/meta/messages"),
-        ]);
+    // (async () => {
+    //   try {
+    //     const [senders, receivers, allMessages] = await Promise.all([
+    //       fetchJSON("/meta/top5/senders"),
+    //       fetchJSON("/meta/top5/receivers"),
+    //       fetchJSON("/meta/messages"),
+    //     ]);
 
-        setTopSenders(senders);
-        setTopReceivers(receivers);
-        setMessages(allMessages);
-      } catch (err) {
-        setError(err.message || "Unknown error.");
-      } finally {
-        setLoading(false);
-      }
-    })();
+    //     setTopSenders(senders);
+    //     setTopReceivers(receivers);
+    //     setMessages(allMessages);
+    //   } catch (err) {
+    //     setError(err.message || "Unknown error.");
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // })();
+
+    // Use mock data for demonstration
+    setTopSenders([]);
+    setTopReceivers([]);
+    setMessages([]);
+    setLoading(false);
   }, []);
 
   // ───────────────────────────────────────────
