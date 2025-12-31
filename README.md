@@ -41,9 +41,9 @@ npm run dev
 6\. See your stats and who your real friends are\!
 
 ## Images 
-![][assets/img1.png] 
-![][assets/img2.png] 
-![][assets/img3.png] 
-![][assets/img4.png] 
-![][assets/img5.png] 
-![][assets/img6.png] 
+![homepage](assets/img1.png)
+![instructions](assets/img2.png)
+![upload](assets/img3.png) 
+![likes](assets/img4.png)
+![statlikes](assets/img5.png) 
+![followers](assets/img6.png) 
