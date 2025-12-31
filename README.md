@@ -20,7 +20,7 @@ Justin Qu
 ## How It Works
 The user uploads folders of JSON files exported from Instagram to the Frontend, which calls the Backend to process the data. Originally, it had a Python/Flask backend with JWT authentication and a PostgreSQL database that processed and stored user data on Google Cloud, but it has now been modified for frontend display purposes. The React frontend displays the analytics through interactive dashboards with visualizations showing top likers, message statistics, and follower relationships across multiple pages.
 
-## Notes 
+## Acknowledgements 
 This project was developed as part of CPEN 221 at the University of British Columbia. The backend is no longer supported, but the website has been formatted so the frontend can be viewed by following the usage instructions below.
 
 ## Setup / Usage 
