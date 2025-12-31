@@ -1,7 +1,6 @@
 Perspection \- A social platform that can summarize select data from Instagram in a fun, social way, similar to Spotify Wrapped.
 
 ## Highlights
-
 * See your total likes, who doesn’t follow you back, and the people you message the most  
 * Responsibly secured data with login protection that can be permanently deleted by the user  
 * Thoughtful and whimsical designs unique to each statistic are meant to be shared with friends
@@ -14,7 +13,6 @@ Rui Chang
 Justin Qu
 
 ## Technologies
-
 * JavaScript / HTML / CSS  
 * TailwindCSS, ReactBits, PostgreSQL  
 * Git / GitHub
@@ -31,7 +29,7 @@ This project was developed as part of CPEN 221 at the University of British Colu
 3\. Use these commands in the terminal to run a local host of the website  
 ```   
 cd frontend  
-cd analytics\_board  
+cd analytics_board  
 ```  
 and then use:  
 ```    
@@ -43,9 +41,9 @@ npm run dev
 6\. See your stats and who your real friends are\!
 
 ## Images 
-![][assets.img1.png] 
-![][assets.img2.png] 
-![][assets.img3.png] 
-![][assets.img4.png] 
-![][assets.img5.png] 
-![][assets.img6.png] 
+![][assets/img1.png] 
+![][assets/img2.png] 
+![][assets/img3.png] 
+![][assets/img4.png] 
+![][assets/img5.png] 
+![][assets/img6.png] 
