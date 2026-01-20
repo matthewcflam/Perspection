@@ -14,7 +14,7 @@ Justin Qu
 
 ## Technologies
 * JavaScript / HTML / CSS  
-* TailwindCSS, ReactBits, PostgreSQL  
+* React, TailwindCSS, ReactBits, Node.js, PostgreSQL  
 * Git / GitHub
 
 ## How It Works
